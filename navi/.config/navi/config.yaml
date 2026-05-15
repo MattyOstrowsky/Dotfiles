@@ -1,0 +1,4 @@
+config_yaml: ~
+cheats:
+  paths:
+    - ~/.config/navi/cheats

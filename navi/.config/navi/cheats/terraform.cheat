@@ -1,0 +1,70 @@
+% terraform, tf
+
+# Init
+terraform init
+
+# Init (upgrade providers)
+terraform init -upgrade
+
+# Validate
+terraform validate
+
+# Format all files
+terraform fmt -recursive
+
+# Plan
+terraform plan -out=plan.tfplan
+
+# Apply saved plan
+terraform apply plan.tfplan
+
+# Apply with auto-approve (DANGER)
+terraform apply -auto-approve
+
+# Destroy (DANGER)
+terraform destroy
+
+# Show state list
+terraform state list
+
+# Show specific resource in state
+terraform state show <resource>
+
+# Import existing resource
+terraform import <resource_address> <resource_id>
+
+# Remove resource from state (without destroying)
+terraform state rm <resource>
+
+# Move resource in state (refactor)
+terraform state mv <old_address> <new_address>
+
+# Detect drift
+terraform plan -refresh-only
+
+# Show current workspace
+terraform workspace show
+
+# List workspaces
+terraform workspace list
+
+# Switch workspace
+terraform workspace select <workspace>
+
+# Create new workspace
+terraform workspace new <workspace_name>
+
+# Console (test expressions)
+terraform console
+
+# Graph (dependency visualization)
+terraform graph | dot -Tsvg > graph.svg
+
+# Debug plan
+TF_LOG=DEBUG terraform plan 2>debug.log
+
+# Force unlock state
+terraform force-unlock <lock_id>
+
+$ resource: terraform state list 2>/dev/null
+$ workspace: terraform workspace list 2>/dev/null | tr -d '* '

@@ -1,0 +1,61 @@
+% docker
+
+# List running containers
+docker ps
+
+# List all containers
+docker ps -a
+
+# Build image
+docker build -t <tag> <path>
+
+# Run container
+docker run -d --name <name> -p <host_port>:<container_port> <image>
+
+# Exec into running container
+docker exec -it <container> /bin/sh
+
+# View logs
+docker logs -f <container>
+
+# Stop container
+docker stop <container>
+
+# Remove container
+docker rm -f <container>
+
+# Remove image
+docker rmi <image>
+
+# Prune everything (stopped containers, unused images, networks)
+docker system prune -af
+
+# Disk usage
+docker system df
+
+# Inspect image layers
+dive <image>
+
+# Scan image for vulnerabilities
+trivy image <image>
+
+# Docker compose up (detached)
+docker compose up -d
+
+# Docker compose down
+docker compose down
+
+# Docker compose rebuild specific service
+docker compose up -d --build <service>
+
+# Docker compose logs
+docker compose logs -f <service>
+
+# Docker compose restart service
+docker compose restart <service>
+
+$ container: docker ps --format '{{.Names}}' | sort
+$ image: docker images --format '{{.Repository}}:{{.Tag}}' | sort
+$ service: docker compose config --services 2>/dev/null
+$ tag: echo "myapp:latest"
+$ path: echo "."

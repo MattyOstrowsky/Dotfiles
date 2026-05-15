@@ -1,0 +1,62 @@
+% kubernetes, k8s
+
+# Get pods in namespace
+kubectl get pods -n <namespace>
+
+# Get all pods across all namespaces
+kubectl get pods -A
+
+# Describe a pod
+kubectl describe pod <pod> -n <namespace>
+
+# Get pod logs
+kubectl logs -f <pod> -n <namespace>
+
+# Get pod logs (previous crash)
+kubectl logs --previous <pod> -n <namespace>
+
+# Exec into a pod
+kubectl exec -it <pod> -n <namespace> -- /bin/sh
+
+# Port forward
+kubectl port-forward <pod> <local_port>:<remote_port> -n <namespace>
+
+# Get events sorted by time
+kubectl get events --sort-by=.lastTimestamp -n <namespace>
+
+# Get all resources in namespace
+kubectl api-resources --verbs=list --namespaced -o name | xargs -n 1 kubectl get --show-kind --ignore-not-found -n <namespace>
+
+# Scale deployment
+kubectl scale deployment <deployment> --replicas=<count> -n <namespace>
+
+# Rollout restart
+kubectl rollout restart deployment <deployment> -n <namespace>
+
+# Rollout status
+kubectl rollout status deployment <deployment> -n <namespace>
+
+# Rollout undo (rollback)
+kubectl rollout undo deployment <deployment> -n <namespace>
+
+# Decode a secret
+kubectl get secret <secret> -n <namespace> -o jsonpath='{.data}' | jq 'to_entries[] | {key: .key, value: (.value | @base64d)}'
+
+# Top pods (resource usage)
+kubectl top pods -n <namespace>
+
+# Drain node for maintenance
+kubectl drain <node> --ignore-daemonsets --delete-emptydir-data
+
+# Cordon node (no new pods)
+kubectl cordon <node>
+
+# Uncordon node
+kubectl uncordon <node>
+
+$ namespace: kubectl get ns --no-headers | awk '{print $1}'
+$ pod: kubectl get pods -n <namespace> --no-headers | awk '{print $1}'
+$ deployment: kubectl get deployments -n <namespace> --no-headers | awk '{print $1}'
+$ secret: kubectl get secrets -n <namespace> --no-headers | awk '{print $1}'
+$ node: kubectl get nodes --no-headers | awk '{print $1}'
+$ count: echo -e "1\n2\n3\n5\n10"
