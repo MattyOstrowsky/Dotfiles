@@ -172,6 +172,10 @@ fisher update
 | [z](https://github.com/jethrokuan/z) | Jump to frequently used directories — `z dotfiles` |
 | [autopair](https://github.com/jorgebucaran/autopair.fish) | Auto-close brackets, quotes, backticks |
 | [sponge](https://github.com/meaningful-ooo/sponge) | Clean failed commands from history automatically |
+| [abbreviation-tips](https://github.com/gazorby/fish-abbreviation-tips) | Shows hints when you type a command that has an abbreviation |
+| [puffer-fish](https://github.com/nickeb96/puffer-fish) | `!!` (last command) and `!$` (last argument) expansion like bash |
+| [replay](https://github.com/jorgebucaran/replay.fish) | Run bash commands in fish — `replay 'source .env'` |
+| [pisces](https://github.com/laughedelic/pisces) | Paired symbols auto-insertion (brackets, quotes) |
 
 ### Key Aliases
 
@@ -192,7 +196,10 @@ fisher update
 The prompt shows contextual info only when relevant:
 
 ```
-[OS] [user] [~/path] [git:branch ✓] [⎈ k8s-context:namespace] [💠 tf-workspace] [🐳 docker] [☁️ aws-profile]
+[OS] [user] [~/path] [git:branch ✓ +3-1] [⎈ k8s:ns] [💠 tf] [🐳 docker] [☁️ aws] [🐍 py3.12 (venv)] [🐹 go1.22]
 ❯ 
 ```
+
+Segments: `purple` OS/user → `blue` path → `green` git → `orange` devops tools → `purple` languages → `red` duration/status
+
 
