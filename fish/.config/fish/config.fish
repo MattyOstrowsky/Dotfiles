@@ -58,6 +58,16 @@ if status is-interactive
         zoxide init fish | source
     end
 
+    # atuin (better shell history with sync)
+    if type -q atuin
+        atuin init fish | source
+    end
+
+    # navi (interactive cheatsheet — Ctrl+G)
+    if type -q navi
+        navi widget fish | source
+    end
+
 end
 
 # =============================================================================
@@ -151,9 +161,22 @@ alias dlog='docker logs -f'
 alias dex='docker exec -it'
 alias dprune='docker system prune -af'
 
-# lazydocker / lazygit — terminal UIs
+# lazydocker / lazygit / lazysql — terminal UIs
 alias lzd='lazydocker'
 alias lzg='lazygit'
+alias lzs='lazysql'
+
+# dive — explore docker image layers
+alias ddive='dive'
+
+# btop — system monitor
+alias top='btop'
+
+# ctop — container monitor
+alias dtop='ctop'
+
+# glow — render markdown in terminal
+alias md='glow'
 
 # =============================================================================
 # Aliases — Security / Scanning

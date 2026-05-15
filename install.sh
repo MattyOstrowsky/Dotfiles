@@ -2,7 +2,7 @@
 # =============================================================================
 # DevOps Workstation — Dependency Installer
 # =============================================================================
-# Usage: ./install.sh [--all | --core | --k8s | --iac | --dev | --security | --shell]
+# Usage: ./install.sh [--all | --core | --k8s | --iac | --dev | --security | --shell | --tui]
 # Run with sudo where needed. Script is idempotent.
 set -euo pipefail
 
@@ -220,15 +220,27 @@ install_dev() {
         sudo apt install -y python3 python3-pip python3-venv && ok "python3"
     fi
 
-    # node (via nvm or fnm)
-    if check_cmd node; then warn "node"; else
-        curl -fsSL https://fnm.vercel.app/install | bash && ok "fnm (node version manager)"
+    # bun — JS/TS runtime & package manager
+    if check_cmd bun; then warn "bun"; else
+        curl -fsSL https://bun.sh/install | bash && ok "bun"
     fi
 
     # git
     if check_cmd git; then warn "git"; else
         sudo apt install -y git && ok "git"
     fi
+
+    # neovim
+    if check_cmd nvim; then warn "nvim"; else
+        sudo apt install -y neovim && ok "nvim"
+    fi
+}
+
+# =============================================================================
+# TUI Tools — Terminal User Interfaces
+# =============================================================================
+install_tui() {
+    info "=== TUI Tools ==="
 
     # lazygit — terminal git UI
     if check_cmd lazygit; then warn "lazygit"; else
@@ -240,9 +252,47 @@ install_dev() {
         go install github.com/jesseduffield/lazydocker@latest && ok "lazydocker"
     fi
 
-    # neovim
-    if check_cmd nvim; then warn "nvim"; else
-        sudo apt install -y neovim && ok "nvim"
+    # lazysql — terminal database UI (Postgres, MySQL, SQLite)
+    if check_cmd lazysql; then warn "lazysql"; else
+        go install github.com/jorgerojas26/lazysql@latest && ok "lazysql"
+    fi
+
+    # dive — Docker image layer explorer
+    if check_cmd dive; then warn "dive"; else
+        DIVEVER=$(curl -s https://api.github.com/repos/wagoodman/dive/releases/latest | jq -r .tag_name)
+        wget -qO /tmp/dive.deb "https://github.com/wagoodman/dive/releases/download/${DIVEVER}/dive_${DIVEVER#v}_linux_amd64.deb"
+        sudo dpkg -i /tmp/dive.deb && rm /tmp/dive.deb && ok "dive"
+    fi
+
+    # btop — system monitor (better htop)
+    if check_cmd btop; then warn "btop"; else
+        sudo apt install -y btop && ok "btop"
+    fi
+
+    # ctop — container metrics TUI
+    if check_cmd ctop; then warn "ctop"; else
+        sudo wget -qO /usr/local/bin/ctop https://github.com/bcicen/ctop/releases/latest/download/ctop-linux-amd64
+        sudo chmod +x /usr/local/bin/ctop && ok "ctop"
+    fi
+
+    # glow — markdown renderer in terminal
+    if check_cmd glow; then warn "glow"; else
+        go install github.com/charmbracelet/glow@latest && ok "glow"
+    fi
+
+    # navi — interactive cheatsheet (Ctrl+G)
+    if check_cmd navi; then warn "navi"; else
+        cargo install --locked navi 2>/dev/null || {
+            BIN_DIR=/usr/local/bin
+            curl -sL https://raw.githubusercontent.com/denisidoro/navi/master/scripts/install | bash
+        }
+        ok "navi"
+    fi
+
+    # atuin — better shell history with sync
+    if check_cmd atuin; then warn "atuin"; else
+        curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh
+        ok "atuin"
     fi
 }
 
@@ -280,27 +330,41 @@ show_help() {
     echo "  --shell      Fish shell + Starship prompt"
     echo "  --k8s        Kubernetes tools (kubectl, helm, kubectx, k9s, stern, kustomize)"
     echo "  --iac        IaC tools (terraform, terragrunt, ansible, tfsec, checkov, infracost)"
-    echo "  --dev        Dev tools (go, python, node, lazygit, lazydocker, nvim)"
+    echo "  --dev        Dev tools (go, python, bun, git, nvim)"
+    echo "  --tui        TUI tools (lazygit, lazydocker, lazysql, dive, btop, ctop, glow, navi, atuin)"
     echo "  --security   Security scanners (trivy, grype)"
     echo "  --list       List all tools and their install status"
     echo ""
     echo "Examples:"
     echo "  ./install.sh --all"
-    echo "  ./install.sh --k8s --iac"
+    echo "  ./install.sh --k8s --tui"
 }
 
 list_tools() {
     echo "=== Tool Status ==="
-    for cmd in fish starship fzf batcat jq yq rg fdfind tree htop direnv zoxide tldr \
-               kubectl helm kubectx kubens k9s kustomize stern kubeconform \
-               terraform terragrunt ansible tfsec checkov infracost \
-               go python3 node git lazygit lazydocker nvim \
-               trivy grype; do
-        if check_cmd "$cmd"; then
-            echo -e "  ${GREEN}✓${NC} $cmd"
-        else
-            echo -e "  ${RED}✗${NC} $cmd"
-        fi
+    echo "--- Core ---"
+    for cmd in fish starship fzf batcat jq yq rg fdfind tree htop direnv zoxide tldr; do
+        if check_cmd "$cmd"; then echo -e "  ${GREEN}✓${NC} $cmd"; else echo -e "  ${RED}✗${NC} $cmd"; fi
+    done
+    echo "--- Kubernetes ---"
+    for cmd in kubectl helm kubectx kubens k9s kustomize stern kubeconform; do
+        if check_cmd "$cmd"; then echo -e "  ${GREEN}✓${NC} $cmd"; else echo -e "  ${RED}✗${NC} $cmd"; fi
+    done
+    echo "--- IaC ---"
+    for cmd in terraform terragrunt ansible tfsec checkov infracost; do
+        if check_cmd "$cmd"; then echo -e "  ${GREEN}✓${NC} $cmd"; else echo -e "  ${RED}✗${NC} $cmd"; fi
+    done
+    echo "--- Dev ---"
+    for cmd in go python3 bun git nvim; do
+        if check_cmd "$cmd"; then echo -e "  ${GREEN}✓${NC} $cmd"; else echo -e "  ${RED}✗${NC} $cmd"; fi
+    done
+    echo "--- TUI ---"
+    for cmd in lazygit lazydocker lazysql dive btop ctop glow navi atuin; do
+        if check_cmd "$cmd"; then echo -e "  ${GREEN}✓${NC} $cmd"; else echo -e "  ${RED}✗${NC} $cmd"; fi
+    done
+    echo "--- Security ---"
+    for cmd in trivy grype; do
+        if check_cmd "$cmd"; then echo -e "  ${GREEN}✓${NC} $cmd"; else echo -e "  ${RED}✗${NC} $cmd"; fi
     done
 }
 
@@ -311,12 +375,13 @@ fi
 
 for arg in "$@"; do
     case $arg in
-        --all)      install_core; install_shell; install_k8s; install_iac; install_dev; install_security ;;
+        --all)      install_core; install_shell; install_k8s; install_iac; install_dev; install_tui; install_security ;;
         --core)     install_core ;;
         --shell)    install_shell ;;
         --k8s)      install_k8s ;;
         --iac)      install_iac ;;
         --dev)      install_dev ;;
+        --tui)      install_tui ;;
         --security) install_security ;;
         --list)     list_tools ;;
         --help|-h)  show_help ;;
