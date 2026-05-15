@@ -7,6 +7,8 @@ Personal dotfiles managed with [GNU Stow](https://www.gnu.org/software/stow/).
 | Package | Contents | Target |
 |---------|----------|--------|
 | `opencode/` | OpenCode AI agent config — 8 agents, 9 commands, 7 skills | `~/.config/opencode/` |
+| `fish/` | Fish shell config — aliases, functions, plugins for DevOps | `~/.config/fish/` |
+| `starship/` | Starship prompt — K8s, Terraform, Docker, AWS context in prompt | `~/.config/starship.toml` |
 
 ## Quick Start
 
@@ -135,3 +137,62 @@ git commit -m "feat: add fish config"
 | `/infra-review` | Architecture review with ADR format |
 | `/cost-estimate` | Cloud cost estimation |
 | `/self-improve` | Analyze session and improve agent configs |
+
+## Fish Shell Setup
+
+### Prerequisites
+
+```bash
+sudo apt install fish fzf bat          # Core tools
+curl -sS https://starship.rs/install.sh | sh  # Starship prompt
+
+# Optional but recommended
+sudo apt install direnv                 # Auto-load .envrc files
+cargo install zoxide                    # Better cd (or: sudo apt install zoxide)
+```
+
+### After `stow fish && stow starship`
+
+Install Fisher plugins:
+
+```bash
+# Install Fisher (plugin manager)
+curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install jorgebucaran/fisher
+
+# Install all plugins from fish_plugins
+fisher update
+```
+
+### Fish Plugins
+
+| Plugin | What it does |
+|--------|-------------|
+| [fisher](https://github.com/jorgebucaran/fisher) | Plugin manager for fish |
+| [fzf.fish](https://github.com/PatrickF1/fzf.fish) | Fuzzy finder — `Ctrl+R` history, `Ctrl+F` files, `Ctrl+Alt+S` git status |
+| [z](https://github.com/jethrokuan/z) | Jump to frequently used directories — `z dotfiles` |
+| [autopair](https://github.com/jorgebucaran/autopair.fish) | Auto-close brackets, quotes, backticks |
+| [sponge](https://github.com/meaningful-ooo/sponge) | Clean failed commands from history automatically |
+
+### Key Aliases
+
+| Alias | Command | Category |
+|-------|---------|----------|
+| `k` | `kubectl` | K8s |
+| `kgp` | `kubectl get pods` | K8s |
+| `kns` | `kubectl config set-context --current --namespace` | K8s |
+| `tf` | `terraform` | Terraform |
+| `tfp` | `terraform plan` | Terraform |
+| `d` | `docker` | Docker |
+| `dc` | `docker compose` | Docker |
+| `gs` | `git status` | Git |
+| `gcp` | `git add -A && commit && push` | Git |
+
+### Starship Prompt Segments
+
+The prompt shows contextual info only when relevant:
+
+```
+[OS] [user] [~/path] [git:branch ✓] [⎈ k8s-context:namespace] [💠 tf-workspace] [🐳 docker] [☁️ aws-profile]
+❯ 
+```
+

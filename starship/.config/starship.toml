@@ -1,0 +1,167 @@
+# =============================================================================
+# Starship Prompt — DevOps Edition
+# =============================================================================
+# Docs: https://starship.rs/config/
+
+format = """
+[░▒▓](#7b42bc)\
+$os\
+$username\
+[](bg:#3498db fg:#7b42bc)\
+$directory\
+[](fg:#3498db bg:#2ecc71)\
+$git_branch\
+$git_status\
+[](fg:#2ecc71 bg:#e67e22)\
+$kubernetes\
+$terraform\
+$docker_context\
+$aws\
+$gcloud\
+[](fg:#e67e22 bg:#c0392b)\
+$cmd_duration\
+$status\
+[](fg:#c0392b)\
+$line_break\
+$character"""
+
+# Disable default newline
+add_newline = true
+
+# OS icon
+[os]
+disabled = false
+style = "bg:#7b42bc fg:#e0e0e0"
+format = "[ $symbol ]($style)"
+
+[os.symbols]
+Ubuntu = ""
+Linux = "🐧"
+Macos = ""
+Windows = "󰍲"
+
+# Username
+[username]
+show_always = true
+style_user = "bg:#7b42bc fg:#e0e0e0"
+style_root = "bg:#7b42bc fg:#ff6b6b bold"
+format = "[$user ]($style)"
+disabled = false
+
+# Directory
+[directory]
+style = "bg:#3498db fg:#e0e0e0"
+format = "[ $path ]($style)"
+truncation_length = 3
+truncation_symbol = "…/"
+
+[directory.substitutions]
+"Documents" = "󰈙 "
+"Downloads" = " "
+"Music" = " "
+"Pictures" = " "
+"Dotfiles" = "󰒓 "
+
+# Git
+[git_branch]
+symbol = ""
+style = "bg:#2ecc71 fg:#1a1a2e"
+format = "[ $symbol $branch ]($style)"
+
+[git_status]
+style = "bg:#2ecc71 fg:#1a1a2e"
+format = "[$all_status$ahead_behind ]($style)"
+conflicted = "🏳"
+ahead = "⇡${count}"
+behind = "⇣${count}"
+diverged = "⇕⇡${ahead_count}⇣${behind_count}"
+up_to_date = "✓"
+untracked = "?${count}"
+stashed = "📦"
+modified = "!${count}"
+staged = "+${count}"
+renamed = "»${count}"
+deleted = "✘${count}"
+
+# Kubernetes
+[kubernetes]
+disabled = false
+symbol = "⎈"
+style = "bg:#e67e22 fg:#1a1a2e"
+format = "[ $symbol $context(:$namespace) ]($style)"
+
+[kubernetes.context_aliases]
+"arn:aws:eks:*:*:cluster/*" = "$1"
+
+# Terraform
+[terraform]
+symbol = "💠"
+style = "bg:#e67e22 fg:#1a1a2e"
+format = "[ $symbol $workspace ]($style)"
+detect_files = ["main.tf", "variables.tf", ".terraform"]
+
+# Docker
+[docker_context]
+symbol = "🐳"
+style = "bg:#e67e22 fg:#1a1a2e"
+format = "[ $symbol $context ]($style)"
+only_with_files = true
+detect_files = ["docker-compose.yml", "docker-compose.yaml", "Dockerfile"]
+
+# AWS
+[aws]
+symbol = "☁️"
+style = "bg:#e67e22 fg:#1a1a2e"
+format = "[ $symbol $profile($region) ]($style)"
+[aws.region_aliases]
+eu-central-1 = "eu-c1"
+eu-west-1 = "eu-w1"
+us-east-1 = "us-e1"
+
+# GCloud
+[gcloud]
+symbol = "🔷"
+style = "bg:#e67e22 fg:#1a1a2e"
+format = "[ $symbol $project ]($style)"
+disabled = true  # Enable if you use GCP
+
+# Command duration
+[cmd_duration]
+min_time = 2_000  # Show if command took > 2s
+style = "bg:#c0392b fg:#e0e0e0"
+format = "[ 󱎫 $duration ]($style)"
+
+# Status (exit code)
+[status]
+disabled = false
+style = "bg:#c0392b fg:#e0e0e0"
+format = "[ $status ]($style)"
+
+# Prompt character
+[character]
+success_symbol = "[❯](bold #2ecc71)"
+error_symbol = "[❯](bold #c0392b)"
+
+# Language/tool versions (show only when relevant)
+[python]
+symbol = "🐍"
+format = "[ $symbol $version ]($style)"
+
+[golang]
+symbol = "🐹"
+format = "[ $symbol $version ]($style)"
+
+[nodejs]
+symbol = ""
+format = "[ $symbol $version ]($style)"
+
+[rust]
+symbol = "🦀"
+format = "[ $symbol $version ]($style)"
+
+# Disable modules you don't need
+[package]
+disabled = true
+
+[line_break]
+disabled = false
