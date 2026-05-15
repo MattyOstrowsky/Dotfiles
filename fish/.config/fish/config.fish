@@ -8,6 +8,10 @@ set -gx EDITOR nvim
 # PATH
 set -gx PATH $HOME/.local/bin $PATH
 
+# Go
+set -gx GOPATH $HOME/go
+set -gx PATH $GOPATH/bin /usr/local/go/bin $PATH
+
 # Bun
 set -gx BUN_INSTALL "$HOME/.bun"
 set -gx PATH $BUN_INSTALL/bin $PATH
@@ -86,16 +90,30 @@ alias gpl='git pull'
 # =============================================================================
 alias k='kubectl'
 alias kgp='kubectl get pods'
+alias kgpa='kubectl get pods -A'
 alias kgs='kubectl get svc'
 alias kgd='kubectl get deployments'
 alias kgn='kubectl get nodes'
-alias kns='kubectl config set-context --current --namespace'
-alias kctx='kubectl config get-contexts'
+alias kgi='kubectl get ingress'
+alias kgcm='kubectl get configmaps'
+alias kgsec='kubectl get secrets'
 alias klog='kubectl logs -f'
 alias kex='kubectl exec -it'
 alias kdesc='kubectl describe'
 alias kaf='kubectl apply -f'
 alias kdf='kubectl delete -f'
+alias kroll='kubectl rollout restart deployment'
+alias kevents='kubectl get events --sort-by=.lastTimestamp'
+
+# kubectx / kubens — fast context & namespace switching
+alias kctx='kubectx'
+alias kns='kubens'
+
+# k9s — terminal K8s dashboard
+alias k9='k9s'
+
+# stern — multi-pod log tailing
+alias ksl='stern'
 
 # =============================================================================
 # Aliases — Helm
@@ -123,12 +141,25 @@ alias tfw='terraform workspace'
 # =============================================================================
 alias d='docker'
 alias dc='docker compose'
+alias dcu='docker compose up -d'
+alias dcd='docker compose down'
+alias dcl='docker compose logs -f'
 alias dps='docker ps'
 alias dpsa='docker ps -a'
 alias dimg='docker images'
 alias dlog='docker logs -f'
 alias dex='docker exec -it'
 alias dprune='docker system prune -af'
+
+# lazydocker / lazygit — terminal UIs
+alias lzd='lazydocker'
+alias lzg='lazygit'
+
+# =============================================================================
+# Aliases — Security / Scanning
+# =============================================================================
+alias tscan='trivy image'
+alias tfs-scan='tfsec .'
 
 # =============================================================================
 # Functions — DevOps helpers
@@ -168,4 +199,34 @@ end
 # Create directory and cd into it
 function mkcd
     mkdir -p $argv[1] && cd $argv[1]
+end
+
+# Watch pods in namespace
+function kwatch
+    kubectl get pods -w $argv
+end
+
+# Get all resources in namespace
+function kall
+    kubectl api-resources --verbs=list --namespaced -o name | xargs -n 1 kubectl get --show-kind --ignore-not-found $argv
+end
+
+# Decode K8s secret
+function ksecret
+    kubectl get secret $argv[1] -o jsonpath='{.data}' | jq 'to_entries[] | {key: .key, value: (.value | @base64d)}'
+end
+
+# Quick terraform workspace switch
+function tfw-switch
+    terraform workspace select $argv[1] || terraform workspace new $argv[1]
+end
+
+# Docker compose rebuild specific service
+function dcrebuild
+    docker compose up -d --build $argv[1]
+end
+
+# Show listening ports
+function ports
+    sudo ss -tlnp | grep LISTEN
 end
