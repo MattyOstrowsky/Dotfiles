@@ -54,3 +54,19 @@
 - Pipeline: lint → test → build → security scan → deploy
 - Rollback strategy defined before deployment
 - No direct push to main — PR with review required
+
+### Git Workflow
+- Conventional Commits: `feat:`, `fix:`, `chore:`, `refactor:`, `docs:`, `test:`, `ci:`, `sec:`
+- Short-lived feature branches (max 1-2 days), merged via squash PR
+- One logical change per commit — no "fix stuff" mega-commits
+- Commit summary < 72 chars, body explains WHAT and WHY
+- PRs under 400 lines, one concern per PR
+- No force pushing to shared branches — use `--force-with-lease` only on personal branches
+- Semver tags for releases: `v{major}.{minor}.{patch}`
+
+### Context Awareness
+- Every agent must recognize its own scope and limitations
+- If a request falls outside the agent's domain, the agent MUST flag it immediately:
+  "CONTEXT MISMATCH: This request is outside my [agent role] scope."
+- Then either: (a) do what's reasonable within scope, (b) delegate to the right subagent, or (c) ask for clarification
+- Do NOT pretend expertise outside the agent's defined role

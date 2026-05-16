@@ -66,9 +66,56 @@ After applying all changes, produce a summary:
 - Global rules updated: X
 ```
 
-### Rules
+## Config Quality Analysis (NEW)
+
+In addition to conversation analysis, also evaluate the **configuration itself** for gaps:
+
+### Agent Coverage Check
+Check if all agents referenced in `AGENTS.md` and `devops.md` DELEGATION sections actually exist.
+Missing agents should be created.
+
+| Referenced Agent | Exists? |
+|-----------------|---------|
+| `@terraform` | agents/terraform.md |
+| `@security` | agents/security.md |
+| `@cicd` | agents/cicd.md |
+| `@backend` | agents/backend.md |
+| `@frontend` | agents/frontend.md |
+| `@data-engineer` | agents/data-engineer.md |
+| `@ansible` | agents/ansible.md? |
+| `@python-dev` | agents/python-dev.md? |
+
+### Skill Gap Analysis
+Compare existing skills against the agent prompts. If an agent mentions a domain knowledge area
+that has no corresponding skill — that's a gap.
+
+| Domain | Referenced In | Skill Exists? |
+|--------|--------------|--------------|
+| Git workflow | AGENTS.md, devops agent | skills/git-workflow/ |
+| Linux admin | Dotfiles context | skills/linux-admin/ |
+| Secrets/vault | security agent, AGENTS.md | skills/vault-secrets/ |
+
+### Command Coverage Check
+For every agent, check if there's a command that helps invoke that agent's core workflow:
+
+| Agent | Core Workflow Command | Exists? |
+|-------|----------------------|---------|
+| terraform | tf-plan, tf-apply | ✅ |
+| security | sec-audit | ✅ |
+| cicd | pipeline-lint | ✅ |
+| devops | docker-build, k8s-check | ✅ |
+| architect | infra-review | ✅ |
+| data-engineer | cost-estimate | ✅ |
+
+### Configuration Consistency Check
+- Do `opencode.json` and `tui.json` reference the same instructions files?
+- Are all skill directories properly structured (SKILL.md + optional assets)?
+- Are agent frontmatter YAML `permission` blocks consistent with their role?
+
+## Rules
 - Do NOT remove existing instructions that are working correctly
 - APPEND new rules, don't replace existing ones
 - Be specific — no vague rules like "be better". Write exact, actionable instructions
 - If a skill doesn't exist for the topic, CREATE a new one
 - Every change must reference a specific conversation moment that triggered it
+- For config quality findings (not conversation-triggered), note them as: "CONFIG GAP: [description]"
