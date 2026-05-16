@@ -1,2 +1,3 @@
-# Wyczyściłem ten plik, żeby Starship używał swojego wbudowanego, domyślnego wyglądu.
-# Jeśli chcesz powrócić do domyślnego czystego promptu, zostaw ten plik pusty.
+# Cleared for Starship's built-in default look.
+# Keep this file empty to use the default prompt.
+# Full DevOps theme will be rewritten later.

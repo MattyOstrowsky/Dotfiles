@@ -2,7 +2,7 @@ import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 
 export default function (pi: ExtensionAPI) {
   pi.on("tool_call", async (event, ctx) => {
-    // 1. Ochrona w poleceniach bash
+    // 1. Protection in bash commands
     if (event.toolName === "bash") {
       const command = event.input.command || "";
       if (
@@ -18,7 +18,7 @@ export default function (pi: ExtensionAPI) {
         }
       }
     } 
-    // 2. Ochrona przed modyfikacją wrażliwych plików (edit/write)
+    // 2. Protection against modifying sensitive files (edit/write)
     else if (event.toolName === "write" || event.toolName === "edit") {
       const file = event.input.file || event.input.targetFile || "";
       if (

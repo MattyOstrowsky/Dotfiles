@@ -256,3 +256,41 @@ end
 function ports
     sudo ss -tlnp | grep LISTEN
 end
+
+# =============================================================================
+# Dotfiles auto-update — runs once per shell session
+# =============================================================================
+function __dotfiles_check_update --on-event fish_prompt
+    # One-shot: skip on subsequent prompts
+    set -q __dotfiles_update_done; and return
+    set -g __dotfiles_update_done 1
+
+    # Guard: Dotfiles repo must exist
+    if not test -d "$HOME/Dotfiles/.git"
+        return
+    end
+
+    # Guard: git and make must be installed
+    if not command -q git; or not command -q make
+        return
+    end
+
+    # Fetch silently, abort on failure (offline, no remote, etc.)
+    if not git -C "$HOME/Dotfiles" fetch --quiet 2>/dev/null
+        return
+    end
+
+    # Count commits behind upstream (fallback to 0 on error)
+    set -l behind (git -C "$HOME/Dotfiles" rev-list --count HEAD..@{upstream} 2>/dev/null)
+    or set behind 0
+
+    if test "$behind" -gt 0
+        echo "📦 Dotfiles: $behind update(s) available"
+        if git -C "$HOME/Dotfiles" pull --ff-only --quiet 2>/dev/null
+            and make -C "$HOME/Dotfiles" install --quiet 2>/dev/null
+            echo "✅ Dotfiles updated"
+        else
+            echo "⚠️  Dotfiles update failed — check manually"
+        end
+    end
+end
