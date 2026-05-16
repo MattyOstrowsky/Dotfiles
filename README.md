@@ -6,7 +6,7 @@ Personal dotfiles managed with [GNU Stow](https://www.gnu.org/software/stow/).
 
 | Package | Contents | Target |
 |---------|----------|--------|
-| `opencode/` | OpenCode AI agent config — 8 agents, 9 commands, 7 skills | `~/.config/opencode/` |
+| `opencode/` | OpenCode AI agent config — 12 agents, 11 commands, 10 skills | `~/.config/opencode/` |
 | `pi/` | Pi AI agent config — agents, extensions, prompts | `~/.pi/agent/` |
 | `fish/` | Fish shell config — aliases, functions, plugins for DevOps | `~/.config/fish/` |
 | `starship/` | Starship prompt — K8s, Terraform, Docker, AWS context | `~/.config/starship.toml` |
@@ -81,13 +81,15 @@ git add myapp/ && git commit -m "feat: add myapp config"
 
 ### Primary Agents (switch with Tab)
 - **architect** — Architecture planning, ADRs, red-teaming (read-only)
+- **orchestrator** — Complex task breakdown, execution plans, delegating to subagents
 - **devops** — Infrastructure implementation, Docker, K8s, CI/CD (full access)
+- **meta** — Agent ecosystem management, building new agents/skills/commands
 
 ### Subagents (invoke with @name)
-`@terraform` `@backend` `@frontend` `@data-engineer` `@security` `@cicd`
+`@terraform` `@ansible` `@backend` `@frontend` `@data-engineer` `@security` `@cicd` `@python-dev`
 
 ### Slash Commands
-`/tf-plan` `/tf-apply` `/docker-build` `/k8s-check` `/sec-audit` `/pipeline-lint` `/infra-review` `/cost-estimate` `/self-improve`
+`/tf-plan` `/tf-apply` `/docker-build` `/k8s-check` `/sec-audit` `/pipeline-lint` `/infra-review` `/cost-estimate` `/self-improve` `/stats`
 
 ## Fish Shell
 
