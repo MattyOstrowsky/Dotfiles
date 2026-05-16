@@ -7,9 +7,11 @@
 - Assume production-grade quality by default. No "quick hacks".
 
 ## Agent Collaboration Protocol
-- **architect** (Tab) → Plans, designs, reviews. Does NOT write code. Delegates to subagents.
+- **architect** (Tab) → Plans architecture, ADRs, red-teams. Read-only. Does NOT write code.
 - **devops** (Tab) → Builds infrastructure. Main implementation agent.
-- Subagents are invoked via `@name`: `@terraform`, `@backend`, `@frontend`, `@data-engineer`, `@security`, `@cicd`
+- **orchestrator** (Tab) → Breaks down complex tasks, creates execution plans, delegates to subagents.
+- **meta** (Tab) → Manages agent ecosystem, builds new agents/skills/commands, audits configuration.
+- Subagents are invoked via `@name`: `@terraform`, `@ansible`, `@backend`, `@frontend`, `@data-engineer`, `@security`, `@cicd`, `@python-dev`
 - When a task crosses domain boundaries, the primary agent MUST delegate to the appropriate subagent.
 - Subagents report findings back to the primary agent for final decision.
 

@@ -75,7 +75,8 @@ When this happens:
 
 3. **Delegate, don't guess.** If the request crosses into another supported domain, invoke the appropriate
    subagent: `@python-dev` for Python scripting, `@ansible` for config management, `@backend` for API code,
-   `@frontend` for UI work, `@data-engineer` for data pipelines.
+   `@frontend` for UI work, `@data-engineer` for data pipelines, `@orchestrator` for planning,
+   `@meta` for ecosystem improvements.
 
 4. **When in doubt, ask.** If you can't determine whether the request is in-scope: "This seems like it might
    be outside my DevOps scope. Can you clarify — is this infrastructure automation or application logic?"
@@ -106,3 +107,5 @@ For specialized tasks, invoke subagents:
 - `@data-engineer` — for data pipeline infrastructure
 - `@ansible` — for configuration management, playbooks, system automation
 - `@python-dev` — for Python scripts, automation tools, CLI development
+- `@orchestrator` — for breaking down complex tasks into execution plans with parallel/chain delegation
+- `@meta` — for building new agents, skills, commands, and ecosystem improvements

@@ -3,6 +3,7 @@ description: Analyze current session and improve agents, skills, and commands ba
 agent: devops
 subtask: true
 ---
+
 ## Self-Improvement Protocol
 
 You are performing a self-improvement review of the current conversation. Your goal is to identify what went wrong, what was missing, and what should be improved in the OpenCode configuration files.
@@ -17,15 +18,26 @@ Review the ENTIRE current conversation from the beginning. Identify:
 4. **Wrong defaults** — Where did I use wrong naming, wrong tool, wrong approach?
 5. **Missing steps** — What did I skip that the user expected me to do automatically?
 
-### Step 2: Read Current Config
+### Step 2: Collect Stats
+
+Collect current token/cost stats for context:
+
+```bash
+opencode stats --days 1
+opencode stats --days 7
+```
+
+### Step 3: Read Current Config
 
 Read the relevant files to understand what's already there:
 - `~/.config/opencode/agents/` — all agent definitions
 - `~/.config/opencode/skills/` — all skill definitions
 - `~/.config/opencode/commands/` — all command definitions
 - `~/.config/opencode/AGENTS.md` — global instructions
+- `~/.config/opencode/opencode.json` — main config
+- `~/.config/opencode/tui.json` — TUI config
 
-### Step 3: Generate Improvements
+### Step 4: Generate Improvements
 
 For each finding from Step 1, determine the best fix:
 
@@ -35,8 +47,9 @@ For each finding from Step 1, determine the best fix:
 | Missing domain knowledge | Skill (`skills/*/SKILL.md`) |
 | Missing workflow/procedure | Command (`commands/*.md`) |
 | Universal rule violation | Global instructions (`AGENTS.md`) |
+| Runtime / UX issue | Config files (`opencode.json`, `tui.json`) |
 
-### Step 4: Apply Changes
+### Step 5: Apply Changes
 
 For each improvement:
 1. **Show the finding** — what went wrong in the conversation (quote the relevant exchange)
@@ -44,7 +57,11 @@ For each improvement:
 3. **Show the fix** — the exact change to make
 4. **Apply the change** — edit the file directly
 
-### Step 5: Summary Report
+If the changes are extensive or involve creating new agents/skills/commands, delegate to `@meta`:
+- `@meta` handles agent creation, skill development, and ecosystem changes
+- The self-improve command passes findings to `@meta` for execution
+
+### Step 6: Summary Report
 
 After applying all changes, produce a summary:
 
@@ -52,18 +69,22 @@ After applying all changes, produce a summary:
 ## Self-Improvement Report
 
 ### Session: [topic of conversation]
-### Date: [today]
+### Date: [date]
 
 ### Findings & Changes Applied:
 
-1. [AGENT/SKILL/COMMAND] [filename] — [what was changed and why]
+1. [AGENT/SKILL/COMMAND/CONFIG] [filename] — [what was changed and why]
 2. ...
 
-### Stats:
-- Agents modified: X
-- Skills modified/created: X
-- Commands modified/created: X
-- Global rules updated: X
+### Stats Before/After:
+- Input tokens: [before] → [after]
+- Output tokens: [before] → [after]
+- Cost: [before] → [after]
+
+### Agent Coverage:
+- Agents: [count]
+- Skills: [count]
+- Commands: [count]
 ```
 
 ## Config Quality Analysis (NEW)
@@ -82,8 +103,8 @@ Missing agents should be created.
 | `@backend` | agents/backend.md |
 | `@frontend` | agents/frontend.md |
 | `@data-engineer` | agents/data-engineer.md |
-| `@ansible` | agents/ansible.md? |
-| `@python-dev` | agents/python-dev.md? |
+| `@ansible` | agents/ansible.md |
+| `@python-dev` | agents/python-dev.md |
 
 ### Skill Gap Analysis
 Compare existing skills against the agent prompts. If an agent mentions a domain knowledge area
@@ -106,11 +127,17 @@ For every agent, check if there's a command that helps invoke that agent's core 
 | devops | docker-build, k8s-check | ✅ |
 | architect | infra-review | ✅ |
 | data-engineer | cost-estimate | ✅ |
+| meta | ecosystem audit | ❌ (self-improve covers this) |
 
 ### Configuration Consistency Check
 - Do `opencode.json` and `tui.json` reference the same instructions files?
 - Are all skill directories properly structured (SKILL.md + optional assets)?
 - Are agent frontmatter YAML `permission` blocks consistent with their role?
+
+### Session Health Check
+- Check if session titles are being generated (run `opencode session list | head -5`)
+- If sessions show only IDs, the `small_model` in config may need attention
+- Title generation is automatic — triggered by the first user message
 
 ## Rules
 - Do NOT remove existing instructions that are working correctly
