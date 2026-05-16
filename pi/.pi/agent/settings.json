@@ -1,0 +1,16 @@
+{
+  "defaultProvider": "openrouter",
+  "defaultModel": "deepseek/deepseek-v4-pro",
+  "theme": "dark",
+  "shellPath": "/usr/bin/fish",
+  "enableInstallTelemetry": false,
+  "compaction": {
+    "enabled": true,
+    "reserveTokens": 16384,
+    "keepRecentTokens": 20000
+  },
+  "skills": [
+    "~/.config/opencode/skills"
+  ],
+  "lastChangelogVersion": "0.74.0"
+}

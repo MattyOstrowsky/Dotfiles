@@ -1,3 +1,55 @@
+# OS
 .DS_Store
+Thumbs.db
+
+# Editors
 *.swp
+*.swo
 *~
+
+# Logs
+*.log
+*.jsonl
+
+# Secrets & credentials
+.env
+.envrc
+auth.json
+*.pem
+*.key
+**/secrets/
+
+# Session data
+sessions/
+
+# Build artifacts
+*.deb
+*.rpm
+*.AppImage
+*.tar.gz
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Rust
+target/
+
+# Go
+vendor/
+
+# Node
+node_modules/
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+crash.log
+
+# IDE
+.idea/
+.vscode/
+*.code-workspace
