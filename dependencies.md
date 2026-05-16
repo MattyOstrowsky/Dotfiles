@@ -34,16 +34,16 @@ NvChad bootstraps itself on first launch. Just stow and run `nvim`.
 ## Shell
 
 ```bash
-# fish (PPA for latest)
+# fish (PPA for latest) — nowoczesna powłoka z autocomplete
 sudo apt-add-repository -y ppa:fish-shell/release-3 && sudo apt update && sudo apt install -y fish
 
-# starship prompt
+# starship prompt — szybki prompt z kontekstem devopsowym (K8s, TF, Docker)
 curl -sS https://starship.rs/install.sh | sh -s -- -y
 
-# zoxide — smarter cd
+# zoxide — rozszerzenie cd, uczy się twoich nawyków i skacze do katalogów
 curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
 
-# atuin — shell history with sync
+# atuin — historia shell z synchronizacją między maszynami
 curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh
 
 # fisher plugins (run after stow fish)
@@ -54,6 +54,7 @@ fisher update
 ## Neovim
 
 ```bash
+# nvim (appimage) — edytor dla programistów, nakładka NvChad robi setup sama
 curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.appimage
 chmod +x nvim-linux-x86_64.appimage && sudo mv nvim-linux-x86_64.appimage /usr/local/bin/nvim
 ```
@@ -61,40 +62,41 @@ chmod +x nvim-linux-x86_64.appimage && sudo mv nvim-linux-x86_64.appimage /usr/l
 ## OpenCode
 
 ```bash
+# opencode — CLI agenta AI, który ogarnia infrastrukturę (ten z którym gadasz)
 curl -fsSL https://opencode.ai/install | bash
 ```
 
 ## Language Runtimes
 
 ```bash
-# Go
+# Go — język do narzędzi CLI, potrzebny do go install ...
 wget https://go.dev/dl/go1.22.2.linux-amd64.tar.gz
 sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf go1.22.2.linux-amd64.tar.gz && rm go1.22.2.linux-amd64.tar.gz
 
-# Rust (cargo)
+# Rust (cargo) — do kompilacji navi i innych narzędzi w Ruście
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 
-# Bun
+# Bun — szybki runtime JS/TS, alternatywa dla Node
 curl -fsSL https://bun.sh/install | bash
 
-# Python (pip packages)
+# Python — pip3, potrzebny do checkov, tldr
 pip3 install --user checkov tldr
 
-# Navi (interactive cheatsheet)
+# Navi — interaktywna ściąga z cheatami, wywołana przez Ctrl+G
 cargo install --locked navi
 ```
 
 ## Kubernetes
 
 ```bash
-# kubectl
+# kubectl — główny klient API K8s
 curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
 sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl && rm kubectl
 
-# helm
+# helm — menedżer paczek dla K8s (czartery)
 curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 
-# kubectx + kubens
+# kubectx + kubens — szybka zmiana contextu/namespace K8s
 sudo git clone https://github.com/ahmetb/kubectx /opt/kubectx
 sudo ln -s /opt/kubectx/kubectx /usr/local/bin/kubectx
 sudo ln -s /opt/kubectx/kubens /usr/local/bin/kubens
@@ -102,82 +104,81 @@ mkdir -p ~/.config/fish/completions
 ln -sf /opt/kubectx/completion/kubectx.fish ~/.config/fish/completions/
 ln -sf /opt/kubectx/completion/kubens.fish ~/.config/fish/completions/
 
-# k9s
+# k9s — terminalowy dashboard K8s, podgląd i zarządzanie klastrem
 curl -sSfL https://github.com/derailed/k9s/releases/latest/download/k9s_Linux_amd64.tar.gz | sudo tar xz -C /usr/local/bin k9s
 
-# stern
+# stern — logi z wielu podów jednocześnie, z filtrowaniem label
 go install github.com/stern/stern@latest
 
-# kustomize
+# kustomize — konfiguracja K8s bez templatów, nakładki na yamle
 curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash && sudo mv kustomize /usr/local/bin/
 
-# kubeconform
+# kubeconform — walidacja manifestów K8s zgodnie ze schematem API
 go install github.com/yannh/kubeconform/cmd/kubeconform@latest
 ```
 
 ## Infrastructure as Code
 
 ```bash
-# terraform
+# terraform — IaC, deklaratywne zarządzanie cloudem
 wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
 echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
 sudo apt update && sudo apt install -y terraform
 
-# terragrunt
+# terragrunt — nakładka na terraforma, DRY config i zarządzanie stanem
 TGVER=$(curl -s https://api.github.com/repos/gruntwork-io/terragrunt/releases/latest | jq -r .tag_name)
 sudo wget -qO /usr/local/bin/terragrunt "https://github.com/gruntwork-io/terragrunt/releases/download/${TGVER}/terragrunt_linux_amd64"
 sudo chmod +x /usr/local/bin/terragrunt
 
-# tfsec
+# tfsec — skaner bezpieczeństwa dla terraforma (HCL)
 go install github.com/aquasecurity/tfsec/cmd/tfsec@latest
 
-# infracost
+# infracost — koszty cloudowe w czasie rzeczywistym z planu terraforma
 curl -fsSL https://raw.githubusercontent.com/infracost/infracost/master/scripts/install.sh | sh
 ```
 
 ## TUI Tools
 
 ```bash
-# lazygit
+# lazygit — terminalowy interfejs do gita, ogarnia staging/commit/rebase bez wychodzenia
 go install github.com/jesseduffield/lazygit@latest
 
-# lazydocker
+# lazydocker — terminalowy interfejs do Dockera, podgląd kontenerów i logów
 go install github.com/jesseduffield/lazydocker@latest
 
-# lazysql
+# lazysql — terminalowy klient baz danych (Postgres, MySQL, SQLite)
 go install github.com/jorgerojas26/lazysql@latest
 
-# dive
+# dive — przeglądarka warstw obrazów Docker, które warstwy żrą miejsce
 DIVEVER=$(curl -s https://api.github.com/repos/wagoodman/dive/releases/latest | jq -r .tag_name)
 wget -qO /tmp/dive.deb "https://github.com/wagoodman/dive/releases/download/${DIVEVER}/dive_${DIVEVER#v}_linux_amd64.deb"
 sudo dpkg -i /tmp/dive.deb && rm /tmp/dive.deb
 
-# ctop
+# ctop — monitoring kontenerów w terminalu, CPU/RAM na żywo
 sudo wget -qO /usr/local/bin/ctop https://github.com/bcicen/ctop/releases/latest/download/ctop-linux-amd64
 sudo chmod +x /usr/local/bin/ctop
 
-# glow
+# glow — podgląd plików .md w terminalu, ładnie renderowane
 go install github.com/charmbracelet/glow@latest
 ```
 
 ## Security
 
 ```bash
-# trivy
+# trivy — skaner podatności (obrazy, repo, fs, K8s)
 sudo apt-get install -y wget apt-transport-https gnupg
 wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | gpg --dearmor | sudo tee /usr/share/keyrings/trivy.gpg > /dev/null
 echo "deb [signed-by=/usr/share/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb generic main" | sudo tee -a /etc/apt/sources.list.d/trivy.list
 sudo apt-get update && sudo apt-get install -y trivy
 
-# grype
+# grype — skaner podatności dla obrazów kontenerów (Aqua Security)
 curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sudo sh -s -- -b /usr/local/bin
 ```
 
 ## Pi CLI
 
 ```bash
-# Download latest pi binary and place in PATH
-# https://github.com/example/pi-releases (adjust URL to actual release)
+# pi — CLI agenta AI, alternatywny do opencode, z subagentami i extensionami
 ```
 
 ## Post-Install
