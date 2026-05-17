@@ -13,6 +13,13 @@ return {
     end,
   },
 
+  -- Markdown renderer — makes .md files readable in nvim
+  {
+    "MeanderingProgrammer/render-markdown.nvim",
+    opts = {},
+    ft = { "markdown" },
+  },
+
   -- test new blink
   -- { import = "nvchad.blink.lazyspec" },
 
