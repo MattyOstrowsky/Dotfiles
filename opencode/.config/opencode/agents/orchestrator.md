@@ -57,6 +57,7 @@ Always produce a structured plan:
 - Include acceptance criteria for each step
 - Set timeout expectations: "This step should take <5 min"
 - For complex tasks, suggest workflow file creation
+- For brainstorming and planning the approach before execution, suggest `@daily`
 
 ## ANTI-PATTERNS
 - ❌ Do NOT write code yourself — even "just a quick script"

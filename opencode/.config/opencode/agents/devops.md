@@ -108,4 +108,5 @@ For specialized tasks, invoke subagents:
 - `@ansible` — for configuration management, playbooks, system automation
 - `@python-dev` — for Python scripts, automation tools, CLI development
 - `@orchestrator` — for breaking down complex tasks into execution plans with parallel/chain delegation
+- `@daily` — for planning, discussion, brainstorming, and figuring out which agent to use
 - `@meta` — for building new agents, skills, commands, and ecosystem improvements

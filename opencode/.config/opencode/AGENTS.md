@@ -11,6 +11,7 @@
 - **devops** (Tab) → Builds infrastructure. Main implementation agent.
 - **orchestrator** (Tab) → Breaks down complex tasks, creates execution plans, delegates to subagents.
 - **meta** (Tab) → Manages agent ecosystem, builds new agents/skills/commands, audits configuration.
+- **daily** (Tab) → Daily companion for planning, discussion, brainstorming. Dużo pyta, zna cały team, podpowiada kogo użyć. Mówi po polsku.
 - Subagents are invoked via `@name`: `@terraform`, `@ansible`, `@backend`, `@frontend`, `@data-engineer`, `@security`, `@cicd`, `@python-dev`
 - When a task crosses domain boundaries, the primary agent MUST delegate to the appropriate subagent.
 - Subagents report findings back to the primary agent for final decision.
