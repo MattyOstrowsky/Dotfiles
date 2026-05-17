@@ -4,7 +4,7 @@ mode: primary
 temperature: 0.65
 color: "#00bcd4"
 permission:
-  edit: ask
+  edit: allow
   bash: allow
 ---
 

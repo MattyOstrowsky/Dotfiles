@@ -22,6 +22,9 @@ auth.json
 # Session data
 sessions/
 
+# Pi (removed from repo — secrets)
+pi/
+
 # Build artifacts
 *.deb
 *.rpm

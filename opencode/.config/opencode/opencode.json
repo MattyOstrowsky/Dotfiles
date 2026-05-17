@@ -5,8 +5,8 @@
   "autoupdate": true,
   "share": "manual",
   "permission": {
-    "edit": "ask",
-    "bash": "ask"
+    "edit": "allow",
+    "bash": "allow"
   },
   "instructions": [
     "~/.config/opencode/AGENTS.md"

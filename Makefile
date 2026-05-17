@@ -36,7 +36,5 @@ dry-run:
 	done
 
 install-deps:
-	@echo "=== System dependencies ==="
-	@echo "Run: sudo apt install -y stow git curl wget make fish fzf bat ripgrep fd-find tree htop direnv btop python3 python3-pip python3-venv"
-	@echo ""
-	@echo "See dependencies.md for per-package details and binary installs."
+	@echo "=== Interactive Dependency Installer ==="
+	@./install-deps.sh
