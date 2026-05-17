@@ -1,0 +1,73 @@
+% trivy
+
+# Scan a container image for vulnerabilities
+trivy image <image>
+
+# Scan with severity filter
+trivy image --severity HIGH,CRITICAL <image>
+
+# Scan and output JSON
+trivy image --format json <image> > scan.json
+
+# Scan and output SARIF (for CI)
+trivy image --format sarif <image> > scan.sarif
+
+# Scan with ignore unfixed (show only vulnerabilities with fix)
+trivy image --ignore-unfixed <image>
+
+# Scan a filesystem
+trivy fs <directory>
+trivy fs --severity HIGH,CRITICAL <directory>
+
+# Scan a git repository
+trivy repo https://github.com/org/repo
+
+# Scan a Kubernetes cluster
+trivy k8s --report summary cluster
+trivy k8s --report all cluster
+
+# Scan a Kubernetes namespace
+trivy k8s --namespace <namespace>
+
+# Scan IaC (Terraform, CloudFormation)
+trivy config <directory>
+trivy config --severity HIGH,CRITICAL .
+
+# Scan a specific Terraform file
+trivy config main.tf
+
+# Scan a helm chart
+trivy config ./helm-chart/
+
+# Scan a container image for secrets
+trivy image --scanners secret <image>
+
+# Scan with multiple scanners
+trivy image --scanners vuln,secret,misconfig <image>
+
+# Scan with SBOM output
+trivy image --format cyclonedx <image> > sbom.cdx
+trivy image --format spdx <image> > sbom.spdx
+
+# Generate SBOM from filesystem
+trivy fs --format cyclonedx . > sbom.cdx
+
+# List all available policies
+trivy policy list
+
+# Update vulnerability database
+trivy image --update-cache <image>
+
+# Clear Trivy cache
+trivy image --clear-cache
+
+# Scan with custom ignore file
+trivy image --ignorefile .trivyignore <image>
+
+# Scan from docker archive
+docker save <image> -o /tmp/image.tar
+trivy image --input /tmp/image.tar
+
+$ image: docker images --format '{{.Repository}}:{{.Tag}}' | sort | head -20
+$ directory: fd --type d | head -20
+$ severity: echo -e "CRITICAL\nHIGH\nMEDIUM\nLOW"

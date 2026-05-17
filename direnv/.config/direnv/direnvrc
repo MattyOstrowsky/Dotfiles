@@ -1,0 +1,59 @@
+# direnv global config
+# Path: ~/.config/direnv/direnvrc
+# This file is sourced by every .envrc
+# Docs: https://direnv.net/
+
+# ─── Layout helpers ───────────────────────────────────────────────────────────
+
+# Python venv that auto-activates
+layout_python() {
+  local python=${1:-python3}
+  [[ -f .venv/bin/python ]] || $python -m venv .venv
+  export VIRTUAL_ENV="$(expand_path .venv)"
+  export PATH="$VIRTUAL_ENV/bin:$PATH"
+}
+
+# Go project — adds local bin to PATH
+layout_go() {
+  export GOPATH="$(expand_path .gopath)"
+  export PATH="$GOPATH/bin:$PATH"
+}
+
+# Node project — uses local node_modules/.bin
+layout_node() {
+  export PATH="$(expand_path node_modules/.bin):$PATH"
+  if has direnv_layout_dir; then
+    local dir="$(direnv_layout_dir)/node_modules"
+    if [[ -d "$dir" ]]; then
+      export PATH="$dir/.bin:$PATH"
+    fi
+  fi
+}
+
+# ─── Useful helper functions ──────────────────────────────────────────────────
+
+# Check if a command exists
+has() {
+  command -v "$1" &>/dev/null
+}
+
+# Load .env file (if exists)
+dotenv() {
+  local file="${1:-.env}"
+  if [[ -f "$file" ]]; then
+    set -a
+    source "$file"
+    set +a
+  fi
+}
+
+# ─── Default bash compatibility ──────────────────────────────────────────────
+
+# If using fish as main shell, .envrc can still use bash syntax
+# through `source_env` or `dotenv` for simple env vars.
+
+# ─── Aliases for .envrc (example) ────────────────────────────────────────────
+# Use in any project:
+#   dotenv .env
+#   layout python
+#   export PATH_add ./bin

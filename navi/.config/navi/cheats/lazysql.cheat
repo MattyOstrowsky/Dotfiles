@@ -1,0 +1,41 @@
+% lazysql
+
+# Open lazySQL (connection selection screen)
+lazysql
+
+# Open with a specific connection string
+lazysql "mysql://user:pass@localhost:3306/dbname"
+lazysql "postgres://user:pass@localhost:5432/dbname"
+lazysql "sqlite:///path/to/db.sqlite"
+lazysql "mssql://user:pass@localhost:1433/dbname"
+
+# Open with only some connection parts
+lazysql "mysql://localhost"
+
+# Keybindings (inside lazySQL)
+#   ↑ ↓ / k j         — move selection
+#   enter              — run query / select
+#   tab                — switch panels (query editor / results)
+#   ctrl+r             — run query
+#   ctrl+s             — save query to file
+#   ctrl+o             — load query from file
+#   ctrl+l             — clear query editor
+#   ctrl+d             — delete selected row
+#   ctrl+e             — export results
+#   ctrl+f             — find in results
+#   ctrl+c             — copy selection
+#   esc                — go back / clear
+#   ?                  — help
+#   q                  — quit
+
+# Connection URL formats
+#   MySQL:      mysql://user:pass@host:port/db
+#   PostgreSQL: postgres://user:pass@host:port/db
+#   SQLite:     sqlite:///path/to/file.db
+#   SQL Server: mssql://user:pass@host:port/db
+
+# Note: requires a running database to connect to
+#   For SQLite — just point to a file on disk
+#   For MySQL/Postgres — need credentials and running server
+
+$ url: echo ""

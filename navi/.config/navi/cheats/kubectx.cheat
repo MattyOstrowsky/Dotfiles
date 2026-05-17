@@ -1,0 +1,49 @@
+% kubectx, kubens, ctx, ns
+
+# List all contexts
+kubectx
+kubectl config get-contexts
+
+# Switch to a context
+kubectx <context-name>
+
+# Switch back to previous context
+kubectx -
+
+# Rename a context
+kubectx <new-name>=<old-name>
+
+# Delete a context
+kubectx -d <context-name>
+
+# Current context
+kubectx -c
+
+# List namespaces (current context)
+kubens
+
+# Switch namespace
+kubens <namespace>
+
+# Switch back to previous namespace
+kubens -
+
+# Current namespace
+kubens -c
+
+# Delete a namespace entry from kubens
+kubens -d <namespace>
+
+# Fish completions (already symlinked by install-deps.sh)
+#   kubectx <tab>         — complete contexts
+#   kubens <tab>          — complete namespaces
+
+# Combining both
+kubectx <context> && kubens <namespace>
+
+# One-liner: run command in another context
+kubectl --context <context> get pods -n <namespace>
+kubectl --context <context> --namespace <namespace> get all
+
+$ context: kubectl config get-contexts -o name | sort
+$ namespace: kubectl get ns --no-headers 2>/dev/null | awk '{print $1}'

@@ -17,7 +17,11 @@ set -euo pipefail
 
 # ─── Config ──────────────────────────────────────────────────────────────────
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+DOTFILES_DIR="$SCRIPT_DIR"
 SELF="$0"
+
+# Ensure ~/go/bin and ~/.local/bin are in PATH for exists() checks
+export PATH="$HOME/go/bin:$HOME/.local/bin:$PATH"
 
 # ─── Colors ──────────────────────────────────────────────────────────────────
 RED='\033[0;31m'
@@ -256,7 +260,7 @@ install_k9s() {
 install_stern() {
   if exists stern; then return 0; fi
   if ! exists go; then echo "  ⚠ go required"; return 1; fi
-  go install github.com/stern/stern@latest
+  GOBIN="$HOME/.local/bin" go install github.com/stern/stern@latest
 }
 
 install_kustomize() {
@@ -268,7 +272,7 @@ install_kustomize() {
 install_kubeconform() {
   if exists kubeconform; then return 0; fi
   if ! exists go; then echo "  ⚠ go required"; return 1; fi
-  go install github.com/yannh/kubeconform/cmd/kubeconform@latest
+  GOBIN="$HOME/.local/bin" go install github.com/yannh/kubeconform/cmd/kubeconform@latest
 }
 
 # ── IaC ────────────────────────────────────────────────────────────────────
@@ -306,39 +310,38 @@ install_infracost() {
 install_lazygit() {
   if exists lazygit; then return 0; fi
   if ! exists go; then echo "  ⚠ go required"; return 1; fi
-  go install github.com/jesseduffield/lazygit@latest
+  GOBIN="$HOME/.local/bin" go install github.com/jesseduffield/lazygit@latest
 }
 
 install_lazydocker() {
   if exists lazydocker; then return 0; fi
   if ! exists go; then echo "  ⚠ go required"; return 1; fi
-  go install github.com/jesseduffield/lazydocker@latest
+  # Pin v0.23.3 — newer versions have a Go 1.25 compatibility issue
+  GOBIN="$HOME/.local/bin" go install github.com/jesseduffield/lazydocker@v0.23.3
 }
 
 install_lazysql() {
   if exists lazysql; then return 0; fi
   if ! exists go; then echo "  ⚠ go required"; return 1; fi
-  go install github.com/jorgerojas26/lazysql@latest
+  GOBIN="$HOME/.local/bin" go install github.com/jorgerojas26/lazysql@latest
 }
 
 install_dive() {
   if exists dive; then return 0; fi
-  local ver
-  ver=$(curl -s https://api.github.com/repos/wagoodman/dive/releases/latest | grep '"tag_name"' | cut -d'"' -f4)
-  wget -qO /tmp/dive.deb "https://github.com/wagoodman/dive/releases/download/$ver/dive_${ver#v}_linux_amd64.deb"
-  sudo dpkg -i /tmp/dive.deb && rm /tmp/dive.deb
+  if ! exists go; then echo "  ⚠ go required"; return 1; fi
+  GOBIN="$HOME/.local/bin" go install github.com/wagoodman/dive@latest
 }
 
 install_ctop() {
   if exists ctop; then return 0; fi
-  sudo wget -qO /usr/local/bin/ctop https://github.com/bcicen/ctop/releases/latest/download/ctop-linux-amd64
-  sudo chmod +x /usr/local/bin/ctop
+  wget -qO "$HOME/.local/bin/ctop" https://github.com/bcicen/ctop/releases/latest/download/ctop-linux-amd64
+  chmod +x "$HOME/.local/bin/ctop"
 }
 
 install_glow() {
   if exists glow; then return 0; fi
   if ! exists go; then echo "  ⚠ go required"; return 1; fi
-  go install github.com/charmbracelet/glow@latest
+  GOBIN="$HOME/.local/bin" go install github.com/charmbracelet/glow@latest
 }
 
 # ── Security ───────────────────────────────────────────────────────────────
@@ -364,6 +367,50 @@ install_checkov() {
 install_tldr() {
   if exists tldr; then return 0; fi
   npm install -g tldr 2>&1 | tail -1
+}
+
+# ─── Auto-stow: symlink config from Dotfiles after install ─────────────────────
+# Maps tool_name → stow package directory name
+STOW_PACKAGES=(
+  "lazygit:lazygit"
+  "lazydocker:lazydocker"
+  "k9s:k9s"
+  "btop:btop"
+  "bat:batcat"
+  "batcat:bat"
+  "glow:glow"
+  "atuin:atuin"
+  "direnv:direnv"
+  "dive:dive"
+  "navi:navi"
+  "starship:starship"
+  "fish:fish"
+  "nvim:neovim"
+)
+
+auto_stow() {
+  local binary="$1"
+  local tool_name="$2"
+
+  # Map tool to stow package name
+  local pkg=""
+  for mapping in "${STOW_PACKAGES[@]}"; do
+    local key="${mapping%%:*}"
+    local val="${mapping#*:}"
+    if [[ "$key" == "$binary" ]] || [[ "$key" == "$tool_name" ]]; then
+      pkg="$val"
+      break
+    fi
+  done
+
+  # If no mapping, try using the tool name directly
+  [[ -z "$pkg" ]] && pkg="$tool_name"
+
+  local pkg_dir="$DOTFILES_DIR/$pkg"
+  if [[ -d "$pkg_dir" ]]; then
+    echo -e "  ${BLUE}→${NC} stowing config: ${CYAN}$pkg${NC}"
+    stow --target="$HOME" "$pkg" 2>/dev/null && echo -e "    ${GREEN}✓${NC} config linked" || echo -e "    ${YELLOW}⚠${NC} stow failed (maybe already linked)"
+  fi
 }
 
 # ─── Register all tools ──────────────────────────────────────────────────────
@@ -600,6 +647,7 @@ install_selected() {
       if $func; then
         if exists "$binary"; then
           echo -e "  ${GREEN}✓${NC} $name installed"
+          auto_stow "$binary" "$name"
           ok_count=$((ok_count + 1))
         else
           echo -e "  ${YELLOW}⚠${NC} $name — installed but not in PATH"

@@ -1,0 +1,88 @@
+% fish
+
+# Change directory and list
+cd <dir>; and ll
+
+# Search history
+history search <query>
+
+# Search and execute from history
+history search <query> --reverse-include-time
+
+# List all functions
+functions
+
+# Show function source
+functions <function-name>
+
+# Edit a function
+funced <function-name>
+
+# Save a function (persist across sessions)
+funcsave <function-name>
+
+# Abbreviations (expanded in place on enter)
+abbr --add gst "git status"
+abbr --add gp "git push"
+abbr --add gl "git log --oneline"
+abbr --add gc "git commit -m"
+abbr --add nv "nvim"
+
+# List all abbreviations
+abbr --list
+abbr -l
+
+# Remove an abbreviation
+abbr --erase gst
+
+# Universal variables (persist across sessions)
+set -U fish_greeting ""
+set -U EDITOR nvim
+set -U fish_user_paths ~/.local/bin $fish_user_paths
+
+# Prompt the user for input
+read -l -P "Continue? [y/N]: " confirm
+
+# File completion
+#   <tab> once            — list completions
+#   <tab> twice           — show preview
+#   alt+↑ / alt+↓         — navigate completions
+
+# Common built-in functions
+#   prompt_hostname       — short hostname
+#   prompt_pwd            — abbreviated pwd (~/D/Dotfiles)
+#   ls                    — colorized (built-in)
+#   ll                    — ls -la (built-in)
+#   fish_config           — web-based configuration
+#   fish_update_completions — update man-page completions
+
+# Plugin manager (fisher)
+fisher install jorgebucaran/fisher
+fisher list
+fisher update
+fisher remove <plugin>
+
+# Common fish plugins
+#   jorgebucaran/nvm.fish       — nvm integration
+#   edc/bass                    — bash source compatibility
+#   PatrickF1/fzf.fish          — fzf keybindings
+#   gazorby/fish-abbreviation-tips  — abbreviation hints
+
+# Config file
+#   ~/.config/fish/config.fish
+#   ~/.config/fish/fish_plugins
+
+# Reload config
+source ~/.config/fish/config.fish
+
+# Keybindings
+#   ctrl+f / ctrl+b       — forward/backward char
+#   alt+f / alt+b         — forward/backward word
+#   ctrl+e / ctrl+a       — end/beginning of line
+#   ctrl+w                — delete word backward
+#   ctrl+u                — delete entire line
+#   ctrl+k                — delete from cursor to end
+#   ctrl+n / ctrl+p       — next/previous history item
+#   ctrl+r                — search history (if atuin/fzf configured)
+#   alt+enter             — accept current suggestion
+#   ctrl+d                — delete char under cursor / exit shell

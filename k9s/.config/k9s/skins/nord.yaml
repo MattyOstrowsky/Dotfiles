@@ -1,0 +1,34 @@
+# k9s Nord skin
+# Based on: https://www.nordtheme.com/
+
+foreground:
+  default: "#d8dee9"
+  title: "#eceff4"
+  info: "#81a1c1"
+  status: "#a3be8c"
+  success: "#a3be8c"
+  warn: "#ebcb8b"
+  error: "#bf616a"
+  completed: "#a3be8c"
+  pending: "#ebcb8b"
+  highlight: "#eceff4"
+  k9s: "#88c0d0"
+
+background:
+  default: "#2e3440"
+  title: "#2e3440"
+  info: "#2e3440"
+  status: "#2e3440"
+  success: "#2e3440"
+  warn: "#2e3440"
+  error: "#2e3440"
+  completed: "#2e3440"
+  pending: "#2e3440"
+  highlight: "#3b4252"
+  k9s: "#2e3440"
+
+table:
+  header: "#88c0d0"
+  body: "#d8dee9"
+  current: "#a3be8c"
+  border: "#4c566a"

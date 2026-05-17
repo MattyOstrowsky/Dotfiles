@@ -15,6 +15,9 @@ set -gx PATH $GOPATH/bin /usr/local/go/bin $PATH
 # Cargo (Rust tools: navi, etc.)
 set -gx PATH $HOME/.cargo/bin $PATH
 
+# fnm (Fast Node Manager)
+set -gx PATH $HOME/.local/share/fnm $PATH
+
 # Bun
 set -gx BUN_INSTALL "$HOME/.bun"
 set -gx PATH $BUN_INSTALL/bin $PATH
@@ -69,6 +72,11 @@ if status is-interactive
     # navi (interactive cheatsheet — Ctrl+G)
     if type -q navi
         navi widget fish | source
+    end
+
+    # fnm (Node.js version manager)
+    if type -q fnm
+        fnm env --use-on-cd | source
     end
 
 end

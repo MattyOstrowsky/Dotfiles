@@ -1,0 +1,66 @@
+% kustomize
+
+# Build a kustomization (render final YAML)
+kustomize build <directory>
+
+# Build from current directory
+kustomize build .
+
+# Build with custom output
+kustomize build . > output.yaml
+
+# Apply kustomization
+kustomize build . | kubectl apply -f -
+
+# Edit: set image
+kustomize edit set image nginx=nginx:1.25
+
+# Edit: set image with registry
+kustomize edit set image myapp=gcr.io/project/myapp:v1.2
+
+# Edit: set namespace
+kustomize edit set namespace production
+
+# Edit: set name prefix
+kustomize edit set nameprefix prod-
+
+# Edit: set name suffix
+kustomize edit set namesuffix -v2
+
+# Edit: add a resource
+kustomize edit add resource deployment.yaml
+kustomize edit add resource service.yaml
+
+# Edit: add a patch
+kustomize edit add patch --path patch.yaml --kind Deployment
+
+# Edit: remove resource
+kustomize edit remove resource deployment.yaml
+
+# Edit: add label to all resources
+kustomize edit add label app:myapp env:prod
+
+# Edit: add annotation to all resources
+kustomize edit add annotation managed-by:kustomize
+
+# Edit: add config map generator
+kustomize edit add configmap my-config --from-literal=key=value
+kustomize edit add configmap my-config --from-file=.env
+
+# Edit: add secret generator
+kustomize edit add secret my-secret --from-literal=password=abc123
+
+# Common kustomization.yaml structure
+#   apiVersion: kustomize.config.k8s.io/v1beta1
+#   kind: Kustomization
+#   resources:
+#     - ../base
+#   patches:
+#     - path: prod-patch.yaml
+#   images:
+#     - name: myapp
+#       newTag: v1.2
+#   namespace: production
+#   namePrefix: prod-
+
+$ directory: fd -g kustomization.yaml -x dirname {} | sort | head -10

@@ -1,0 +1,77 @@
+% ripgrep, rg
+
+# Basic search in current dir
+rg <pattern>
+
+# Search in specific directory
+rg <pattern> <directory>
+
+# Case-insensitive search
+rg -i <pattern>
+
+# Exact match (literal string, not regex)
+rg -F <literal>
+
+# Invert match (lines NOT containing pattern)
+rg -v <pattern>
+
+# Show line numbers
+rg -n <pattern>
+
+# Show only matching text (not whole line)
+rg -o <pattern>
+
+# Count matches per file
+rg -c <pattern>
+
+# Show context lines
+rg -C 3 <pattern>             # 3 lines before and after
+rg -B 3 <pattern>             # 3 lines before
+rg -A 3 <pattern>             # 3 lines after
+
+# Search by file type
+rg --type rust <pattern>      # only .rs files
+rg --type py <pattern>        # only .py files
+rg --type md <pattern>        # only .md files
+rg -tgo <pattern>             # short: only .go files
+
+# Search everything except a type
+rg --type-not rust <pattern>
+
+# Search with glob
+rg <pattern> --glob '*.go'
+rg <pattern> --glob '!vendor/*'
+rg <pattern> --glob '!*.min.*'
+
+# Follow symlinks
+rg -L <pattern>
+
+# No ignore files (search .gitignore'd files too)
+rg --no-ignore <pattern>
+
+# Search hidden files
+rg --hidden <pattern>
+rg -u <pattern>               # short: skip ignore files
+rg -uu <pattern>              # also search ignored files
+
+# Show files with matches (not lines)
+rg -l <pattern>
+
+# Show files WITHOUT matches
+rg -l --files-without-match <pattern>
+
+# Replace in place (requires ripgrep >= 13)
+rg --replace 'new' 'old'      # preview only
+
+# Use with other tools (pipe)
+rg <pattern> | less            # paginate results
+rg <pattern> -l | xargs sed -i 's/foo/bar/g'
+
+# Search for multiple patterns (AND)
+rg --smart-case -e <pattern1> -e <pattern2>
+
+# Search with regex
+rg 'foo\d{3}bar'              # regex pattern
+rg '^func\s+\w+'              # function definitions
+
+$ pattern: echo ""

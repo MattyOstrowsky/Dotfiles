@@ -1,0 +1,60 @@
+% kubeconform
+
+# Validate all YAML files in a directory
+kubeconform <directory>
+
+# Validate from stdin
+cat deployment.yaml | kubeconform
+kustomize build . | kubeconform
+
+# Validate from a URL
+kubeconform https://raw.githubusercontent.com/.../deployment.yaml
+
+# Skip specific schemas (for custom CRDs)
+kubeconform -skip <kind>
+kubeconform -skip CustomResourceDefinition
+
+# Ignore missing schemas
+kubeconform -ignore-missing-schemas <directory>
+
+# Use strict mode (validate all fields)
+kubeconform -strict <file>
+
+# Output format
+kubeconform -output json <directory>       # JSON output
+kubeconform -output text <directory>       # text (default)
+kubeconform -output tap <directory>        # TAP format
+
+# Kubernetes version
+kubeconform -kubernetes-version 1.28 <directory>
+kubeconform -kubernetes-version latest <directory>    # default
+
+# Summary mode (show only counts)
+kubeconform -summary <directory>
+
+# Verbose (show all files, even valid ones)
+kubeconform -verbose <directory>
+
+# Use with custom schema location
+kubeconform -schema-location default <directory>
+kubeconform -schema-location 'https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v{version}-standalone-strict/{resource}.json' <directory>
+
+# Use with kustomize
+kustomize build . | kubeconform -kubernetes-version 1.28
+
+# Use with helm
+helm template <release> <chart> | kubeconform
+
+# Use with find/xargs for validation of multiple files
+find . -name '*.yaml' -exec kubeconform {} +
+fd -e yaml -e yml -x kubeconform {}
+
+# Reject non-existent resources
+kubeconform -reject <kind>
+kubeconform -reject Ingress             # reject deprecated Ingress if you use IngressV1
+
+# Cache schema downloads
+#   kubeconform caches schemas in ~/.kubeconform/cache
+#   First run downloads schemas; subsequent runs use cache
+
+$ directory: fd --type d | head -10

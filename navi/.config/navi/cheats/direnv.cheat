@@ -1,0 +1,69 @@
+% direnv
+
+# Allow the current .envrc
+direnv allow
+direnv allow <directory>
+
+# Revoke authorization for .envrc
+direnv deny
+direnv deny <directory>
+
+# Edit .envrc in $EDITOR
+direnv edit
+direnv edit <directory>
+
+# Reload environment
+direnv reload
+
+# Toggle between allow/deny
+direnv toggle
+
+# Show current environment diff (what direnv changes)
+direnv diff
+
+# Show environment status
+direnv status
+
+# Execute command with dir env loaded (without cd)
+direnv exec <directory> <command>
+
+# Prune stale allowed directories from cache
+direnv prune
+
+# Directly output environment (for debugging)
+direnv export fish
+
+# Standard .envrc template
+#   export PROJECT_ROOT=$(pwd)
+#   export PATH_add bin
+#   layout python            # creates venv with python
+#   layout node              # adds node_modules/.bin to PATH
+#   use flake                # nix flake integration
+#   source_env .env.local    # load another env file
+
+# Common .envrc patterns
+#   # Go project
+#   export GOPATH=$(pwd)/.gopath
+#   export PATH_add .gopath/bin
+#
+#   # Node project
+#   layout node
+#   if has nvm; then
+#     source ~/.nvm/nvm.sh
+#     nvm use
+#   fi
+#
+#   # Python project
+#   layout python3
+#   export POETRY_VIRTUALENVS_IN_PROJECT=true
+#
+#   # General secrets
+#   dotenv .env              # load .env file if it exists
+#
+#   # K8s context
+#   export KUBECONFIG=$(pwd)/kubeconfig.yaml.enc
+
+# Watch files for auto-reload
+#   (add to .envrc)
+#   watch_file .env
+#   watch_file terraform.tfvars

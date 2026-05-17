@@ -1,0 +1,57 @@
+# k9s hotkeys
+# Shift+<key> to jump to a resource view
+
+hotKeys:
+  # Pods
+  shift-0:
+    shortCut: Shift-0
+    description: Pods
+    command: /po
+
+  # Deployments
+  shift-1:
+    shortCut: Shift-1
+    description: Deployments
+    command: /dep
+
+  # Services
+  shift-2:
+    shortCut: Shift-2
+    description: Services
+    command: /svc
+
+  # Namespaces
+  shift-3:
+    shortCut: Shift-3
+    description: Namespaces
+    command: /ns
+
+  # Helm releases
+  shift-4:
+    shortCut: Shift-4
+    description: Helm
+    command: /hr
+
+  # Nodes
+  shift-5:
+    shortCut: Shift-5
+    description: Nodes
+    command: /no
+
+  # ConfigMaps
+  shift-6:
+    shortCut: Shift-6
+    description: ConfigMaps
+    command: /cm
+
+  # Secrets
+  shift-7:
+    shortCut: Shift-7
+    description: Secrets
+    command: /sec
+
+  # Events
+  shift-8:
+    shortCut: Shift-8
+    description: Events
+    command: /events

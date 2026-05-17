@@ -1,0 +1,68 @@
+% bat, batcat
+
+# View a file with syntax highlighting
+bat <file>
+batcat <file>                # Debian/Ubuntu package name
+
+# Read from stdin
+cat <file> | bat
+echo "hello world" | bat -l json
+
+# Show line numbers
+bat -n <file>
+
+# Show specific lines
+bat --line-range 10:30 <file>   # lines 10-30
+bat -r 5:15 <file>
+
+# Show only specific lines from specific file
+bat -H 5:15 <file>             # highlight lines 5-15
+
+# Language explicitly
+bat -l yaml <file>
+bat -l json <file>
+bat -l python <file>
+bat -l dockerfile <file>
+
+# Show non-printable characters
+bat -A <file>
+
+# Show tab width
+bat --tabs 2 <file>
+
+# Diff mode (like git diff)
+bat --diff <file>
+
+# Theme
+bat --list-themes              # list all available themes
+bat --theme=Dracula <file>     # use specific theme
+bat --theme=ansi <file>        # no color, just ansi
+
+# Paging
+bat --paging=always <file>     # always use pager
+bat --paging=never <file>      # never page, just output
+
+# Style customization
+bat --style=plain <file>       # no line numbers, no header
+bat --style=numbers <file>     # just line numbers
+bat --style=full <file>        # everything (default)
+
+# Wrap vs chop
+bat --wrap=never <file>        # no wrapping (horizontal scroll)
+bat --wrap=character <file>    # character wrap
+
+# Use with ripgrep
+rg <pattern> | bat -l log
+rg -l <pattern> | xargs bat
+
+# Use with fzf as a previewer
+fd --type f | fzf --preview 'bat --color=always {}'
+
+# Cache management
+bat cache --build              # rebuild highlighting cache
+bat cache --clear              # clear cache
+
+# Config location
+#   ~/.config/bat/config
+
+$ file: fd --type f | head -20

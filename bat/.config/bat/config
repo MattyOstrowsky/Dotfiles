@@ -1,0 +1,30 @@
+# bat config
+# Path: ~/.config/bat/config
+# See `bat --help` for all options
+
+# Theme (see `bat --list-themes`)
+--theme="Nord"
+
+# Show line numbers
+--number
+
+# Paging (auto/never/always)
+--paging="auto"
+
+# Style: plain (no header/numbers), numbers, full, changes, grid, header
+--style="auto"
+
+# Wrap lines (never/character)
+--wrap="never"
+
+# Tabs width
+--tabs="4"
+
+# Use git modifications
+--diff
+
+# Map language → extension (in case of wrong detection)
+# --map-syntax "Jenkinsfile:groovy"
+
+# Color when piping
+# --color=always

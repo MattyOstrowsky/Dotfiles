@@ -1,0 +1,62 @@
+# lazygit config
+# Docs: https://github.com/jesseduffield/lazygit/blob/master/docs/Config.md
+
+gui:
+  theme:
+    lightTheme: false
+    activeBorderColor:
+      - cyan
+      - bold
+    inactiveBorderColor:
+      - white
+    optionsTextColor:
+      - blue
+    selectedLineBgColor:
+      - default
+    selectedRangeBgColor:
+      - blue
+    cherryPickedCommitBgColor:
+      - blue
+      - bold
+    cherryPickedCommitFgColor:
+      - cyan
+    unstagedChangesColor:
+      - red
+    defaultFgColor:
+      - default
+  # Show file icons
+  showFileIcons: true
+  # Show branch graphics in log
+  showBranchGraphInCommitGraph: true
+git:
+  pagers:
+    - # External diff / pager
+      colorArg: always
+      # Use delta if available, otherwise use default
+      # pager: delta
+  commit:
+    # Automatically stage all unstaged tracked files on commit
+    autoStage: true
+    # Override git commands
+    # customCommands:
+    #   - key: '<ctrl-p>'
+    #     command: 'git push'
+    #     context: 'global'
+    #     description: 'Push to origin'
+os:
+  # Default editor for commit messages, rebase, etc.
+  editPreset: 'nvim'
+  # edit: 'nvim -- {{filename}}'
+  # open: 'xdg-open {{filename}}'
+  # openLink: 'xdg-open {{link}}'
+update:
+  # Auto-upcheck
+  method: never
+
+# Custom keybindings overrides
+# keybinding:
+#   universal:
+#     quit: 'q'
+#     quitAlt1: '<c-q>'
+#     return: '<esc>'
+#     confirm: '<enter>'

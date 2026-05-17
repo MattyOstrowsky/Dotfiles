@@ -1,0 +1,54 @@
+% tldr
+
+# Show command examples
+tldr <command>
+tldr tar
+tldr docker
+tldr kubectl
+
+# Search for a command
+tldr --search "compress files"
+tldr --search "find text"
+
+# Update local cache
+tldr --update
+
+# List all cached commands
+tldr --list
+
+# Show in a specific platform
+tldr --linux <command>
+tldr --osx <command>
+tldr --windows <command>
+
+# Show in a specific language
+tldr --language zh <command>
+
+# Render in plain text (no color)
+tldr --color never <command>
+
+# Show current version
+tldr --version
+
+# Render to a pager
+tldr --pager <command>
+
+# Render a specific page from cache
+tldr --render <path-to-page.md>
+
+# Usage tips
+#   tldr <command>         — quick reference (better than --help)
+#   tldr tar               — common tar examples
+#   tldr find              — common find examples
+#   tldr ffmpeg            — common ffmpeg examples
+#   tldr rsync             — common rsync examples
+#   tldr ssh               — common ssh examples
+#   tldr iptables          — common iptables examples
+
+# Fish integration
+#   abbr --add tl "tldr"
+#   function tldr_help
+#     tldr $argv[1] 2>/dev/null || command man $argv[1]
+#   end
+
+$ command: echo ""

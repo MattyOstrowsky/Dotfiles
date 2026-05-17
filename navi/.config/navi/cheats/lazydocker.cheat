@@ -1,0 +1,46 @@
+% lazydocker, ld
+
+# Open lazydocker
+lazydocker
+
+# Keybindings — navigation
+#   ↑ ↓ / k j         — move selection
+#   ← →                — switch panels
+#   /                  — filter/search
+#   :                  — execute custom command
+#   q                  — quit
+
+# Keybindings — containers panel
+#   <enter>            — view container logs
+#   s                  — toggle container (start/stop)
+#   r                  — restart container
+#   d                  — remove container
+#   e                  — exec into container (shell)
+#   c                  — run custom command in container
+#   b                  — view container stats
+#   m                  — view container monitor
+#   E                  — export container logs
+#   [ / ]              — previous/next tab
+
+# Keybindings — images panel
+#   d                  — remove image
+#   p                  — prune images (dangling)
+#   P                  — prune all unused images
+
+# Keybindings — volumes panel
+#   d                  — remove volume
+
+# Keybindings — docker-compose (if compose project)
+#   u                  — docker compose up
+#   U                  — docker compose up -d
+#   d                  — docker compose down
+#   r                  — docker compose restart
+#   b                  — docker compose build
+#   R                  — docker compose rebuild and up
+#   l                  — docker compose logs
+#   t                  — docker compose stop
+
+# View docker system info
+#   (default view shows containers, images, volumes, services)
+
+$ container: docker ps --format '{{.Names}}' | sort

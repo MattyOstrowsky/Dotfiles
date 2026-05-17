@@ -1,0 +1,85 @@
+% helm
+
+# Add a repository
+helm repo add <name> <url>
+
+# List repositories
+helm repo list
+
+# Update repositories
+helm repo update
+
+# Search for charts
+helm search repo <keyword>
+
+# Search hub (all repos)
+helm search hub <keyword>
+
+# Inspect chart
+helm show chart <repo>/<chart>
+helm show values <repo>/<chart>
+helm show readme <repo>/<chart>
+
+# Install a chart
+helm install <release> <repo>/<chart> -n <namespace>
+helm install <release> <chart> --values values.yaml -n <namespace>
+
+# Install with custom values inline
+helm install <release> <repo>/<chart> --set image.tag=latest --set replicas=3
+
+# Upgrade a release
+helm upgrade <release> <repo>/<chart> -f values.yaml -n <namespace>
+
+# Upgrade with atomic rollback on failure
+helm upgrade --atomic --timeout 5m <release> <repo>/<chart> -n <namespace>
+
+# Rollback to a previous revision
+helm rollback <release> <revision> -n <namespace>
+
+# List releases
+helm list -A                      # all namespaces
+helm list -n <namespace>          # specific namespace
+
+# Get release status
+helm status <release> -n <namespace>
+
+# Get release values
+helm get values <release> -n <namespace>
+
+# Get release manifests
+helm get manifest <release> -n <namespace>
+
+# Get release notes
+helm get notes <release> -n <namespace>
+
+# History of a release
+helm history <release> -n <namespace>
+
+# Uninstall a release
+helm uninstall <release> -n <namespace>
+
+# Create a chart from scratch
+helm create <chart-name>
+
+# Package a chart
+helm package <chart-dir>
+
+# Lint a chart
+helm lint <chart-dir>
+
+# Template (render locally, no server)
+helm template <release> <chart> -f values.yaml
+
+# Diff between releases (requires helm-diff plugin)
+helm diff upgrade <release> <repo>/<chart> -f new-values.yaml
+
+# Test a release
+helm test <release> -n <namespace>
+
+# Pull chart archive
+helm pull <repo>/<chart>
+helm pull <repo>/<chart> --untar
+
+$ release: helm list -A 2>/dev/null | tail -n +2 | awk '{print $1}'
+$ namespace: kubectl get ns --no-headers | awk '{print $1}'
+$ repo: helm repo list 2>/dev/null | tail -n +2 | awk '{print $1}'

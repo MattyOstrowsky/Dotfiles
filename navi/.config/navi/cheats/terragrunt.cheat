@@ -1,0 +1,79 @@
+% terragrunt, tg
+
+# Run terragrunt in a specific module directory
+cd <module-dir> && terragrunt init
+cd <module-dir> && terragrunt plan
+cd <module-dir> && terragrunt apply
+
+# Run command in all subdirectories with terragrunt.hcl
+terragrunt run-all init
+terragrunt run-all plan
+terragrunt run-all apply
+terragrunt run-all destroy
+
+# Run only when dependencies are applied
+terragrunt run-all plan --terragrunt-include-external-dependencies
+
+# Apply in dependency order (respects dependencies block)
+terragrunt run-all apply --terragrunt-non-interactive
+
+# Destroy in reverse dependency order
+terragrunt run-all destroy
+
+# Apply only changed modules
+terragrunt plan --terragrunt-source-update   # update source before plan
+terragrunt apply
+
+# Output values from all modules
+terragrunt run-all output
+
+# Validate all modules
+terragrunt run-all validate
+
+# Show dependency graph
+terragrunt graph-dependencies
+
+# With custom terraform version
+terragrunt plan --terragrunt-tfpath /usr/local/bin/terraform-v1.6.0
+
+# Using input variables
+terragrunt plan --terragrunt-input false
+
+# Non-interactive (skip confirmations)
+terragrunt apply -auto-approve
+
+# Debug mode
+terragrunt plan --terragrunt-log-level debug
+
+# What if (plan with dependency analysis)
+terragrunt plan --terragrunt-modules-that-include <terragrunt.hcl-path>
+
+# Generate lockfile for all modules
+terragrunt run-all terraform providers lock -platform=linux_amd64
+
+# Import existing infrastructure
+terragrunt import <address> <id>
+
+# State operations
+terragrunt state list
+terragrunt state rm <resource>
+terragrunt state mv <old> <new>
+
+# Before/after hooks (defined in terragrunt.hcl)
+#   hook "before_hook" {
+#     commands = ["plan", "apply"]
+#     execute  = ["echo", "running plan/apply"]
+#   }
+
+# HCL structure reminder
+#   include "root" {
+#     path = find_in_parent_folders()
+#   }
+#   terraform {
+#     source = "git::git@github.com:org/repo.git//path?ref=v1.0"
+#   }
+#   dependencies {
+#     paths = ["../vpc", "../database"]
+#   }
+
+$ module_dir: find . -name terragrunt.hcl -exec dirname {} \; | sort | head -20

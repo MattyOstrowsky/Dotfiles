@@ -1,0 +1,63 @@
+% stow
+
+# Install package(s) — create symlinks
+stow <package>
+stow vim bash               # multiple packages
+stow --target=$HOME <package>
+
+# Uninstall — remove symlinks
+stow -D <package>
+stow --delete <package>
+
+# Reinstall — uninstall then install
+stow -R <package>
+
+# Dry run — show what would happen
+stow -n <package>
+stow --no --target=$HOME <package>
+stow --verbose=2 -n <package>
+
+# Verbose output
+stow -v <package>
+stow -vv <package>           # even more verbose
+stow -vvv <package>          # maximum verbosity
+
+# Show conflicts (existing files that would be overwritten)
+stow --no --verbose <package> 2>&1
+
+# Target directory (default: parent of stow dir)
+stow --target=/usr/local <package>
+stow -t ~ <package>
+
+# Stow directory (default: current dir)
+stow -d /path/to/dotfiles <package>
+
+# Ignore certain files
+stow --ignore='.gitignore' <package>
+stow --ignore='*.log' <package>
+stow --ignore='node_modules' <package>
+
+# Fold operation (nest symlinks into existing directories)
+#   stow creates directory structure inside existing target dirs
+#   e.g. stow vim → ~/.vimrc (if ~/.vim is a dir, creates ~/.vim/vimrc)
+
+# Adopt mode — move existing files into stow package
+stow --adopt -t ~ <package>
+#   WARNING: overwrites stow package files with target files
+#   Useful for initial setup: stow --adopt, then git diff to review
+
+# Restow — fix broken symlinks
+stow -R <package>
+
+# Dotfiles workflow reminder
+#   cd ~/Dotfiles
+#   make install           # stow all packages
+#   make uninstall         # unstow all
+#   make reinstall         # unstow + stow
+#   make list              # list packages
+#   make dry-run           # preview changes
+
+# Current packages in this dotfiles repo
+#   fish navi nvim opencode starship
+
+$ package: ls -d */ | sed 's/\///' | grep -v '.git' | sort

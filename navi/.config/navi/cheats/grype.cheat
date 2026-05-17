@@ -1,0 +1,60 @@
+% grype
+
+# Scan a container image
+grype <image>
+
+# Scan a Docker archive
+docker save <image> -o /tmp/image.tar
+grype docker-archive:/tmp/image.tar
+
+# Scan a directory (filesystem)
+grype <directory>
+
+# Scan an OCI directory
+grype oci-dir:<oci-directory>
+
+# Scan a specific container (by name or ID)
+grype containers:<container-name>
+docker ps | awk 'NR>1 {print $1}' | xargs -I{} grype docker:{}
+
+# Filter by severity
+grype --only-fixed <image>              # only vulnerabilities with fix
+grype --severity high <image>
+grype --severity critical,high <image>
+
+# Fail on specific severity (for CI)
+grype --fail-on high <image>
+grype --fail-on critical <image>        # exit 1 if any critical
+
+# Output formats
+grype -o table <image>                  # default
+grype -o json <image> > grype.json
+grype -o cyclonedx <image> > sbom.cdx
+grype -o sarif <image> > grype.sarif
+
+# Exclude paths from scan
+grype --exclude '/usr/lib/**' <image>
+grype --exclude '**/*.pyc' <image>
+
+# Add suppressions
+grype --file suppressions.yaml <image>
+
+# Suppressions file format
+#   - vulnerability: CVE-2023-12345
+#     reason: "False positive. Our version is patched."
+#     path: /usr/lib/libfoo.so
+
+# List all sources
+grype --help
+
+# Update vulnerability database
+grype db update
+
+# Check database status
+grype db status
+
+# Use with a specific database URL
+grype db list
+
+$ image: docker images --format '{{.Repository}}:{{.Tag}}' | sort | head -20
+$ severity: echo -e "critical\nhigh\nmedium\nlow\nnegligible"

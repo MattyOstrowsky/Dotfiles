@@ -1,0 +1,68 @@
+% jq
+
+# Pretty-print JSON
+cat file.json | jq '.'
+curl <url> | jq '.'
+
+# Extract a field
+jq '.key' file.json
+jq '.nested.key' file.json
+jq '.key.subkey[0]' file.json
+
+# Extract multiple fields
+jq '{name: .name, age: .age}' file.json
+
+# Array operations
+jq '.[]' file.json               # iterate over array
+jq '.[0]' file.json              # first element
+jq '.[-1]' file.json             # last element
+jq '.[0:3]' file.json            # slice (first 3)
+jq '.[] | .name' file.json       # names of all items
+
+# Filtering
+jq 'select(.age > 18)' file.json
+jq 'select(.status == "active")' file.json
+jq 'select(.name | startswith("foo"))' file.json
+jq 'select(.tags | contains(["production"]))' file.json
+
+# Map / transform
+jq 'map(.name)' file.json
+jq 'map(select(.active) | {label: .name, id: .id})' file.json
+jq '[.[] | {name, email}]' file.json
+
+# Built-in functions
+jq 'length' file.json
+jq 'keys' file.json
+jq 'add' file.json                  # sum numbers
+jq 'unique' file.json               # deduplicate
+jq 'sort' file.json
+jq 'sort_by(.age)' file.json
+jq 'group_by(.category)' file.json
+jq 'reverse' file.json
+jq 'flatten' file.json
+
+# Null handling
+jq '.key // "default"' file.json    # default if null/missing
+jq 'select(.key != null)' file.json
+
+# Raw output (no quotes)
+jq -r '.name' file.json
+jq -r '.[] | "\(.id): \(.name)"' file.json
+
+# Combine with kubectl
+kubectl get pods -o json | jq '.items[].metadata.name'
+kubectl get pods -o json | jq '.items[] | {name: .metadata.name, node: .spec.nodeName}'
+kubectl get events --sort-by=.lastTimestamp -o json | jq '.items[-1]'
+
+# Combine with curl
+curl -s https://api.github.com/repos/org/repo | jq '{stars: .stargazers_count, forks: .forks_count}'
+
+# Merge JSON files
+jq -s '.[0] * .[1]' file1.json file2.json
+jq -s 'add' *.json                  # combine multiple JSON arrays
+
+# Reduce / advanced
+jq 'reduce .[] as $item ({}; .[$item.key] = $item.value)' file.json
+jq 'group_by(.type) | to_entries[] | {type: .key, count: (.value | length)}' file.json
+
+$ file: fd -e json | head -10

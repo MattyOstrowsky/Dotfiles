@@ -1,0 +1,66 @@
+% yq
+
+# Pretty-print YAML
+yq '.' file.yaml
+
+# Read from stdin
+cat file.yaml | yq '.'
+
+# Extract a field
+yq '.key' file.yaml
+yq '.nested.key' file.yaml
+yq '.array[0]' file.yaml
+
+# Extract with path
+yq '.spec.template.spec.containers[0].image' k8s/deployment.yaml
+
+# Update a value (in place)
+yq '.image.tag = "v1.2"' -i file.yaml
+
+# Update with expression
+yq -i '.replicas = 3' k8s/deployment.yaml
+yq -i '.spec.template.spec.containers[0].env += [{"name": "DEBUG", "value": "true"}]' k8s/deployment.yaml
+
+# Merge YAML files
+yq '. *d' file1.yaml file2.yaml
+
+# Merge with override
+yq '. *' base.yaml overlay.yaml
+
+# Convert YAML → JSON
+yq -o json file.yaml
+yq eval -o=json file.yaml
+
+# Convert JSON → YAML
+yq -P file.json
+yq eval --prettyPrint file.json
+
+# Convert YAML → JSON (compact)
+yq -o=json file.yaml | jq '.'
+
+# Extract multiple fields
+yq '. | {name: .metadata.name, ns: .metadata.namespace}' k8s/deployment.yaml
+
+# Filter / select
+yq '.items[] | select(.kind == "Deployment")' all-resources.yaml
+yq '.items[] | select(.spec.replicas > 1) | .metadata.name' k8s-resources.yaml
+
+# Array operations
+yq '.items | length' file.yaml
+yq '.items[].name' file.yaml
+yq '. | .array += ["new"]' file.yaml
+
+# Remove a field
+yq 'del(.spec.template.metadata.annotations)' -i k8s/deployment.yaml
+
+# Comments (add/remove)
+yq eval '.foo head_comment = "this is foo"' -i file.yaml
+
+# Use with kubectl
+kubectl get deployment <name> -o yaml | yq '.spec.template.spec.containers[0].image'
+kubectl get cm <name> -o yaml | yq '.data'
+
+# Use with helm
+helm get manifest <release> -n <namespace> | yq '. | select(.kind == "Deployment")'
+
+$ file: fd -e yaml -e yml | head -10

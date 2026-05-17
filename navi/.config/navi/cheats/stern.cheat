@@ -1,0 +1,70 @@
+% stern
+
+# Tail logs for all pods matching name
+stern <pod-name-pattern>
+
+# Tail logs in a namespace
+stern <pattern> -n <namespace>
+
+# Tail logs from all namespaces
+stern <pattern> --all-namespaces
+
+# Tail logs for all pods (no filter)
+stern . -n <namespace>
+
+# Show only specific container
+stern <pattern> -c <container-name>
+
+# Exclude some containers
+stern <pattern> --exclude-container <sidecar>
+
+# Timestamps
+stern <pattern> -t                    # show timestamps
+stern <pattern> --timestamps          # same
+
+# Show since duration
+stern <pattern> --since 5m            # last 5 minutes
+stern <pattern> --since 1h            # last hour
+
+# Since a specific time
+stern <pattern> --since-time '2024-01-01T00:00:00Z'
+
+# Show only last N lines per pod
+stern <pattern> --tail 50
+
+# Color by pod (default)
+stern <pattern> --color always
+
+# Color by container instead of pod
+stern <pattern> --color container
+
+# No color
+stern <pattern> --no-color
+
+# Output as raw strings (no wrap)
+stern <pattern> --raw
+
+# Template output
+stern <pattern> --template '{{.Message}}'
+stern <pattern> --template '{{.PodName}}: {{.Message}}'
+
+# Exclude lines matching a pattern
+stern <pattern> -e 'healthcheck'
+stern <pattern> -e 'GET /metrics'
+stern <pattern> -e 'heartbeat'
+
+# Include lines matching a pattern (show only these)
+stern <pattern> -i 'error'
+stern <pattern> -i 'exception'
+
+# Multiple include/exclude
+stern <pattern> -i 'error' -i 'warn' -e 'health'
+
+# Follow new pods (default)
+stern <pattern> --no-follow            # one-shot, no follow
+
+# Max log requests (for large clusters)
+stern <pattern> --max-log-requests 10
+
+$ pattern: echo ""
+$ namespace: kubectl get ns --no-headers | awk '{print $1}'

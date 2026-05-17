@@ -1,0 +1,64 @@
+# k9s config
+# Docs: https://k9scli.io/topics/config/
+
+k9s:
+  # UI configuration
+  ui:
+    # Enable mouse support
+    enableMouse: true
+
+    # Headless mode (no header)
+    headless: false
+
+    # Logs configuration
+    logFullScreen: false
+
+    # Trigger to toggle log full screen
+    logFullScreenTrigger: 'ctrl-l'
+
+    # Skin (theme) to use — must match a file in skins/
+    skin: nord
+
+    # Show pod ip in the pods view
+    showPodIP: true
+
+    # Default number of lines for log tail
+    loggerTail: 200
+
+    # Whether to react to Ctrl-C
+    noIcons: false
+
+  # Cluster configuration
+  cluster:
+    # Read-only mode (no delete/edit)
+    readOnly: false
+
+    # Show all namespaces by default
+    showAllNamespaces: false
+
+  # Screen dump directory
+  screenDumpDir: /tmp/k9s-screens
+
+  # Command aliases
+  aliases:
+    # Custom resource shortcuts
+    # pp: v1/pods
+    # dep: apps/v1/deployments
+    # sec: v1/secrets
+    # cm: v1/configmaps
+    # svc: v1/services
+    # ing: networking.k8s.io/v1/ingresses
+
+  # Custom views (resource shortcuts beyond standard)
+  # Override default resource columns
+  # customColumns:
+  #   - resource: pods
+  #     columns:
+  #       - AGE
+  #       - RESTARTS
+
+  # Hotkey bindings (see hotkey.yaml)
+  # hotkeys:
+  #   shift-0: /po
+  #   shift-1: /dep
+  #   shift-2: /svc

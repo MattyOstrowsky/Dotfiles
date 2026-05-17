@@ -1,0 +1,44 @@
+% dive
+
+# Analyze an image
+dive <image>
+
+# Analyze image from a docker tar file
+dive <image.tar>
+
+# Keybindings (inside dive)
+#   tab / ctrl+space   — switch between layers and filesystem tree
+#   ctrl+u             — go up one layer
+#   ctrl+d             — go down one layer
+#   ctrl+f             — toggle file tree filter
+#   ctrl+a             — toggle layer aggregation
+#   ctrl+w             — toggle wrapping
+#   ctrl+t             — toggle between tree and flat file view
+#   ?                  — help
+
+# Build an image and immediately analyze it
+docker build -t <tag> . && dive <tag>
+
+# Analyze the image efficiency score
+#   (displayed at top — shows wasted space)
+#   Lower percentage = more efficient
+
+# Show wasted space (what changed between layers)
+#   (in tree view, colored files = wasted from previous layers)
+
+# Export analysis as JSON
+dive <image> --json > analysis.json
+
+# CI mode — exit non-zero if image is inefficient
+dive <image> --ci
+
+# CI mode with custom thresholds
+dive <image> --ci --lowestEfficiency 0.8
+
+# Ignore certain file patterns in analysis
+dive <image> --ignore '.git' --ignore 'node_modules'
+
+# Source can also be a docker-compose service
+dive $(docker images --format '{{.Repository}}:{{.Tag}}' | fzf)
+
+$ image: docker images --format '{{.Repository}}:{{.Tag}}' | sort

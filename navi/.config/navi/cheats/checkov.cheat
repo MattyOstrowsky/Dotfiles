@@ -1,0 +1,64 @@
+% checkov
+
+# Scan a directory for IaC misconfigurations
+checkov -d <directory>
+
+# Scan a specific file
+checkov -f main.tf
+checkov -f deployment.yaml
+checkov -f Dockerfile
+
+# Scan multiple file types
+checkov -d . --framework terraform
+checkov -d . --framework kubernetes
+checkov -d . --framework dockerfile
+checkov -d . --framework all               # default
+
+# Output format
+checkov -d . --output cli                   # default
+checkov -d . --output json > checkov.json
+checkov -d . --output junitxml > checkov.xml
+checkov -d . --output sarif > checkov.sarif
+
+# Quiet mode (only failures)
+checkov -d . --quiet
+
+# Skip specific checks
+checkov -d . --skip-check CKV_AWS_123
+
+# Run only specific checks
+checkov -d . --check CKV_AWS_*              # all AWS checks
+checkov -d . --check CKV_K8S_*              # all K8s checks
+
+# Soft fail (exit 0 even if checks fail)
+checkov -d . --soft-fail
+
+# With config file
+checkov -d . --config-file .checkov.yml
+
+# Config file content (.checkov.yml)
+#   compact: true
+#   quiet: true
+#   framework:
+#     - terraform
+#     - kubernetes
+#   skip-check:
+#     - CKV_AWS_123
+#   soft-fail: true
+
+# Scan a Terraform plan
+terraform plan -out=plan.tfplan
+terraform show -json plan.tfplan > plan.json
+checkov -f plan.json --framework terraform_plan
+
+# Download external checks (policy packs)
+checkov --external-checks-dir ./custom-policies
+
+# List all checks
+checkov --list
+
+# Version
+checkov --version
+
+$ directory: fd --type d | head -10
+$ framework: echo -e "all\nterraform\nkubernetes\ndockerfile\ncloudformation\narm\nbicef\nsecrets"

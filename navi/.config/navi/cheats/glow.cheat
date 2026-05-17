@@ -1,0 +1,40 @@
+% glow
+
+# Render a markdown file
+glow README.md
+
+# Render with line numbers
+glow --line-numbers README.md
+
+# Render from stdin
+cat README.md | glow
+curl -sL https://raw.githubusercontent.com/.../README.md | glow
+
+# Pager mode (default when output is a tty)
+glow README.md -p
+
+# Plain mode (no styling)
+glow README.md -s            # plain, no style
+
+# Show only a specific width
+glow README.md -w 80
+
+# Stdin with specific language detection
+glow --config config.yaml <file>
+
+# Keybindings (inside glow pager)
+#   ↑ ↓ / j k        — scroll
+#   pgup / pgdn       — page up/down
+#   g / G             — go to top/bottom
+#   /                 — search
+#   n / N             — next/previous search result
+#   q / esc           — quit
+
+# Use with fd or fzf for quick preview
+fd -e md | fzf --preview 'glow {}'
+
+# Start glow in file selection mode (STADIUM — TUI file picker)
+#   glow
+#   (opens a file picker for markdown files)
+
+$ file: fd -e md | head -20

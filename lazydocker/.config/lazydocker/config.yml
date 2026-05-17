@@ -1,0 +1,51 @@
+# lazydocker config
+# Docs: https://github.com/jesseduffield/lazydocker/blob/master/docs/Config.md
+
+gui:
+  # Side panel width ratio (containers : images : volumes)
+  sidePanelWidth: 0.3333
+
+  # Show bottom line with keybinding hints
+  showBottomLine: true
+
+  # Wrap to container when selecting a container
+  wrapMainPanel: true
+
+  # Border color
+  borderColor: cyan
+
+  # Language
+  language: 'auto'
+
+  # Whether to return to the main panel when you've selected a container
+  returnImmediately: false
+
+  # Expand panels to show all content
+  expandFocusedSidePanel: true
+
+  # Screen mode (normal, half, fullscreen)
+  screenMode: 'normal'
+
+docker:
+  # Show all containers including stopped
+  showAllContainers: false
+
+logs:
+  # Timestamp format (Go time layout)
+  timestamps: 'auto'
+
+  # Since when to show logs (when to start)
+  since: ''
+
+  # Number of lines to show from the end
+  tail: ''
+
+commandTemplates:
+  # Docker compose command
+  dockerCompose: 'docker compose'
+
+  # Shell for exec
+  shell: 'sh'
+
+  # Extra docker run flags (for service exec)
+  # extraRunFlags: '--rm'

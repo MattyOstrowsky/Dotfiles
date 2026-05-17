@@ -1,0 +1,106 @@
+% neovim, nvim, vim
+
+# Open a file
+nvim <file>
+
+# Open files in tabs
+nvim -p <file1> <file2> <file3>
+
+# Open in diff mode
+nvim -d <file1> <file2>
+
+# Open at a specific line
+nvim +100 <file>
+nvim +/search_term <file>      # open at first match
+
+# Modes
+#   Normal       — navigate and manipulate text (default)
+#   Insert       — type text (i, a, o, etc.)
+#   Visual       — select text (v, V, ctrl+v)
+#   Command-line — run commands (:)
+#   Ex           — extended commands (Q)
+
+# Navigation (Normal mode)
+#   h j k l      — left/down/up/right
+#   w / b        — word forward/back
+#   e            — end of word
+#   0 / $        — start/end of line
+#   ^            — first non-whitespace
+#   gg           — top of file
+#   G            — bottom of file
+#   <C-d> / <C-u> — page down/up
+#   { / }        — paragraph up/down
+#   %            — matching bracket
+#   ]m / [m      — next/previous method/function
+
+# Editing (Normal mode)
+#   x            — delete char
+#   dd           — delete line
+#   D            — delete to end of line
+#   yy           — yank (copy) line
+#   p / P        — paste after/before
+#   .            — repeat last change
+#   u            — undo
+#   <C-r>        — redo
+#   >> / <<      — indent/outdent
+
+# Insert mode
+#   i            — insert before cursor
+#   a            — append after cursor
+#   I            — insert at line start
+#   A            — append at line end
+#   o            — new line below
+#   O            — new line above
+#   <C-w>        — delete word back
+#   <C-u>        — delete to line start
+#   <C-o>        — one normal mode command
+#   <Esc> / <C-[> — back to normal
+
+# Visual mode
+#   v            — character visual
+#   V            — line visual
+#   <C-v>        — block visual
+#   d            — delete selection
+#   y            — yank selection
+#   > / <        — indent/outdent
+#   ~            — toggle case
+#   u / U        — lowercase/uppercase
+
+# Search & replace
+#   /pattern     — search forward
+#   ?pattern     — search backward
+#   n / N        — next/previous match
+#   :s/old/new   — replace on line
+#   :%s/old/new/g   — replace all in file
+#   :%s/old/new/gc  — replace with confirm
+#   :'<,'>s/old/new/g  — replace in visual selection
+
+# Windows & tabs
+#   :sp <file>   — horizontal split
+#   :vs <file>   — vertical split
+#   <C-w> w      — cycle windows
+#   <C-w> h/j/k/l — move to window
+#   <C-w> =      — equal size windows
+#   :tabnew      — new tab
+#   gt / gT      — next/previous tab
+#   <C-w> o      — close other windows
+
+# File operations
+#   :w           — save
+#   :q           — quit
+#   :wq / :x     — save and quit
+#   :q!          — force quit (no save)
+#   :e <file>    — open file
+#   :find <file> — find and open (with path)
+#   :bd          — close buffer
+#   :ls          — list buffers
+#   :b <N>       — switch to buffer N
+
+# Help
+#   :help <topic>  — open help
+#   <C-]>          — follow help link
+#   <C-t>          — go back in help
+#   :helpkey       — show keybinding help (if mapped)
+
+$ file: fd --type f | head -20
+$ search_term: echo ""

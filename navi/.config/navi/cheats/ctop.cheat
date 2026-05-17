@@ -1,0 +1,60 @@
+% ctop
+
+# Start ctop (container monitoring)
+ctop
+
+# Start with a specific refresh rate
+ctop -r 2                    # refresh every 2 seconds
+
+# Show only running containers
+ctop -a running
+ctop -a paused
+
+# Show specific containers matching filter
+ctop -f <filter-name>
+
+# Sort by column
+ctop -s cpu                  # sort by CPU
+ctop -s mem                  # sort by memory
+
+# Reverse sort
+ctop -s cpu -r
+
+# Keybindings (inside ctop)
+#   ↑ ↓ / k j         — move selection
+#   enter              — open container menu/logs
+#   a                  — toggle display of all containers (incl stopped)
+#   f                  — filter containers
+#   h                  — toggle help
+#   q                  — quit
+#   s                  — sort by column
+#   r                  — reverse sort
+#   o                  — open container logs
+#   e                  — exec shell into container
+#   t                  — toggle single container view
+#   p                  — pause container
+#   u                  — unpause container
+#   d                  — stop container
+#   R                  — restart container
+#   k                  — kill container
+#   del                — remove container
+#   l                  — view container labels
+#   i                  — inspect container (docker inspect)
+#   m                  — view container metrics
+
+# Container menu (after pressing enter on a container)
+#   cpu      — CPU usage graph
+#   mem      — memory usage graph
+#   net      — network I/O
+#   io       — disk I/O
+#   logs     — container logs
+#   process  — processes inside container
+
+# Default config (auto-created)
+#   ~/.config/ctop/ctop.yml
+
+# Change display (compact vs full)
+#   ctop starts in full mode by default
+#   Use arrow keys to expand/collapse
+
+$ container: docker ps --format '{{.Names}}' | sort

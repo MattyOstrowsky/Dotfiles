@@ -1,0 +1,73 @@
+% fzf
+
+# Basic usage — pipe input to fzf
+<command> | fzf
+
+# Select from list of files
+find . -type f | fzf
+
+# Use fd with fzf for faster file finding
+fd --type f | fzf
+
+# Open selected file in vim
+vim "$(fd --type f | fzf)"
+
+# Change to selected directory
+cd "$(fd --type d | fzf)"
+
+# fzf keybindings (inside the picker)
+#   ctrl+j / ctrl+k    — move cursor down/up
+#   ctrl+n / ctrl+p    — move cursor down/up
+#   ctrl+d / ctrl+u    — page down/up
+#   tab / shift-tab    — multi-select toggle
+#   ctrl+a             — select all
+#   ctrl+space         — toggle selection
+#   ctrl+c / esc       — cancel
+#   ctrl+o             — accept (different behavior)
+#   ctrl+r             — toggle sorting (relevance vs alphabetical)
+#   ctrl+y             — paste from clipboard
+#   ctrl+t             — toggle preview
+#   ctrl+/             — toggle search mode (fuzzy/exact)
+
+# Custom preview window
+fd --type f | fzf --preview 'bat --color=always {}'
+
+# Preview with line number context
+fd --type f | fzf --preview 'bat --color=always --line-range :50 {}'
+
+# Preview directory contents
+fd --type d | fzf --preview 'tree -C {} | head -100'
+
+# Search with query already filled
+fzf --query "search term"
+
+# Show only selected item (no extra output)
+fzf --print-query              # also prints query string
+fzf --expect=ctrl-e            # expect a specific key
+
+# Multi-select
+fd --type f | fzf --multi
+
+# Reverse layout (search at bottom)
+fzf --layout=reverse
+
+# Custom prompt
+fzf --prompt="Pick a file > "
+
+# Keep order of input
+fzf --keep-right
+
+# Custom delimiter for display vs value
+cat /etc/passwd | fzf --delimiter=: --with-nth=1
+
+# Use with git
+git log --oneline | fzf | awk '{print $1}'   # pick commit hash
+git branch -a | fzf | tr -d '* '             # pick branch
+
+# Kill process by name
+ps aux | fzf | awk '{print $2}' | xargs kill -9
+
+# Use as a search engine replacement
+# In fish: bind \cf to 'fd --type f | fzf' for ctrl+f file search
+
+$ pattern: echo ""

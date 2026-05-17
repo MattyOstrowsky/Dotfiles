@@ -1,0 +1,59 @@
+% infracost
+
+# Show cost estimate for a Terraform directory
+infracost breakdown --path <terraform-dir>
+
+# Show cost estimate with terraform plan
+terraform plan -out=plan.tfplan
+infracost breakdown --path plan.tfplan
+
+# Show cost estimate from a Terraform JSON plan
+terraform plan -out=plan.tfplan
+terraform show -json plan.tfplan > plan.json
+infracost breakdown --path plan.json
+
+# Show diff between two plans
+infracost diff --path plan.tfplan
+infracost diff --path <dir1> --compare-to <dir2>
+
+# Output formats
+infracost breakdown --path . --format table      # default
+infracost breakdown --path . --format json
+infracost breakdown --path . --format html > cost.html
+
+# Show only monthly cost summary
+infracost breakdown --path . --show-skipped
+
+# Show cost breakdown per resource
+infracost breakdown --path . --fields all
+infracost breakdown --path . --fields price,hourly_cost,monthly_cost
+
+# Use with Terraform workspaces
+infracost breakdown --path . --terraform-workspace prod
+
+# Use with Terragrunt
+infracost breakdown --path <terragrunt-dir> --terraform-type terragrunt
+
+# Set pricing API key (required)
+infracost configure set api_key <your-api-key>
+
+# Check API key
+infracost configure get api_key
+
+# Output in CI format (markdown table)
+infracost breakdown --path . --format table --output table.md
+infracost breakdown --path . --format github-comment  # for GH PR comments
+
+# Sync usage (track actual usage for accurate pricing)
+infracost output --path . --format json --usage-file usage.yml
+infracost breakdown --path . --usage-file usage.yml
+
+# Config file (.infracost.yml)
+#   version: 0.1
+#   projects:
+#     - path: .
+#       usage_file: usage.yml
+#     - path: modules/networking
+#       terraform_type: terragrunt
+
+$ directory: fd -g '*.tf' -x dirname {} | sort -u | head -10

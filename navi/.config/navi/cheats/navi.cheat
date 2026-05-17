@@ -1,0 +1,57 @@
+% navi
+
+# Open navi interactively
+navi
+
+# Search for a specific command
+navi --query "docker build"
+
+# Print to stdout (no TUI, pipe-friendly)
+navi --print
+navi --query "git rebase" --print
+
+# Preview mode (show full command before executing)
+navi --preview
+
+# Use a specific cheat directory
+navi --path ~/.config/navi/cheats
+navi --path <custom-path>
+
+# Search multiple cheat paths
+navi --path <path1> --path <path2>
+
+# Use only local cheats (no default community ones)
+navi --path ~/.config/navi/cheats --no-global
+
+# Search and execute without confirmation
+navi --print | bash          # pipe to shell
+
+# Find the right snippet faster
+navi --fzf-overrides '--preview "bat --color=always {}"'
+
+# Navigate cheat structure
+#   (inside navi TUI)
+#   type to search          — filter cheats
+#   enter                   — select category/command
+#   esc / ctrl+c            — go back / cancel
+#   tab                     — auto-complete variables
+
+# Cheat file format reminder
+#   % docker               ← tags
+#   # List containers      ← title
+#   docker ps -a           ← command
+#   $ container: ...       ← variable definition
+
+# Variable sources in cheats
+#   $ var: echo "value"                                   — static
+#   $ var: kubectl get pods --no-headers | awk '{print $1}'  — dynamic
+#   $ var: fd -e md | head -10                            — file listing
+#   $ var: cat /etc/hosts | awk '{print $2}'              — from file
+
+# Best practices
+#   Organize by tool: one file per tool
+#   Use # for section headers
+#   Keep commands short and focused
+#   Use variables for dynamic arguments
+
+$ query: echo ""

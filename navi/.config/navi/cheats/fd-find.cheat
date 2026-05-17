@@ -1,0 +1,71 @@
+% fd-find, fd
+
+# Find files by name
+fd <pattern>
+
+# Find files case-insensitive
+fd -i <pattern>
+
+# Find directories only
+fd --type d <pattern>
+
+# Find files only
+fd --type f <pattern>
+
+# Find symlinks
+fd --type l <pattern>
+
+# Find by extension
+fd -e md                    # all markdown files
+fd -e py -e rs              # python OR rust files
+
+# Find hidden files
+fd --hidden <pattern>
+fd -H <pattern>
+
+# Find ignoring .gitignore (respects it by default)
+fd --no-ignore <pattern>
+
+# Find ignoring .gitignore AND hidden
+fd --no-ignore -H <pattern>
+
+# Find with full path search
+fd --full-path 'src/components' <pattern>
+
+# Execute command on each result
+fd <pattern> -x vim {}       # open each found file in vim
+fd <pattern> -x wc -l        # line count per file
+
+# Execute with parallelism
+fd -x <command> {}           # parallel (batch)
+fd -X <command> {}           # single command with all results
+
+# List files in directory similar to ls
+fd .                        # all files recursively
+fd . --max-depth 1          # just current directory
+
+# Find files modified within last N minutes
+fd --changed-within 10min <pattern>
+
+# Find files modified more than N days ago
+fd --changed-before 7d <pattern>
+
+# Case sensitive (default is smart-case)
+fd -s <pattern>
+
+# Find files newer than a reference file
+fd --changed-after <reference-file>
+
+# Search in specific directory
+fd <pattern> /etc
+
+# Customize output
+fd <pattern> --format '{path}:{line}'
+fd <pattern> --color never  # for piping
+
+# Pipe to other tools
+fd -e md -x glow {}         # preview markdown files
+fd -e go | fzf              # fzf integration
+fd -type f | rg <pattern>   # find files, then search
+
+$ pattern: echo ""

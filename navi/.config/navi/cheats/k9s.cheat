@@ -1,0 +1,81 @@
+% k9s
+
+# Open k9s
+k9s
+
+# Open k9s in a specific namespace
+k9s -n <namespace>
+
+# Open k9s with a specific context
+k9s --context <context>
+
+# Open k9s with read-only mode
+k9s --readonly
+
+# Keybindings — navigation
+#   :<resource>        — switch resource view (e.g. :pod, :deploy, :svc, :ns)
+#   :ctx               — switch context
+#   :ns                — switch namespace
+#   /                  — filter by name
+#   esc                — go back / clear filter
+#   tab                — next resource view
+#   pgup / pgdn        — scroll page
+#   g                  — go to top
+#   shift+g            — go to bottom
+
+# Keybindings — actions on selected resource
+#   l                  — view logs
+#   L                  — view logs (all containers)
+#   d                  — describe
+#   e                  — edit (vi mode)
+#   y                  — yaml output
+#   f                  — edit with fzf filter (custom columns)
+#   s                  — shell into pod
+#   c                  — view CPU/MEM usage
+#   j                  — view nodes
+#   w                  — watch (tail -f style)
+#   delete / ctrl+d    — delete resource
+#   kill / ctrl+k      — kill (force delete)
+#   p                  — view pod details
+#   i                  — invert selection (for multi delete)
+#   u                  — view usage (for nodes)
+
+# Keybindings — scaling / rollouts
+#   +/=                — scale up
+#   -                  — scale down
+#   r                  — restart rollout
+#   R                  — restart all rollouts
+
+# Keybindings — port forwarding
+#   shift+f            — port forward
+#   ctrl+f             — stop port forward
+
+# Keybindings — visual mode
+#   0                  — toggle skinny mode
+#   ctrl+r             — refresh
+#   t                  — toggle telemetry
+#   ?                  — help / keybindings
+
+# Custom views (via :<resource>)
+#   :po                — pods
+#   :dep               — deployments
+#   :svc               — services
+#   :ing               — ingresses
+#   :cm                — configmaps
+#   :sec               — secrets
+#   :pv                — persistent volumes
+#   :pvc               — persistent volume claims
+#   :no                — nodes
+#   :ns                — namespaces
+#   :event             — events
+#   :hr                — helm releases
+#   :ctx               — contexts
+#   :rb                — role bindings
+
+# Aliases inside k9s
+#   :user              — show all users
+#   :mycontexts        — show contexts overview
+#   :screen            — toggle screen dumps
+
+$ namespace: kubectl get ns --no-headers | awk '{print $1}'
+$ context: kubectl config get-contexts -o name | sort

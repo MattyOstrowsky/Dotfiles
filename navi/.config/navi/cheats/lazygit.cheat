@@ -1,0 +1,71 @@
+% lazygit, lg
+
+# Open lazygit in current repo
+lazygit
+
+# Open lazygit in specific repo
+lazygig --path <path>
+
+# Keybindings — navigation (within lazygit)
+#   Tab / ← →         — switch panels
+#   1-5                — switch tabs (Status/Files/Branches/Commits/Stash)
+#   ↑ ↓ / k j         — move selection
+#   PgUp / PgDn       — scroll
+#   /                  — filter/search
+
+# Keybindings — files panel
+#   <space>            — toggle staged
+#   a                  — toggle staged ALL
+#   c                  — commit
+#   C                  — commit with editor
+#   e                  — edit file
+#   o                  — open file
+#   i                  — ignore file (add to .gitignore)
+#   d                  — discard (checkout) file
+#   D                  — discard unstaged changes (git restore)
+
+# Keybindings — branches panel
+#   n                  — new branch
+#   M                  — merge into current
+#   r                  — rebase onto branch
+#   R                  — rename branch
+#   <enter>            - checkout branch
+#   d                  - delete branch
+
+# Keybindings — commits panel
+#   <enter>            — view files in commit
+#   s                  — squash down
+#   r                  — reword commit
+#   R                  — rename commit with editor
+#   g                  — git reset (soft/mixed/hard)
+#   ctrl+j / ctrl+k    — move commit down/up (reorder)
+#   d                  — delete commit
+#   f                  — fixup commit
+#   A                  — amend with staged changes
+
+# Keybindings — stash panel
+#   <space>            — apply stash
+#   g                  — pop stash
+#   d                  — drop stash
+
+# Keybindings — staging (within files view)
+#   <space>            — toggle line staged
+#   a                  — toggle hunk staged
+#   e                  — edit selected text
+
+# Keybindings — global
+#   +                  — open search
+#   :                  — execute custom command
+#   ?                  — show keybinding help
+#   q                  — quit
+
+# Diff a file against its previous commit
+#   (in files panel, press 'D')
+
+# Interactive rebase from here
+#   (in commits panel, on a commit, press 'e' or 'E')
+
+# Cherry pick commits
+#   (in commits panel, press 'c' to copy commit, 'v' to paste)
+
+$ path: ls -d */ | head -20

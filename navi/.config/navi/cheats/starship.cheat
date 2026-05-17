@@ -1,0 +1,75 @@
+% starship
+
+# Print the current prompt (debug)
+starship prompt
+starship prompt --status 0
+
+# Print session init for fish
+starship init fish
+
+# Print session init for bash
+starship init bash
+
+# Print session init for zsh
+starship init zsh
+
+# Update starship to latest
+starship upgrade
+
+# Edit config file
+starship configure           # opens $EDITOR with preset picker
+$EDITOR ~/.config/starship.toml
+
+# Config location
+#   ~/.config/starship.toml
+#   (managed by Dotfiles via stow)
+
+# Bug report info
+starship bug-report
+
+# Generate a preset config
+starship preset pastel-powerline -o ~/.config/starship.toml
+
+# List available presets
+starship preset --list
+
+# Print module configuration reference
+starship module --list       # show all modules
+starship module --name rust  # show rust module config
+
+# Common config example (~/.config/starship.toml)
+#   format = """
+#   [╭─]($style)[$os](bold blue)\
+#   [┊](bold white)$dir$git_branch$git_status$fill\
+#   [$time](white dimmed)\
+#   [┊](bold white)$all\[$line_break\]\
+#   [╰─](bold blue)[$](bold white) """
+#   add_newline = true
+#
+#   [directory]
+#   truncation_length = 3
+#   truncation_symbol = "…/"
+#
+#   [git_branch]
+#   format = "[\($symbol$branch\)]($style) "
+#   style = "bold green"
+#
+#   [nodejs]
+#   format = "via [⬢ $version](bold green) "
+#
+#   [rust]
+#   format = "via [🦀 $version](bold red) "
+#
+#   [time]
+#   disabled = false
+#   time_format = "%H:%M"
+#   style = "white dimmed"
+
+# Complete list of modules
+#   os, directory, git_branch, git_commit, git_state, git_status,
+#   package, nodejs, python, rust, golang, java, docker_context,
+#   kubernetes, terraform, env_var, cmd_duration, line_break,
+#   time, fill, hostname, nix_shell, conda, memory_usage, battery,
+#   shell, character, custom, status
+
+$ query: echo ""

@@ -1,0 +1,59 @@
+% atuin
+
+# Search shell history (interactive)
+atuin search
+atuin search <query>
+
+# Search with fzf (if configured)
+atuin search -i <query>
+
+# Show last 10 commands
+atuin history list --limit 10
+
+# Show all history for today
+atuin history list --since today
+
+# Stats
+atuin stats              # overview
+atuin stats --days 30   # last 30 days
+
+# Most used commands
+atuin stats --list      # frequency list
+
+# Synchronize history across machines
+atuin sync
+
+# Manual history import
+atuin import bash
+atuin import zsh
+atuin import fish
+atuin import zsh-histdb
+
+# Register machine
+atuin register -u <username> -e <email> -p <password>
+atuin login -u <username> -p <password>
+
+# Auto-sync setup (fish)
+#   atuin init fish | source
+#   (add to config.fish)
+
+# Keybindings (fish shell)
+#   ctrl+r               — open atuin search (replaces default)
+#   ctrl+space           — search with mode switching
+#   (inside atuin search)
+#   ctrl+r               — toggle search mode (fuzzy/smartcase)
+#   ctrl+s               — toggle filter (session specific / all)
+#   ctrl+d               — delete selected entry from history
+#   enter                — paste command (or execute with ctrl+o)
+
+# Disable sync (local-only mode)
+#   export ATUIN_NO_SYNC=1
+
+# Customize search
+atuin search --cwd ~/Dotfiles         # commands run in this dir
+atuin search --exclude-cwd ~/Downloads
+atuin search --before yesterday
+atuin search --after "2 hours ago"
+atuin search --session 2               # current session only
+
+$ query: echo ""

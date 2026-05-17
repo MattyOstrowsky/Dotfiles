@@ -1,0 +1,32 @@
+# dive config
+# Path: ~/.config/dive/dive.yaml
+# Docs: https://github.com/wagoodman/dive#configuration
+
+# CI mode thresholds
+ci:
+  # Fail if image efficiency is below this (0.0 - 1.0)
+  lowestEfficiency: 0.8
+
+  # Fail if wasted space exceeds this (in MB)
+  maxWastedSpace: 50
+
+  # Fail if user add (added/removed/modified layers) exceeds this
+  maxUserAddedLayers: 5
+
+# Keybindings (inside dive TUI)
+#   Tab / Ctrl+Space    — switch between layers and tree
+#   Ctrl+U / Ctrl+D     — page up/down
+#   Ctrl+F              — filter file tree
+#   Ctrl+A              — layer aggregation toggle
+#   Ctrl+W              — toggle wrapping
+#   ?                   — help / all keybindings
+
+# Diff types to hide in tree view
+#   "added", "removed", "modified"
+# hideFiles: ["removed"]
+
+# Show file attributes (permissions, owner, etc.)
+showFileAttributes: false
+
+# Export format when using --json
+exportFormat: "json"

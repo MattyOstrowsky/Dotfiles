@@ -1,0 +1,54 @@
+% zoxide, z
+
+# Jump to the most relevant directory
+z <pattern>
+
+# Jump to a directory matching multiple patterns
+z foo bar                   # directory matching both 'foo' AND 'bar'
+
+# Jump to the best match interactively (fzf if installed)
+z <pattern>                 # interactive mode if multiple matches
+
+# Jump to child of a matched directory
+z foo/some/subdir           # path completion
+
+# List matching directories
+zoxide query <pattern>      # returns best match
+zoxide query -l <pattern>   # returns all matches
+
+# Add directories manually
+zoxide add /path/to/dir
+
+# Remove a directory from database
+zoxide remove /path/to/dir
+
+# Remove directory matching pattern from database
+zoxide remove <pattern> --all
+
+# Show database info
+zoxide info
+
+# Show entire database
+zoxide query -l
+
+# Interactive selection with fzf
+zoxide query -i <pattern>   # or: zi <pattern>
+
+# Search with fzf and output directory
+zoxide query -i <pattern> | pbcopy     # macOS
+zoxide query -i <pattern> | xclip      # Linux
+
+# Fish shell integration (usually automatic)
+#   z <pattern>            — jump
+#   zi <pattern>           — interactive (fzf)
+#   zq <pattern>           — quiet (no cd, just echo path)
+#   zoxide add <path>      — add to database
+
+# Example: common uses
+#   z dot                  → ~/Dotfiles
+#   z conf                 → ~/.config
+#   z down                 → ~/Downloads
+#   z proj                 → ~/projects
+#   z etc                  → /etc
+
+$ pattern: echo ""

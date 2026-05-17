@@ -1,0 +1,55 @@
+% btop, htop
+
+# Start btop (system monitor)
+btop
+
+# Start with tree view
+btop --tty_on
+
+# Keybindings (inside btop)
+#   ↑ ↓ / k j         — move selection
+#   ← →                — switch panels
+#   tab / shift+tab    — next/previous panel
+#   1-9                — switch to process sort column (1=cpu, 2=mem, etc)
+#   f                  — toggle process filter
+#   /                  — search process
+#   t                  — toggle tree view
+#   T                  — gather thread info
+#   d                  — toggle detailed view (per-core)
+#   p                  — toggle program (process grouping)
+#   c                  — sort by CPU
+#   m                  — sort by MEM
+#   i                  — invert sort order
+#   space              — toggle process highlight
+#   s                  — send signal (SIGTERM, SIGKILL, etc.)
+#   + / -              — expand/collapse tree
+#   o                  — toggle process IO stats
+#   r                  — reverse sort
+#   delete             — kill process
+#   q                  — quit
+
+# Command-line: show process for a specific PID
+btop --pid <pid>
+
+# Command-line: update interval
+btop --update 2000           # 2 seconds (default: 1500ms)
+
+# Color themes (in ~/.config/btop/btop.conf)
+#   color_theme = "default"
+#   available: default, monokai, dracula, snazzy, etc.
+
+# Config file location
+#   ~/.config/btop/btop.conf
+
+# Mouse support (enabled by default)
+#   click to select, scroll to navigate
+
+# Custom process filters (presets)
+#   Press 'f' then type a filter string
+#   Filter remembers previous searches
+
+# Network usage (select NET panel)
+#   Shows per-interface: down/up speed and total
+
+# Disk usage (select DISK panel)
+#   Shows per-disk: read/write speed, I/O stats

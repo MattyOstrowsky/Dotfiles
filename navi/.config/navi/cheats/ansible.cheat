@@ -1,0 +1,85 @@
+% ansible
+
+# Ad-hoc: ping all hosts
+ansible all -i inventory.ini -m ping
+
+# Ad-hoc: run command on all hosts
+ansible all -i inventory.ini -m shell -a "uptime"
+ansible all -i inventory.ini -m command -a "df -h"
+
+# Ad-hoc: gather facts
+ansible all -i inventory.ini -m setup
+ansible all -i inventory.ini -m setup -a "filter=ansible_distribution*"
+
+# Ad-hoc: install package
+ansible all -i inventory.ini -m apt -a "name=nginx state=present" -b
+
+# Ad-hoc: service management
+ansible all -i inventory.ini -m service -a "name=nginx state=restarted" -b
+
+# Ad-hoc: copy file
+ansible all -i inventory.ini -m copy -a "src=./file.txt dest=/tmp/file.txt"
+
+# Ad-hoc: template (jinja2)
+ansible all -i inventory.ini -m template -a "src=./config.j2 dest=/etc/app/config"
+
+# Ad-hoc: get file content
+ansible all -i inventory.ini -m fetch -a "src=/var/log/syslog dest=./logs/ flat=yes"
+
+# Ad-hoc: create user
+ansible all -i inventory.ini -m user -a "name=deploy state=present shell=/bin/bash"
+
+# Ad-hoc: debug variable
+ansible all -i inventory.ini -m debug -a "var=ansible_os_family"
+
+# Inventory file format (INI)
+# [webservers]
+# web1 ansible_host=192.168.1.10 ansible_user=root
+# web2 ansible_host=192.168.1.11
+#
+# [databases]
+# db1 ansible_host=192.168.1.20
+#
+# [all:vars]
+# ansible_python_interpreter=/usr/bin/python3
+
+# Test connection before running playbook
+ansible all -i inventory.ini -m ping -vvv
+
+# Dry run / check mode
+ansible-playbook playbook.yml -i inventory.ini --check
+ansible-playbook playbook.yml -i inventory.ini --check --diff
+
+# Limit to specific hosts
+ansible-playbook playbook.yml -i inventory.ini --limit webservers
+ansible-playbook playbook.yml -i inventory.ini --limit "db*"
+
+# Tags (run only tagged tasks)
+ansible-playbook playbook.yml -i inventory.ini --tags "install,config"
+ansible-playbook playbook.yml -i inventory.ini --skip-tags "notify"
+
+# Start at a specific task
+ansible-playbook playbook.yml -i inventory.ini --start-at-task "install nginx"
+
+# Ask for sudo password
+ansible-playbook playbook.yml -i inventory.ini -K
+
+# Vault operations
+ansible-vault create secrets.yml
+ansible-vault view secrets.yml
+ansible-vault edit secrets.yml
+ansible-vault encrypt secrets.yml
+ansible-vault decrypt secrets.yml
+ansible-vault rekey secrets.yml
+ansible-playbook playbook.yml -i inventory.ini --ask-vault-pass
+
+# List hosts in inventory
+ansible all -i inventory.ini --list-hosts
+
+# Debug output
+ansible all -i inventory.ini -m setup --tree facts/
+
+# Retry failed hosts
+ansible-playbook playbook.yml -i inventory.ini --limit @playbook.retry
+
+$ host: ansible all -i inventory.ini --list-hosts 2>/dev/null | tail -n +2

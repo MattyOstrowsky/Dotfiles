@@ -1,0 +1,69 @@
+% opencode, oc
+
+# Start a new session in current directory
+opencode
+
+# Start session with a specific prompt
+opencode "explain this file"
+
+# Start session with a file
+opencode --file main.go
+opencode --file main.go "refactor this"
+
+# Use a specific agent
+opencode --agent architect "review this architecture"
+opencode --agent devops "check my Dockerfile"
+opencode --agent security "audit this config"
+opencode --agent @terraform "check this plan"
+opencode --agent @ansible "validate this playbook"
+
+# Use a subagent with @name
+opencode "explain this error"    # then in chat: @python-dev
+opencode "deploy this"            # then in chat: @orchestrator
+
+# Run a command
+opencode --command tf-plan        # run terraform plan command
+opencode --command sec-audit      # run security audit command
+opencode --command stats          # show opencode stats
+
+# Use a skill
+opencode --skill linux-admin "fix my dotfiles"
+opencode --skill docker-best-practices "review my Dockerfile"
+opencode --skill k8s-patterns "review my deployment"
+
+# Pipe input
+cat Dockerfile | opencode "review this"
+kubectl get pods -o yaml | opencode "check for issues"
+terraform plan -no-color | opencode "review this plan"
+
+# List agents
+opencode --list-agents
+
+# List commands
+opencode --list-commands
+
+# List skills
+opencode --list-skills
+
+# Agent hierarchy
+#   Tab agents: architect, devops, orchestrator, meta, daily
+#   Subagents (@): terraform, ansible, backend, frontend, cicd,
+#                  data-engineer, python-dev, security, explore
+#   Skills (10): linux-admin, git-workflow, docker-best-practices,
+#                k8s-patterns, vault-secrets, observability,
+#                cicd-patterns, cloud-cost, security-checklist,
+#                terraform-debug
+#   Commands (11): tf-plan, tf-apply, docker-build, k8s-check,
+#                  pipeline-lint, sec-audit, cost-estimate,
+#                  infra-review, stats, self-improve, context-check
+
+# Daily companion (ty — po polsku)
+#   opencode  →  @daily  →  plan, discuss, delegate
+
+# Config location
+#   ~/.config/opencode/opencode.json
+#   ~/.config/opencode/agents/
+#   ~/.config/opencode/commands/
+#   ~/.config/opencode/skills/
+
+$ query: echo ""
