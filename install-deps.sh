@@ -20,8 +20,8 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DOTFILES_DIR="$SCRIPT_DIR"
 SELF="$0"
 
-# Ensure ~/go/bin and ~/.local/bin are in PATH for exists() checks
-export PATH="$HOME/go/bin:$HOME/.local/bin:$PATH"
+# Ensure common binary paths are in PATH for exists() checks
+export PATH="$HOME/go/bin:$HOME/.local/bin:$HOME/.atuin/bin:$PATH"
 
 # ─── Colors ──────────────────────────────────────────────────────────────────
 RED='\033[0;31m'
@@ -361,12 +361,15 @@ install_grype() {
 
 install_checkov() {
   if exists checkov; then return 0; fi
-  pip3 install --user checkov 2>&1 | tail -1
+  pip3 install --user --break-system-packages checkov 2>&1 | tail -1
 }
 
 install_tldr() {
   if exists tldr; then return 0; fi
-  npm install -g tldr 2>&1 | tail -1
+  # Use --prefix because system npm needs root for default prefix (/usr)
+  npm install -g tldr --prefix="$HOME/.local" 2>&1 | tail -3
+  # Add ~/.local/bin to PATH for this session
+  hash -r 2>/dev/null || true
 }
 
 # ─── Auto-stow: symlink config from Dotfiles after install ─────────────────────

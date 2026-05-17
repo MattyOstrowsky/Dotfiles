@@ -18,6 +18,9 @@ set -gx PATH $HOME/.cargo/bin $PATH
 # fnm (Fast Node Manager)
 set -gx PATH $HOME/.local/share/fnm $PATH
 
+# atuin (shell history — installed to ~/.atuin/bin)
+set -gx PATH $HOME/.atuin/bin $PATH
+
 # Bun
 set -gx BUN_INSTALL "$HOME/.bun"
 set -gx PATH $BUN_INSTALL/bin $PATH

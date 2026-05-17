@@ -6,7 +6,7 @@
 filter_mode = "host"
 
 # Search mode: fuzzy, skim, skim_tokens
-search_mode = "fuzzy"
+search_mode = "daemon-fuzzy"
 
 # Show time in search results
 show_time = true
@@ -37,6 +37,10 @@ show_preview = true
 
 # Style
 style = "auto"
+
+[daemon]
+enabled = true
+autostart = true
 
 # Keybindings (inside atuin search TUI)
 # ctrl+r — toggle search mode (fuzzy / skim)
