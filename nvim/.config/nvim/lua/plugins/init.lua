@@ -18,6 +18,7 @@ return {
     "MeanderingProgrammer/render-markdown.nvim",
     opts = {},
     ft = { "markdown" },
+    cmd = "RenderMarkdown",
   },
 
   -- test new blink
