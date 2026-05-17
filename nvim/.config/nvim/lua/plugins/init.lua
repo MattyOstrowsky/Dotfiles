@@ -21,16 +21,35 @@ return {
     cmd = "RenderMarkdown",
   },
 
-  -- test new blink
-  -- { import = "nvchad.blink.lazyspec" },
-
+  -- Treesitter — syntax highlighting
   {
     "nvim-treesitter/nvim-treesitter",
     opts = {
       ensure_installed = {
         "vim", "lua", "vimdoc",
         "markdown", "markdown_inline",
+        "yaml", "dockerfile", "bash", "json", "toml", "hcl", "terraform",
       },
     },
+  },
+
+  -- Trouble — better diagnostics list
+  {
+    "folke/trouble.nvim",
+    cmd = "Trouble",
+    opts = {},
+  },
+
+  -- Todo Comments — highlight TODO/FIXME/HACK
+  {
+    "folke/todo-comments.nvim",
+    cmd = "TodoTrouble",
+    opts = {},
+  },
+
+  -- Undotree — visual undo history
+  {
+    "mbbill/undotree",
+    cmd = "UndotreeToggle",
   },
 }
