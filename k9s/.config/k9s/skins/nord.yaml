@@ -1,34 +1,80 @@
 # k9s Nord skin
-# Based on: https://www.nordtheme.com/
+# Based on Nord palette: https://www.nordtheme.com/
+# For k9s v0.50+ (new skin format with k9s: root key)
+#
+# Polar Night:  #2e3440 #3b4252 #434c5e #4c566a
+# Snow Storm:   #d8dee9 #e5e9f0 #eceff4
+# Frost:        #8fbcbb #88c0d0 #81a1c1 #5e81ac
+# Aurora:       #bf616a #d08770 #ebcb8b #a3be8c #b48ead
 
-foreground:
-  default: "#d8dee9"
-  title: "#eceff4"
-  info: "#81a1c1"
-  status: "#a3be8c"
-  success: "#a3be8c"
-  warn: "#ebcb8b"
-  error: "#bf616a"
-  completed: "#a3be8c"
-  pending: "#ebcb8b"
-  highlight: "#eceff4"
-  k9s: "#88c0d0"
+k9s:
+  body:
+    fgColor: "#d8dee9"
+    bgColor: "#2e3440"
+    logoColor: "#88c0d0"
 
-background:
-  default: "#2e3440"
-  title: "#2e3440"
-  info: "#2e3440"
-  status: "#2e3440"
-  success: "#2e3440"
-  warn: "#2e3440"
-  error: "#2e3440"
-  completed: "#2e3440"
-  pending: "#2e3440"
-  highlight: "#3b4252"
-  k9s: "#2e3440"
+  info:
+    fgColor: "#81a1c1"
+    sectionColor: "#5e81ac"
 
-table:
-  header: "#88c0d0"
-  body: "#d8dee9"
-  current: "#a3be8c"
-  border: "#4c566a"
+  frame:
+    border:
+      fgColor: "#4c566a"
+      focusColor: "#88c0d0"
+
+    menu:
+      fgColor: "#d8dee9"
+      keyColor: "#81a1c1"
+      numKeyColor: "#88c0d0"
+
+    crumbs:
+      fgColor: "#eceff4"
+      bgColor: "#3b4252"
+      activeColor: "#88c0d0"
+
+    status:
+      newColor: "#a3be8c"
+      modifyColor: "#ebcb8b"
+      addColor: "#8fbcbb"
+      errorColor: "#bf616a"
+      highlightColor: "#88c0d0"
+      killColor: "#d08770"
+      completedColor: "#4c566a"
+
+    title:
+      fgColor: "#d8dee9"
+      bgColor: "#3b4252"
+      highlightColor: "#88c0d0"
+      counterColor: "#81a1c1"
+      filterColor: "#5e81ac"
+
+  views:
+    table:
+      fgColor: "#d8dee9"
+      bgColor: "#2e3440"
+      cursorColor: "#88c0d0"
+      header:
+        fgColor: "#88c0d0"
+        bgColor: "#3b4252"
+        sorterColor: "#a3be8c"
+
+    yaml:
+      keyColor: "#81a1c1"
+      colonColor: "#4c566a"
+      valueColor: "#d8dee9"
+
+    logs:
+      fgColor: "#d8dee9"
+      bgColor: "#2e3440"
+
+    charts:
+      defaultColor: "#88c0d0"
+      dialBgColor: "#3b4252"
+      chartBgColor: "#2e3440"
+
+    help:
+      fgColor: "#d8dee9"
+      bgColor: "#2e3440"
+      keyColor: "#81a1c1"
+      numKeyColor: "#88c0d0"
+      sectionColor: "#5e81ac"
