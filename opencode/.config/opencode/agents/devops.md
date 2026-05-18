@@ -110,3 +110,4 @@ For specialized tasks, invoke subagents:
 - `@orchestrator` — for breaking down complex tasks into execution plans with parallel/chain delegation
 - `@daily` — for planning, discussion, brainstorming, and figuring out which agent to use
 - `@meta` — for building new agents, skills, commands, and ecosystem improvements
+- `@agent-eval` — for evaluating agent behavior, running regression tests, and audit suites

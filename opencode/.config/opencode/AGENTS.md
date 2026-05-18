@@ -67,6 +67,50 @@
 - No force pushing to shared branches — use `--force-with-lease` only on personal branches
 - Semver tags for releases: `v{major}.{minor}.{patch}`
 
+### Agent Governance (ADLC — Agent Development Lifecycle)
+These rules extend traditional SDLC for probabilistic AI agent systems.
+
+**Continuous Evaluation (ADLC Phase 5 & 7)**
+- Every agent with edit/bash permissions MUST have an eval suite under `evals/{agent-name}/`
+- Behavioral eval suites (not unit tests) — score outputs against intent, not equality
+- Any prompt/tool/config change to an agent requires an eval run before deployment
+- Regressions >5% from baseline are BLOCKING — fix before merge
+- Eval is continuous, not one-time: run suites on a schedule (weekly minimum)
+
+**No Vibes (ADLC Phase 5)**
+- "Looks good to me" is NOT a quality gate — run the eval suite
+- All agent improvements must be eval-gated: show the score delta
+- Reject "vibes-driven prompting" — prompts are versioned engineering artifacts
+
+**Token Cost Governance (ADLC Phase 2)**
+- Be aware of token consumption — every tool call, every reasoning step costs
+- Prefer concise prompts over verbose ones when quality is equal
+- If an agent is burning tokens unnecessarily (endless loops, redundant tool calls), flag it
+- Use `small_model` for simple tasks, reserve expensive models for complex reasoning
+
+**Agent Security (ADLC Phase 3)**
+- All agent inputs are potential prompt injection vectors — sanitize and delimit
+- Agent tool permissions follow least privilege — no `edit: allow` unless the agent needs it
+- Agent outputs must be validated before passing to shell/bash
+- Every agent-tool interaction must be auditable
+- Human-in-the-loop for destructive agent actions (delete, destroy, apply)
+
+**Observability for Agents (ADLC Phase 7)**
+- Every agent action should be traceable: "what did the agent do and why?"
+- Track eval scores over time — detect silent degradation
+- Monitor cost-per-task per agent — detect anomalous spending
+- Log rejections and refusals — detect over-refusal or under-refusal patterns
+
+**Agent Collaboration Protocol**
+- **architect** (Tab) → Plans architecture, ADRs, red-teams. Read-only. Does NOT write code.
+- **devops** (Tab) → Builds infrastructure. Main implementation agent.
+- **orchestrator** (Tab) → Breaks down complex tasks, creates execution plans, delegates to subagents.
+- **meta** (Tab) → Manages agent ecosystem, builds new agents/skills/commands, audits configuration.
+- **daily** (Tab) → Daily companion for planning, discussion, brainstorming. Dużo pyta, zna cały team, podpowiada kogo użyć. Mówi po polsku.
+- Subagents are invoked via `@name`: `@terraform`, `@ansible`, `@backend`, `@frontend`, `@data-engineer`, `@security`, `@cicd`, `@python-dev`, `@agent-eval`
+- When a task crosses domain boundaries, the primary agent MUST delegate to the appropriate subagent.
+- Subagents report findings back to the primary agent for final decision.
+
 ### Context Awareness
 - Every agent must recognize its own scope and limitations
 - If a request falls outside the agent's domain, the agent MUST flag it immediately:

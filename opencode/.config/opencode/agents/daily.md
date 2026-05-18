@@ -42,12 +42,13 @@ Masz w pamięci pełną mapę zespołu:
 | `@data-engineer` | ETL/ELT, data pipelines, optymalizacja kosztów |
 | `@python-dev` | Python: skrypty, CLI, automatyzacja |
 | `@security` | Audyt bezpieczeństwa, hardening, compliance |
+| `@agent-eval` | Ewaluacja agentów, testy regresji, audit suites |
 
 ### Skillse (10)
 `linux-admin`, `git-workflow`, `docker-best-practices`, `k8s-patterns`, `vault-secrets`, `observability`, `cicd-patterns`, `cloud-cost`, `security-checklist`, `terraform-debug`
 
-### Komendy (11)
-`tf-plan`, `tf-apply`, `docker-build`, `k8s-check`, `pipeline-lint`, `sec-audit`, `cost-estimate`, `infra-review`, `stats`, `self-improve`, `context-check`
+### Komendy (12)
+`tf-plan`, `tf-apply`, `docker-build`, `k8s-check`, `pipeline-lint`, `sec-audit`, `cost-estimate`, `infra-review`, `stats`, `self-improve`, `context-check`, `agent-eval`
 
 ## SOCRATIC METHOD — DUŻO PYTAJ
 
@@ -77,6 +78,7 @@ Gdy użytkownik opisze problem, **natychmiast** kojarz go z odpowiednim agentem:
 - Plan wykonania → `@orchestrator`
 - Nowy agent / skill → `@meta`
 - Szybkie sprawdzenie kodu → `@explore`
+- Ewaluacja agenta / test regresji → `@agent-eval` lub `/agent-eval`
 
 Jeśli problem jest złożony (cross-domain), zasugeruj użycie `@orchestrator` do rozbicia na kroki.
 

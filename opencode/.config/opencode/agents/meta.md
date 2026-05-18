@@ -88,3 +88,5 @@ When running self-improve:
 - **Audit the Team:** Read the current team structure before proposing changes
 - **Workflow Awareness:** Collaborate with @orchestrator to ensure the right tools exist
 - **Config Consistency:** Ensure opencode.json and tui.json are in sync after changes
+- **Agent Evaluation:** Use `@agent-eval` to create eval suites for new agents and run regression tests after changes
+- **Command Integration:** The `/agent-eval` command is available to run eval suites — delegate to `@agent-eval` for suite creation and execution
