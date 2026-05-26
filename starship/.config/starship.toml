@@ -1,3 +1,116 @@
-# Cleared for Starship's built-in default look.
-# Keep this file empty to use the default prompt.
-# Full DevOps theme will be rewritten later.
+# ~/.config/starship.toml
+
+add_newline = true
+
+format = '''
+[┌─>](bold green) $aws$gcloud$azure
+[│](bold green)   $time$kubernetes $git_branch$git_status $python $nodejs $golang $helm
+[└─>](bold green) $cmd_duration$directory $character'''
+
+# Changes the default prompt symbol to '>'
+[character]
+success_symbol = "[❯](bold green)"
+error_symbol = "[❯](bold red)"
+
+# --- Cloud & Containerization Modules ---
+
+# AWS module - shows current profile and region
+[aws]
+symbol = "AWS ☁️  "
+style = "bold yellow"
+format = "[$symbol($profile \\($region\\))]($style) "
+force_display = true
+
+# GCP module - shows current project and region
+[gcloud]
+symbol = "GCP ☁️  "
+style = "bold blue"
+format = "[$symbol($project \\($region\\))]($style) "
+disabled = false
+
+[line_break]
+disabled = false
+
+[azure]
+disabled = false
+format = "[$symbol($username)]($style) "
+symbol = "AZ ☁️  "
+style = "purple bold"
+
+# Kubernetes module - shows context and namespace
+[kubernetes]
+symbol = "⚓"
+style = "bold cyan"
+format = '[$symbol$context \[$namespace\]]($style) '
+disabled = false
+
+# Shorten long EKS context names
+[[kubernetes.contexts]]
+context_pattern = "arn:aws:eks:us-east-1:418274023911:cluster/internal"
+context_alias = "internal"
+
+# Helm module - shows active chart version
+[helm]
+symbol = "⎈ "
+format = "via [$symbol($version)]($style) "
+disabled = false
+
+# --- Programming Language & Environment Modules ---
+
+# Go module - shows Go version
+[golang]
+symbol = "🐹 "
+style = "bold blue"
+format = "via [$symbol($version)]($style) "
+
+# Node.js module - shows Node.js version
+[nodejs]
+symbol = "⬢ "
+style = "bold green"
+format = "via [$symbol($version)]($style) "
+disabled = false
+
+# Python module - shows version and virtual environment
+[python]
+symbol = "🐍 "
+style = "bold yellow"
+pyenv_version_name = false
+format = 'via [$symbol${pyenv_prefix}(${version} )(\\($virtualenv\\))]($style)'
+
+# --- Core & High-Utility Modules ---
+
+# Git module - shows branch and status
+[git_branch]
+symbol = "🌿 "
+style = "bold green"
+format = "on [$symbol$branch]($style) "
+
+[git_status]
+style = "bold red"
+format = '([$all_status$ahead_behind]($style)) '
+stashed = "📦"
+ahead = "↑"
+behind = "↓"
+diverged = "⇕"
+renamed = "»"
+deleted = "✘"
+
+# Directory module - shows current path
+[directory]
+style = "bold cyan"
+read_only = "🔒"
+truncate_to_repo = true
+truncation_length = 3
+
+# Cmd_duration module - shows last command execution time
+[cmd_duration]
+min_time = 500
+style = "bold yellow"
+format = "took [$duration]($style) "
+
+# Time module - shows current time
+[time]
+disabled = false
+style = "bold dimmed white"
+format = "[$time]($style) "
+time_format = "%T"
