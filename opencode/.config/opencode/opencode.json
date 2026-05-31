@@ -11,6 +11,16 @@
   "instructions": [
     "~/.config/opencode/AGENTS.md"
   ],
+  "mcp": {
+    "github": {
+      "type": "local",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}"
+      }
+    }
+  },
   "agent": {
     "build": {
       "disable": true
