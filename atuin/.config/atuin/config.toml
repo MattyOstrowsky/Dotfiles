@@ -6,7 +6,7 @@
 filter_mode = "host"
 
 # Search mode: fuzzy, skim, skim_tokens
-search_mode = "daemon-fuzzy"
+search_mode = "fuzzy"
 
 # Show time in search results
 show_time = true
