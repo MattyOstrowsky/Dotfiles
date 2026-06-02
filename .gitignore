@@ -56,3 +56,6 @@ crash.log
 .idea/
 .vscode/
 *.code-workspace
+
+# Fish shell — machine-specific state
+**/fish_variables

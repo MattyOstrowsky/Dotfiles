@@ -27,7 +27,11 @@ Includes an interactive dependency installer and 40+ navi cheatsheets.
 ### 1. Install prerequisites
 
 ```bash
+# Debian/Ubuntu
 sudo apt install stow git curl
+
+# Fedora
+sudo dnf install stow git curl
 ```
 
 ### 2. Clone and symlink dotfiles
@@ -106,6 +110,7 @@ Stow mirrors directory structure. Each top-level directory is a "package":
 | **Security** | trivy, grype, checkov, tldr |
 
 Features:
+- Supports both Debian/Ubuntu (apt) and Fedora (dnf) — auto-detects
 - Numbered menu (default) or `--fzf` for fuzzy picker
 - Auto-skips already-installed tools
 - `--install` for non-interactive full install

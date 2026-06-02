@@ -89,8 +89,8 @@ inc() { local -n v="$1"; v=$((v + 1)); }
 # ── System / apt packages ──────────────────────────────────────────────────
 sys_pkg() {
   local pkg="$1"
-  if dpkg -s "$pkg" &>/dev/null 2>&1; then return 0; fi
-  sudo apt install -y "$pkg" 2>&1 | tail -1
+  if rpm -q "$pkg" &>/dev/null 2>&1; then return 0; fi
+  sudo dnf install -y "$pkg" 2>&1 | tail -1
 }
 install_stow()     { sys_pkg stow; }
 install_git()      { sys_pkg git; }
@@ -116,7 +116,7 @@ install_python() {
     echo "  $(python3 --version 2>/dev/null)"
     return 0
   fi
-  sudo apt install -y python3 python3-pip python3-venv 2>&1 | tail -1
+  sudo dnf install -y python3 python3-pip python3-venv 2>&1 | tail -1
 }
 # pip3 comes with python3 package, but make sure
 install_pip3() {
@@ -124,7 +124,7 @@ install_pip3() {
     echo "  $(pip3 --version 2>/dev/null)"
     return 0
   fi
-  sudo apt install -y python3-pip 2>&1 | tail -1
+  sudo dnf install -y python3-pip 2>&1 | tail -1
 }
 
 install_node() {
@@ -150,12 +150,14 @@ install_go() {
     echo "  $(go version)"
     return 0
   fi
-  # Install to /usr/local (sudo needed once) — standard Go installation
+  # Install to ~/.local/go (no sudo needed)
   wget -q https://go.dev/dl/go1.22.2.linux-amd64.tar.gz -O /tmp/go.tar.gz
-  sudo rm -rf /usr/local/go
-  sudo tar -C /usr/local -xzf /tmp/go.tar.gz
+  mkdir -p "$HOME/.local"
+  rm -rf "$HOME/.local/go"
+  tar -C "$HOME/.local" -xzf /tmp/go.tar.gz
   rm /tmp/go.tar.gz
-  echo "  Go installed to /usr/local/go"
+  echo "  Go installed to $HOME/.local/go"
+  echo "  Add to PATH: export PATH=\"\$HOME/.local/go/bin:\$PATH\""
 }
 
 install_rust() {
@@ -282,9 +284,9 @@ install_terraform() {
     echo "  $(terraform --version 2>/dev/null | head -1)"
     return 0
   fi
-  wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg 2>/dev/null
-  echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
-  sudo apt update && sudo apt install -y terraform
+  sudo dnf install -y dnf-plugins-core 2>/dev/null
+  sudo dnf config-manager --add-repo https://rpm.releases.hashicorp.com/fedora/hashicorp.repo 2>/dev/null
+  sudo dnf install -y terraform
 }
 
 install_terragrunt() {
@@ -348,10 +350,13 @@ install_glow() {
 
 install_trivy() {
   if exists trivy; then return 0; fi
-  sudo apt-get install -y wget apt-transport-https gnupg 2>/dev/null
-  wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | gpg --dearmor | sudo tee /usr/share/keyrings/trivy.gpg > /dev/null
-  echo "deb [signed-by=/usr/share/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb generic main" | sudo tee -a /etc/apt/sources.list.d/trivy.list
-  sudo apt-get update && sudo apt-get install -y trivy
+  sudo dnf install -y trivy 2>/dev/null || {
+    rpm -q trivy 2>/dev/null && return 0
+    sudo dnf install -y wget 2>/dev/null
+    wget -qO - https://aquasecurity.github.io/trivy-repo/rpm/public.key | sudo tee /etc/pki/rpm-gpg/RPM-GPG-KEY-TRIVY > /dev/null
+    echo -e "[trivy]\nname=Trivy\nbaseurl=https://aquasecurity.github.io/trivy-repo/rpm/releases/\$releasever/\$basearch/\ngpgkey=https://aquasecurity.github.io/trivy-repo/rpm/public.key\nenabled=1\ngpgcheck=1" | sudo tee /etc/yum.repos.d/trivy.repo > /dev/null
+    sudo dnf install -y trivy
+  }
 }
 
 install_grype() {
@@ -379,8 +384,7 @@ STOW_PACKAGES=(
   "lazydocker:lazydocker"
   "k9s:k9s"
   "btop:btop"
-  "bat:batcat"
-  "batcat:bat"
+  "bat:bat"
   "glow:glow"
   "atuin:atuin"
   "direnv:direnv"
@@ -422,27 +426,27 @@ auto_stow() {
 # Runtimes MUST be first category — tools that need go/cargo/pip/fnm are
 # installed in order and will pick up the runtime if it was selected.
 
-# ── System (apt packages only) ─────────────────────────────────────────────
-tool "System"     "stow"      "stow"      install_stow     ""    "apt"
-tool "System"     "git"       "git"       install_git      ""    "apt"
-tool "System"     "curl"      "curl"      install_curl     ""    "apt"
-tool "System"     "wget"      "wget"      install_wget     ""    "apt"
-tool "System"     "make"      "make"      install_make     ""    "apt"
-tool "System"     "unzip"     "unzip"     install_unzip    ""    "apt"
-tool "System"     "fish"      "fish"      install_fish     ""    "apt"
-tool "System"     "fzf"       "fzf"       install_fzf      ""    "apt"
-tool "System"     "bat"       "batcat"    install_bat      ""    "apt"
-tool "System"     "ripgrep"   "rg"        install_ripgrep  ""    "apt"
-tool "System"     "fd-find"   "fdfind"    install_fdfind   ""    "apt"
-tool "System"     "tree"      "tree"      install_tree     ""    "apt"
-tool "System"     "htop"      "htop"      install_htop     ""    "apt"
-tool "System"     "direnv"    "direnv"    install_direnv   ""    "apt"
-tool "System"     "btop"      "btop"      install_btop     ""    "apt"
-tool "System"     "xclip"     "xclip"     install_xclip    ""    "apt"
+# ── System (dnf packages only) ─────────────────────────────────────────────
+tool "System"     "stow"      "stow"      install_stow     ""    "dnf"
+tool "System"     "git"       "git"       install_git      ""    "dnf"
+tool "System"     "curl"      "curl"      install_curl     ""    "dnf"
+tool "System"     "wget"      "wget"      install_wget     ""    "dnf"
+tool "System"     "make"      "make"      install_make     ""    "dnf"
+tool "System"     "unzip"     "unzip"     install_unzip    ""    "dnf"
+tool "System"     "fish"      "fish"      install_fish     ""    "dnf"
+tool "System"     "fzf"       "fzf"       install_fzf      ""    "dnf"
+tool "System"     "bat"       "bat"       install_bat      ""    "dnf"
+tool "System"     "ripgrep"   "rg"        install_ripgrep  ""    "dnf"
+tool "System"     "fd-find"   "fdfind"    install_fdfind   ""    "dnf"
+tool "System"     "tree"      "tree"      install_tree     ""    "dnf"
+tool "System"     "htop"      "htop"      install_htop     ""    "dnf"
+tool "System"     "direnv"    "direnv"    install_direnv   ""    "dnf"
+tool "System"     "btop"      "btop"      install_btop     ""    "dnf"
+tool "System"     "xclip"     "xclip"     install_xclip    ""    "dnf"
 
 # ── Runtimes (language runtimes + pkg managers, no sudo) ────────────────────
-tool "Runtimes"   "Python"    "python3"   install_python   ""    "apt"
-tool "Runtimes"   "pip3"      "pip3"      install_pip3     ""    "apt"
+tool "Runtimes"   "Python"    "python3"   install_python   ""    "dnf"
+tool "Runtimes"   "pip3"      "pip3"      install_pip3     ""    "dnf"
 tool "Runtimes"   "Node.js"   "node"      install_node     ""    "fnm"
 tool "Runtimes"   "Go"        "go"        install_go       ""    "tarball"
 tool "Runtimes"   "Rust"      "cargo"     install_rust     ""    "rustup"
@@ -469,21 +473,21 @@ tool "K8s"       "kustomize" "kustomize" install_kustomize ""   "script"
 tool "K8s"       "kubeconform" "kubeconform" install_kubeconform "go" "go install"
 
 # ── Infrastructure as Code ─────────────────────────────────────────────────
-tool "IaC"       "terraform" "terraform" install_terraform ""   "apt"
+tool "IaC"       "terraform" "terraform" install_terraform ""   "dnf"
 tool "IaC"       "terragrunt" "terragrunt" install_terragrunt "" "binary"
-tool "IaC"       "ansible"   "ansible"   install_ansible  ""    "apt"
+tool "IaC"       "ansible"   "ansible"   install_ansible  ""    "dnf"
 tool "IaC"       "infracost" "infracost" install_infracost ""  "script"
 
 # ── Terminal UI tools ──────────────────────────────────────────────────────
 tool "TUI"       "lazygit"   "lazygit"   install_lazygit  "go"  "go install"
 tool "TUI"       "lazydocker" "lazydocker" install_lazydocker "go" "go install"
 tool "TUI"       "lazysql"   "lazysql"   install_lazysql  "go"  "go install"
-tool "TUI"       "dive"      "dive"      install_dive     ""    "deb"
+tool "TUI"       "dive"      "dive"      install_dive     "go"  "go install"
 tool "TUI"       "ctop"      "ctop"      install_ctop     ""    "binary"
 tool "TUI"       "glow"      "glow"      install_glow     "go"  "go install"
 
 # ── Security ───────────────────────────────────────────────────────────────
-tool "Security"  "trivy"     "trivy"     install_trivy    ""    "apt"
+tool "Security"  "trivy"     "trivy"     install_trivy    ""    "dnf"
 tool "Security"  "grype"     "grype"     install_grype    ""    "script"
 tool "Security"  "checkov"   "checkov"   install_checkov  "pip" "pip3 install"
 tool "Security"  "tldr"      "tldr"      install_tldr     "fnm" "npm i -g"
