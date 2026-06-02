@@ -87,9 +87,14 @@ end
 # =============================================================================
 # Aliases — General
 # =============================================================================
-alias bat='batcat'
+# bat is 'batcat' on Debian, just 'bat' on Fedora
+if type -q batcat
+    alias bat='batcat'
+    alias cat='batcat --paging=never'
+else if type -q bat
+    alias cat='bat --paging=never'
+end
 alias n='nvim'
-alias cat='batcat --paging=never'
 alias ll='ls -lah'
 alias ..='cd ..'
 alias ...='cd ../..'
