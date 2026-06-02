@@ -34,6 +34,11 @@ NC='\033[0m' # No Color
 
 # ─── Helper: check if a command exists ──────────────────────────────────────
 exists() {
+  # Special case: fish functions (like fisher) aren't PATH binaries
+  if [[ "$1" == "fisher" ]]; then
+    fish -c "type -q fisher" &>/dev/null
+    return $?
+  fi
   command -v "$1" &>/dev/null
 }
 
@@ -231,8 +236,8 @@ install_kubectl() {
   fi
   local ver
   ver=$(curl -sL https://dl.k8s.io/release/stable.txt)
-  curl -LO "https://dl.k8s.io/release/$ver/bin/linux/amd64/kubectl"
-  sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+  curl -sLO "https://dl.k8s.io/release/$ver/bin/linux/amd64/kubectl"
+  install -m 0755 kubectl "$HOME/.local/bin/kubectl"
   rm -f kubectl
 }
 
@@ -241,7 +246,12 @@ install_helm() {
     echo "  $(helm version --short 2>/dev/null)"
     return 0
   fi
-  curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+  local ver
+  ver=$(curl -s https://api.github.com/repos/helm/helm/releases/latest | grep '"tag_name"' | cut -d'"' -f4)
+  wget -q "https://get.helm.sh/helm-${ver}-linux-amd64.tar.gz" -O /tmp/helm.tar.gz
+  tar xzf /tmp/helm.tar.gz -C /tmp/ && install -m 755 /tmp/linux-amd64/helm "$HOME/.local/bin/helm"
+  rm -rf /tmp/helm.tar.gz /tmp/linux-amd64
+  echo "  Helm $ver installed to ~/.local/bin"
 }
 
 install_kubectx() {
@@ -284,9 +294,13 @@ install_terraform() {
     echo "  $(terraform --version 2>/dev/null | head -1)"
     return 0
   fi
-  sudo dnf install -y dnf-plugins-core 2>/dev/null
-  sudo dnf config-manager --add-repo https://rpm.releases.hashicorp.com/fedora/hashicorp.repo 2>/dev/null
-  sudo dnf install -y terraform
+  # Binary install — avoids repo issues on newer Fedora
+  local ver
+  ver=$(curl -s https://api.github.com/repos/hashicorp/terraform/releases/latest | grep '"tag_name"' | cut -d'"' -f4 | sed 's/^v//')
+  wget -q "https://releases.hashicorp.com/terraform/${ver}/terraform_${ver}_linux_amd64.zip" -O /tmp/tf.zip
+  unzip -qo /tmp/tf.zip -d /tmp/tf-install && sudo install -m 755 /tmp/tf-install/terraform /usr/local/bin/terraform
+  rm -rf /tmp/tf.zip /tmp/tf-install
+  echo "  Terraform $ver installed"
 }
 
 install_terragrunt() {
