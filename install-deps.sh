@@ -21,7 +21,7 @@ DOTFILES_DIR="$SCRIPT_DIR"
 SELF="$0"
 
 # Ensure common binary paths are in PATH for exists() checks
-export PATH="$HOME/go/bin:$HOME/.local/bin:$HOME/.atuin/bin:$PATH"
+export PATH="$HOME/go/bin:$HOME/.local/bin:$HOME/.local/go/bin:$HOME/.atuin/bin:$PATH"
 
 # ─── Colors ──────────────────────────────────────────────────────────────────
 RED='\033[0;31m'
@@ -95,7 +95,9 @@ inc() { local -n v="$1"; v=$((v + 1)); }
 sys_pkg() {
   local pkg="$1"
   if rpm -q "$pkg" &>/dev/null 2>&1; then return 0; fi
-  sudo dnf install -y "$pkg" 2>&1 | tail -1
+  echo "  Running: sudo dnf install -y $pkg"
+  sudo dnf install -y "$pkg" 2>&1 | tail -5
+  return "${PIPESTATUS[0]}"
 }
 install_stow()     { sys_pkg stow; }
 install_git()      { sys_pkg git; }
@@ -155,14 +157,26 @@ install_go() {
     echo "  $(go version)"
     return 0
   fi
-  # Install to ~/.local/go (no sudo needed)
-  wget -q https://go.dev/dl/go1.22.2.linux-amd64.tar.gz -O /tmp/go.tar.gz
+  # Fetch latest Go version dynamically
+  local go_ver
+  go_ver=$(curl -sSL 'https://go.dev/VERSION?m=text' 2>/dev/null | head -1)
+  if [[ -z "$go_ver" ]]; then
+    # Fallback if version fetch fails — scrape from download page
+    go_ver=$(curl -sSL 'https://go.dev/dl/' 2>/dev/null | grep -oP 'go[0-9]+\.[0-9]+\.[0-9]+\.linux-amd64\.tar\.gz' | head -1 | sed 's/\.linux-amd64\.tar\.gz//')
+  fi
+  if [[ -z "$go_ver" ]]; then
+    echo "  ${RED}✗${NC} Could not determine latest Go version"
+    return 1
+  fi
+  echo "  Downloading ${go_ver}..."
+  wget -q "https://go.dev/dl/${go_ver}.linux-amd64.tar.gz" -O /tmp/go.tar.gz
   mkdir -p "$HOME/.local"
   rm -rf "$HOME/.local/go"
   tar -C "$HOME/.local" -xzf /tmp/go.tar.gz
   rm /tmp/go.tar.gz
-  echo "  Go installed to $HOME/.local/go"
-  echo "  Add to PATH: export PATH=\"\$HOME/.local/go/bin:\$PATH\""
+  # Add to PATH for this session so subsequent go install calls work
+  export PATH="$HOME/.local/go/bin:$PATH"
+  echo "  Go ${go_ver} installed to $HOME/.local/go"
 }
 
 install_rust() {
@@ -179,6 +193,7 @@ install_bun() {
     return 0
   fi
   curl -fsSL https://bun.sh/install | bash
+  export PATH="$HOME/.bun/bin:$PATH"
 }
 
 # ── Shell tools ────────────────────────────────────────────────────────────
@@ -206,7 +221,17 @@ install_navi() {
 
 install_fisher() {
   if ! exists fish; then echo "  ⚠ fish required"; return 1; fi
-  fish -c 'curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install jorgebucaran/fisher && fisher update' 2>/dev/null
+  fish -c '
+    if not type -q fisher
+      curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source
+      and fisher install jorgebucaran/fisher
+    else
+      fisher update
+    end
+  ' || {
+    echo "  ${RED}✗${NC} fisher installation failed"
+    return 1
+  }
 }
 
 # ── Editors ────────────────────────────────────────────────────────────────
@@ -216,9 +241,30 @@ install_nvim() {
     echo "  $(nvim --version 2>/dev/null | head -1)"
     return 0
   fi
-  curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.appimage
-  chmod +x nvim-linux-x86_64.appimage
-  sudo mv nvim-linux-x86_64.appimage /usr/local/bin/nvim
+  local nvim_url="https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.appimage"
+  pushd /tmp >/dev/null || return 1
+  # Try AppImage first; if FUSE is missing, extract it
+  if command -v fusermount &>/dev/null || command -v fusermount3 &>/dev/null; then
+    curl -fsSL "$nvim_url" -o nvim.appimage
+    chmod +x nvim.appimage
+    if ./nvim.appimage --version &>/dev/null; then
+      sudo mv nvim.appimage /usr/local/bin/nvim
+    else
+      # FUSE exists but AppImage won't run — extract
+      ./nvim.appimage --appimage-extract &>/dev/null
+      sudo mv squashfs-root/usr/bin/nvim /usr/local/bin/nvim
+      rm -rf nvim.appimage squashfs-root
+    fi
+  else
+    # No FUSE — download AppImage and extract manually
+    curl -fsSL "$nvim_url" -o nvim.appimage
+    chmod +x nvim.appimage
+    ./nvim.appimage --appimage-extract &>/dev/null
+    sudo mv squashfs-root/usr/bin/nvim /usr/local/bin/nvim
+    rm -rf nvim.appimage squashfs-root
+  fi
+  popd >/dev/null || return 1
+  echo "  nvim installed to /usr/local/bin"
 }
 
 install_opencode() {
@@ -256,7 +302,11 @@ install_helm() {
 
 install_kubectx() {
   if exists kubectx && exists kubens; then return 0; fi
-  sudo git clone --depth 1 https://github.com/ahmetb/kubectx /opt/kubectx 2>/dev/null || true
+  if [[ -d /opt/kubectx ]]; then
+    sudo git -C /opt/kubectx pull --ff-only 2>/dev/null || true
+  else
+    sudo git clone --depth 1 https://github.com/ahmetb/kubectx /opt/kubectx
+  fi
   sudo ln -sf /opt/kubectx/kubectx /usr/local/bin/kubectx
   sudo ln -sf /opt/kubectx/kubens /usr/local/bin/kubens
   mkdir -p "$HOME/.config/fish/completions"
@@ -451,7 +501,7 @@ tool "System"     "fish"      "fish"      install_fish     ""    "dnf"
 tool "System"     "fzf"       "fzf"       install_fzf      ""    "dnf"
 tool "System"     "bat"       "bat"       install_bat      ""    "dnf"
 tool "System"     "ripgrep"   "rg"        install_ripgrep  ""    "dnf"
-tool "System"     "fd-find"   "fdfind"    install_fdfind   ""    "dnf"
+tool "System"     "fd-find"   "fd"        install_fdfind   ""    "dnf"
 tool "System"     "tree"      "tree"      install_tree     ""    "dnf"
 tool "System"     "htop"      "htop"      install_htop     ""    "dnf"
 tool "System"     "direnv"    "direnv"    install_direnv   ""    "dnf"

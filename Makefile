@@ -1,6 +1,6 @@
 STOW_DIR := $(shell pwd)
 # Auto-detect stow packages, excluding .git and pi/ (contains secrets)
-PACKAGES := $(shell ls -d */ | sed 's/\///' | grep -v '.git' | grep -v '^pi$$')
+PACKAGES := $(shell ls -d */ | sed 's/\///' | grep -v '\.git' | grep -v '^pi$$' | grep -v '^ly$$')
 
 .PHONY: install uninstall reinstall list dry-run install-deps
 

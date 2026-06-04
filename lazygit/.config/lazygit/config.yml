@@ -5,25 +5,25 @@ gui:
   theme:
     lightTheme: false
     activeBorderColor:
-      - cyan
+      - "#56b6c2"
       - bold
     inactiveBorderColor:
-      - white
+      - "#5c6370"
     optionsTextColor:
-      - blue
+      - "#61afef"
     selectedLineBgColor:
-      - default
+      - "#3e4452"
     selectedRangeBgColor:
-      - blue
+      - "#3e4452"
     cherryPickedCommitBgColor:
-      - blue
+      - "#3e4452"
       - bold
     cherryPickedCommitFgColor:
-      - cyan
+      - "#56b6c2"
     unstagedChangesColor:
-      - red
+      - "#e06c75"
     defaultFgColor:
-      - default
+      - "#abb2bf"
   # Show file icons
   showFileIcons: true
   # Show branch graphics in log

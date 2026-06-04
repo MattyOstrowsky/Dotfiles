@@ -1,0 +1,88 @@
+# k9s One Dark skin
+# Based on Atom One Dark palette
+# For k9s v0.50+ (new skin format with k9s: root key)
+#
+# Background:    #282c34
+# Current Line:  #2c313c
+# Selection:     #3e4452
+# Foreground:    #abb2bf
+# Comment:       #5c6370
+# Cyan:          #56b6c2
+# Green:         #98c379
+# Orange:        #d19a66
+# Yellow:        #e5c07b
+# Purple:        #c678dd
+# Red:           #e06c75
+# Blue:          #61afef
+
+k9s:
+  body:
+    fgColor: "#abb2bf"
+    bgColor: "#282c34"
+    logoColor: "#61afef"
+
+  info:
+    fgColor: "#56b6c2"
+    sectionColor: "#61afef"
+
+  frame:
+    border:
+      fgColor: "#5c6370"
+      focusColor: "#61afef"
+
+    menu:
+      fgColor: "#abb2bf"
+      keyColor: "#56b6c2"
+      numKeyColor: "#61afef"
+
+    crumbs:
+      fgColor: "#abb2bf"
+      bgColor: "#3e4452"
+      activeColor: "#61afef"
+
+    status:
+      newColor: "#98c379"
+      modifyColor: "#e5c07b"
+      addColor: "#56b6c2"
+      errorColor: "#e06c75"
+      highlightColor: "#61afef"
+      killColor: "#d19a66"
+      completedColor: "#5c6370"
+
+    title:
+      fgColor: "#abb2bf"
+      bgColor: "#3e4452"
+      highlightColor: "#61afef"
+      counterColor: "#56b6c2"
+      filterColor: "#c678dd"
+
+  views:
+    table:
+      fgColor: "#abb2bf"
+      bgColor: "#282c34"
+      cursorColor: "#61afef"
+      header:
+        fgColor: "#61afef"
+        bgColor: "#3e4452"
+        sorterColor: "#98c379"
+
+    yaml:
+      keyColor: "#56b6c2"
+      colonColor: "#5c6370"
+      valueColor: "#abb2bf"
+
+    logs:
+      fgColor: "#abb2bf"
+      bgColor: "#282c34"
+
+    charts:
+      defaultColor: "#61afef"
+      dialBgColor: "#3e4452"
+      chartBgColor: "#282c34"
+
+    help:
+      fgColor: "#abb2bf"
+      bgColor: "#282c34"
+      keyColor: "#56b6c2"
+      numKeyColor: "#61afef"
+      sectionColor: "#c678dd"

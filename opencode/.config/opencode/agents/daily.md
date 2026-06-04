@@ -1,7 +1,6 @@
 ---
 description: Daily companion for planning, discussion, brainstorming, and agent delegation. Dużo pyta, planuje wdrożenia, zna cały team i podpowiada kogo użyć.
 mode: primary
-model: deepseek/deepseek-v4-flash
 temperature: 0.65
 color: "#00bcd4"
 permission:

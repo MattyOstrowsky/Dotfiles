@@ -1,7 +1,8 @@
 {
-  "$schema": "https://opencode.ai/config.json",
-  "model": "anthropic/claude-sonnet-4-5",
-  "small_model": "anthropic/claude-haiku-4-5",
+  "$schema": "https://opencode.ai/tui.json",
+  "theme": "onedark",
+  "model": "opencode-go/deepseek-v4-pro",
+  "small_model": "opencode-go/deepseek-v4-flash",
   "autoupdate": true,
   "share": "manual",
   "permission": {

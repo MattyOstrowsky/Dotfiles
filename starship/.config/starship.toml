@@ -3,28 +3,28 @@
 add_newline = true
 
 format = '''
-[┌─>](bold green) $aws$gcloud$azure
-[│](bold green)   $time$kubernetes $git_branch$git_status $python $nodejs $golang $helm
-[└─>](bold green) $cmd_duration$directory $character'''
+[┌─>](bold #98c379) $aws$gcloud$azure
+[│](bold #98c379)   $time$kubernetes $git_branch$git_status $python $nodejs $golang $helm
+[└─>](bold #98c379) $cmd_duration$directory $character'''
 
 # Changes the default prompt symbol to '>'
 [character]
-success_symbol = "[❯](bold green)"
-error_symbol = "[❯](bold red)"
+success_symbol = "[❯](bold #98c379)"
+error_symbol = "[❯](bold #e06c75)"
 
 # --- Cloud & Containerization Modules ---
 
 # AWS module - shows current profile and region
 [aws]
 symbol = "AWS ☁️  "
-style = "bold yellow"
+style = "bold #e5c07b"
 format = "[$symbol($profile \\($region\\))]($style) "
 force_display = true
 
 # GCP module - shows current project and region
 [gcloud]
 symbol = "GCP ☁️  "
-style = "bold blue"
+style = "bold #61afef"
 format = "[$symbol($project \\($region\\))]($style) "
 disabled = false
 
@@ -35,12 +35,12 @@ disabled = false
 disabled = false
 format = "[$symbol($username)]($style) "
 symbol = "AZ ☁️  "
-style = "purple bold"
+style = "bold #c678dd"
 
 # Kubernetes module - shows context and namespace
 [kubernetes]
 symbol = "⚓"
-style = "bold cyan"
+style = "bold #56b6c2"
 format = '[$symbol$context \[$namespace\]]($style) '
 disabled = false
 
@@ -60,20 +60,20 @@ disabled = false
 # Go module - shows Go version
 [golang]
 symbol = "🐹 "
-style = "bold blue"
+style = "bold #61afef"
 format = "via [$symbol($version)]($style) "
 
 # Node.js module - shows Node.js version
 [nodejs]
 symbol = "⬢ "
-style = "bold green"
+style = "bold #98c379"
 format = "via [$symbol($version)]($style) "
 disabled = false
 
 # Python module - shows version and virtual environment
 [python]
 symbol = "🐍 "
-style = "bold yellow"
+style = "bold #e5c07b"
 pyenv_version_name = false
 format = 'via [$symbol${pyenv_prefix}(${version} )(\\($virtualenv\\))]($style)'
 
@@ -82,11 +82,11 @@ format = 'via [$symbol${pyenv_prefix}(${version} )(\\($virtualenv\\))]($style)'
 # Git module - shows branch and status
 [git_branch]
 symbol = "🌿 "
-style = "bold green"
+style = "bold #98c379"
 format = "on [$symbol$branch]($style) "
 
 [git_status]
-style = "bold red"
+style = "bold #e06c75"
 format = '([$all_status$ahead_behind]($style)) '
 stashed = "📦"
 ahead = "↑"
@@ -97,7 +97,7 @@ deleted = "✘"
 
 # Directory module - shows current path
 [directory]
-style = "bold cyan"
+style = "bold #56b6c2"
 read_only = "🔒"
 truncate_to_repo = true
 truncation_length = 3
@@ -105,12 +105,12 @@ truncation_length = 3
 # Cmd_duration module - shows last command execution time
 [cmd_duration]
 min_time = 500
-style = "bold yellow"
+style = "bold #e5c07b"
 format = "took [$duration]($style) "
 
 # Time module - shows current time
 [time]
 disabled = false
-style = "bold dimmed white"
+style = "dimmed #abb2bf"
 format = "[$time]($style) "
 time_format = "%T"

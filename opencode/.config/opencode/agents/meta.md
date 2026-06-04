@@ -1,7 +1,6 @@
 ---
 description: Ecosystem Manager — builds new agents, develops skills, identifies missing roles, improves configuration. Use for expanding the agent team.
 mode: primary
-model: deepseek/deepseek-v4-flash
 temperature: 0.3
 color: "#e74c3c"
 permission:

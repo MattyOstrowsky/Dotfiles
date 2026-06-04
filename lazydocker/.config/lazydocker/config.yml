@@ -12,7 +12,7 @@ gui:
   wrapMainPanel: true
 
   # Border color
-  borderColor: cyan
+  borderColor: '#56b6c2'
 
   # Language
   language: 'auto'
