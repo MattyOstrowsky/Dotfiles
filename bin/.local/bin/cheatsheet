@@ -1,0 +1,8 @@
+#!/bin/bash
+# Interactive cheatsheet viewer — pick category, then browse keybinds
+CHEAT_DIR="$HOME/.config/cheatsheets"
+
+category=$(ls "$CHEAT_DIR"/*.md 2>/dev/null | sed 's|.*/||; s|\.md$||' | sort | wofi --show dmenu --prompt "Category" --sort-order alphabetical)
+[ -z "$category" ] && exit 0
+
+cat "$CHEAT_DIR/$category.md" | wofi --show dmenu --prompt "$category" --width 800 --height 500
