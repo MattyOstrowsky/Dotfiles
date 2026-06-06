@@ -250,9 +250,130 @@ sudo dnf install papirus-icon-theme
 
 ---
 
+## Fedora 44 Troubleshooting (2026-06-05)
+
+### 1. Hyprland won't start: `libseat.so.1 missing`
+
+```
+error while loading shared libraries: libseat.so.1: cannot open shared object file
+```
+
+**Fix:** COPR package misses the dependency.
+
+```bash
+sudo dnf install libseat
+```
+
+### 2. `polkit-gnome` does not exist on Fedora 44
+
+The `polkit-gnome` package was removed from Fedora. Use `hyprpolkitagent` instead.
+
+In `~/.config/hypr/hyprland.conf`, replace:
+```
+exec-once = /usr/libexec/polkit-gnome-authentication-agent-1
+```
+with:
+```
+exec-once = /usr/libexec/hyprpolkitagent
+```
+
+### 3. Qt version conflict: COPR vs Terra repo
+
+**Symptom:** `dnf` refuses to install `hyprpolkitagent` + `noctalia-shell` together:
+
+```
+qt6-qtbase-6.11.1 conflicts with qt6-qtbase-6.10.2
+hyprland-qt-support requires Qt_6.10_PRIVATE_API (not found)
+```
+
+**Root cause:** COPR `hyprland-qt-support` is compiled for Qt 6.10, but Fedora updates ship Qt 6.11. Terra's `noctalia-qs` requires Qt 6.11.
+
+**Fix:** Force-install `hyprland-qt-support` with `--nodeps` (it works — only one QML symbol tag differs, and `hyprpolkitagent` doesn't use it):
+
+```bash
+sudo dnf install --nogpgcheck noctalia-shell noctalia-qs
+dnf download hyprland-qt-support --destdir /tmp
+sudo rpm -i --nodeps /tmp/hyprland-qt-support-*.rpm
+sudo dnf install hyprpolkitagent
+```
+
+### 4. Config errors after Hyprland 0.51 upgrade
+
+**Errors from `Hyprland --verify-config`:**
+
+| Old option | Problem | Fix |
+|---|---|---|
+| `general:cursor_inactive_timeout` | Removed in 0.51 | Delete the line |
+| `gestures { workspace_swipe ... }` | Block removed | Delete the block |
+| `bindel = ...` | `bindel` no longer exists | Use `binde` (repeat) or `bindl` (locked) |
+
+### 5. Noctalia shell appears "not running"
+
+Noctalia starts correctly but the UI (bar, dock) is hidden by default until you invoke it:
+- `Super + Space` → Launcher
+- `Super + S` → Control Center
+- `Super + ,` → Settings
+
+Check logs at `/run/user/1000/quickshell/by-id/*/log.qslog`.
+
+---
+
+## Touchpad Gestures (hyprgrass)
+
+Native 3-finger swipe between workspaces — Mac-style.
+
+### Build & install
+
+```bash
+# Build dependencies
+sudo dnf install hyprland-devel meson ninja-build \
+  pixman-devel libinput-devel wayland-devel \
+  libxkbcommon-devel libdrm-devel
+
+# Clone and build
+git clone https://github.com/horriblename/hyprgrass /tmp/hyprgrass
+cd /tmp/hyprgrass
+meson setup build --prefix=/usr
+ninja -C build
+sudo ninja -C build install
+```
+
+### Hyprland config
+
+Add to `~/.config/hypr/hyprland.conf`:
+
+```
+plugin = /usr/lib64/hyprgrass.so
+
+# Gesture config (3-finger swipe workspaces)
+plugin {
+    hyprgrass {
+        sensitivity = 4
+        long_press_delay = 400
+
+        3 {
+            swipe {
+                left  = workspace, e+1
+                right = workspace, e-1
+            }
+        }
+
+        4 {
+            swipe {
+                up    = fullscreen, 1
+                down  = fullscreen, 0
+            }
+        }
+    }
+}
+```
+
+---
+
 ## References
 
 - [Noctalia Docs](https://docs.noctalia.dev/v4)
 - [Hyprland Wiki](https://wiki.hyprland.org)
 - [ly GitHub](https://github.com/fairyglade/ly)
+- [hyprgrass GitHub](https://github.com/horriblename/hyprgrass)
 - [Noctalia Discord](https://discord.noctalia.dev)
