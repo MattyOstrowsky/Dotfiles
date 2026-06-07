@@ -1,0 +1,309 @@
+{
+  "cheatsheetData": [
+    {
+      "title": "Skróty klawiszowe",
+      "binds": [
+        {
+          "keys": "RETURN",
+          "desc": "exec ghostty",
+          "_verb": "exec",
+          "_param": "ghostty",
+          "_mods": "",
+          "_mainKey": "RETURN"
+        },
+        {
+          "keys": "B",
+          "desc": "exec firefox",
+          "_verb": "exec",
+          "_param": "firefox",
+          "_mods": "",
+          "_mainKey": "B"
+        },
+        {
+          "keys": "N",
+          "desc": "exec nautilus",
+          "_verb": "exec",
+          "_param": "nautilus",
+          "_mods": "",
+          "_mainKey": "N"
+        },
+        {
+          "keys": "SLASH",
+          "desc": "exec ~/.local/bin/cheatsheet",
+          "_verb": "exec",
+          "_param": "~/.local/bin/cheatsheet",
+          "_mods": "",
+          "_mainKey": "SLASH"
+        },
+        {
+          "keys": "Q",
+          "desc": "killactive",
+          "_verb": "killactive",
+          "_param": "",
+          "_mods": "",
+          "_mainKey": "Q"
+        },
+        {
+          "keys": "F",
+          "desc": "fullscreen",
+          "_verb": "fullscreen",
+          "_param": "",
+          "_mods": "",
+          "_mainKey": "F"
+        },
+        {
+          "keys": "V",
+          "desc": "togglefloating",
+          "_verb": "togglefloating",
+          "_param": "",
+          "_mods": "",
+          "_mainKey": "V"
+        },
+        {
+          "keys": "P",
+          "desc": "pseudo # dwindle",
+          "_verb": "pseudo",
+          "_param": "# dwindle",
+          "_mods": "",
+          "_mainKey": "P"
+        },
+        {
+          "keys": "H",
+          "desc": "movefocus l",
+          "_verb": "movefocus",
+          "_param": "l",
+          "_mods": "",
+          "_mainKey": "H"
+        },
+        {
+          "keys": "J",
+          "desc": "movefocus d",
+          "_verb": "movefocus",
+          "_param": "d",
+          "_mods": "",
+          "_mainKey": "J"
+        },
+        {
+          "keys": "K",
+          "desc": "movefocus u",
+          "_verb": "movefocus",
+          "_param": "u",
+          "_mods": "",
+          "_mainKey": "K"
+        },
+        {
+          "keys": "L",
+          "desc": "movefocus r",
+          "_verb": "movefocus",
+          "_param": "r",
+          "_mods": "",
+          "_mainKey": "L"
+        },
+        {
+          "keys": "Shift + H",
+          "desc": "movewindow l",
+          "_verb": "movewindow",
+          "_param": "l",
+          "_mods": "Shift",
+          "_mainKey": "H"
+        },
+        {
+          "keys": "Shift + J",
+          "desc": "movewindow d",
+          "_verb": "movewindow",
+          "_param": "d",
+          "_mods": "Shift",
+          "_mainKey": "J"
+        },
+        {
+          "keys": "Shift + K",
+          "desc": "movewindow u",
+          "_verb": "movewindow",
+          "_param": "u",
+          "_mods": "Shift",
+          "_mainKey": "K"
+        },
+        {
+          "keys": "Shift + L",
+          "desc": "movewindow r",
+          "_verb": "movewindow",
+          "_param": "r",
+          "_mods": "Shift",
+          "_mainKey": "L"
+        },
+        {
+          "keys": "1-9",
+          "desc": "workspace 1-9",
+          "_verb": "workspace",
+          "_mods": "",
+          "_mainKey": "1-9",
+          "_merged": true
+        },
+        {
+          "keys": "0",
+          "desc": "workspace 10",
+          "_verb": "workspace",
+          "_param": "10",
+          "_mods": "",
+          "_mainKey": "0"
+        },
+        {
+          "keys": "Shift + 1-9",
+          "desc": "movetoworkspace 1-9",
+          "_verb": "movetoworkspace",
+          "_mods": "Shift",
+          "_mainKey": "1-9",
+          "_merged": true
+        },
+        {
+          "keys": "Shift + 0",
+          "desc": "movetoworkspace 10",
+          "_verb": "movetoworkspace",
+          "_param": "10",
+          "_mods": "Shift",
+          "_mainKey": "0"
+        },
+        {
+          "keys": "Scroll Down",
+          "desc": "workspace e+1",
+          "_verb": "workspace",
+          "_param": "e+1",
+          "_mods": "",
+          "_mainKey": "MOUSE_DOWN"
+        },
+        {
+          "keys": "Scroll Up",
+          "desc": "workspace e-1",
+          "_verb": "workspace",
+          "_param": "e-1",
+          "_mods": "",
+          "_mainKey": "MOUSE_UP"
+        },
+        {
+          "keys": "SPACE",
+          "desc": "exec $ipc launcher toggle",
+          "_verb": "exec",
+          "_param": "$ipc launcher toggle",
+          "_mods": "",
+          "_mainKey": "SPACE"
+        },
+        {
+          "keys": "S",
+          "desc": "exec $ipc controlCenter toggle",
+          "_verb": "exec",
+          "_param": "$ipc controlCenter toggle",
+          "_mods": "",
+          "_mainKey": "S"
+        },
+        {
+          "keys": "COMMA",
+          "desc": "exec $ipc settings toggle",
+          "_verb": "exec",
+          "_param": "$ipc settings toggle",
+          "_mods": "",
+          "_mainKey": "COMMA"
+        },
+        {
+          "keys": "Vol Up",
+          "desc": "exec $ipc volume increase",
+          "_verb": "exec",
+          "_param": "$ipc volume increase",
+          "_mods": "",
+          "_mainKey": "XF86AUDIORAISEVOLUME"
+        },
+        {
+          "keys": "Vol Down",
+          "desc": "exec $ipc volume decrease",
+          "_verb": "exec",
+          "_param": "$ipc volume decrease",
+          "_mods": "",
+          "_mainKey": "XF86AUDIOLOWERVOLUME"
+        },
+        {
+          "keys": "Mute",
+          "desc": "exec $ipc volume muteOutput",
+          "_verb": "exec",
+          "_param": "$ipc volume muteOutput",
+          "_mods": "",
+          "_mainKey": "XF86AUDIOMUTE"
+        },
+        {
+          "keys": "Bright Up",
+          "desc": "exec $ipc brightness increase",
+          "_verb": "exec",
+          "_param": "$ipc brightness increase",
+          "_mods": "",
+          "_mainKey": "XF86MONBRIGHTNESSUP"
+        },
+        {
+          "keys": "Bright Down",
+          "desc": "exec $ipc brightness decrease",
+          "_verb": "exec",
+          "_param": "$ipc brightness decrease",
+          "_mods": "",
+          "_mainKey": "XF86MONBRIGHTNESSDOWN"
+        },
+        {
+          "keys": "Shift + S",
+          "desc": "exec grim -g \"$(slurp)\" - | wl-copy",
+          "_verb": "exec",
+          "_param": "grim -g \"$(slurp)\" - | wl-copy",
+          "_mods": "Shift",
+          "_mainKey": "S"
+        },
+        {
+          "keys": "PrtSc",
+          "desc": "exec grim - | wl-copy",
+          "_verb": "exec",
+          "_param": "grim - | wl-copy",
+          "_mods": "",
+          "_mainKey": "PRINT"
+        },
+        {
+          "keys": "Shift + PrtSc",
+          "desc": "exec grim -g \"$(slurp)\" - | wl-copy",
+          "_verb": "exec",
+          "_param": "grim -g \"$(slurp)\" - | wl-copy",
+          "_mods": "Shift",
+          "_mainKey": "PRINT"
+        }
+      ]
+    }
+  ],
+  "detectedCompositor": "hyprland",
+  "windowWidth": 1400,
+  "windowHeight": 850,
+  "autoHeight": true,
+  "columnCount": 3,
+  "modKeyVariable": "$mod",
+  "hyprlandConfigPath": "~/.config/hypr/hyprland.conf",
+  "hyprlandLuaConfigPath": "~/.config/hypr/hyprland.lua",
+  "hyprlandParserMode": "auto",
+  "niriConfigPath": "~/.config/niri/config.kdl",
+  "mangoConfigPath": "~/.config/mango/config.conf",
+  "mergeSequentialBinds": true,
+  "showUndescribedBinds": true,
+  "splitLargeWorkspaceCategory": true,
+  "workspaceSplitThreshold": 12,
+  "keyColorAlt": "#FF6B6B",
+  "keyColorXF86": "#4ECDC4",
+  "keyColorPrint": "#95E1D3",
+  "keyColorNumeric": "#A8DADC",
+  "keyColorMouse": "#F38181",
+  "keyColorSuper": "",
+  "keyColorCtrl": "",
+  "keyColorShift": "",
+  "keyColorDefault": "#6C757D",
+  "keyLabelColor": "#FFFFFF",
+  "keyTextSuper": "",
+  "keyTextCtrl": "",
+  "keyTextShift": "",
+  "keyTextAlt": "",
+  "keyTextXF86": "",
+  "keyTextPrint": "",
+  "keyTextNumeric": "",
+  "keyTextMouse": "",
+  "keyTextDefault": "",
+  "descriptionTextColor": "",
+  "bindOverrides": {}
+}
