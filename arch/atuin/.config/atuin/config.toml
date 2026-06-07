@@ -36,7 +36,7 @@ show_preview = true
 # enter_accept = false
 
 # Style
-style = "auto"
+style = "compact"
 
 [daemon]
 enabled = true

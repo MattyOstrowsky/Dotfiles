@@ -10,7 +10,7 @@ font-feature = calt
 font-feature = liga
 
 # --- Theme / Colors ----------------------------------------------------------
-theme = "Atom One Dark"
+theme = "Catppuccin Mocha"
 
 # --- Window ------------------------------------------------------------------
 background-opacity = 0.95

@@ -17,7 +17,7 @@ k9s:
     logFullScreenTrigger: 'ctrl-l'
 
     # Skin (theme) to use — must match a file in skins/
-    skin: onedark
+    skin: catppuccin
 
     # Show pod ip in the pods view
     showPodIP: true

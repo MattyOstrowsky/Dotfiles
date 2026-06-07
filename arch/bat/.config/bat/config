@@ -3,7 +3,7 @@
 # See `bat --help` for all options
 
 # Theme (see `bat --list-themes`)
---theme="OneHalfDark"
+--theme="Catppuccin-mocha"
 
 # Show line numbers
 --number
