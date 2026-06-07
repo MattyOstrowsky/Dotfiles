@@ -42,7 +42,7 @@ cd /tmp/paru-bin && makepkg -si
 sudo pacman -S hyprland ly
 
 # Noctalia (AUR) — shell + Qt support
-paru -S noctalia-git
+paru -S noctalia-shell
 
 # Noctalia dependencies
 sudo pacman -S brightnessctl imagemagick power-profiles-daemon
@@ -66,16 +66,7 @@ sudo systemctl disable gdm 2>/dev/null || true
 sudo systemctl enable ly
 ```
 
-### 4. ly Nord Theme
-
-```bash
-# Copy pre-made Nord config + TTY color script
-sudo cp ~/Dotfiles/arch/ly/etc/ly/config.ini  /etc/ly/config.ini
-sudo cp ~/Dotfiles/arch/ly/etc/ly/startup.sh  /etc/ly/startup.sh
-sudo chmod +x /etc/ly/startup.sh
-```
-
-### 5. Deploy Dotfiles (Hyprland + Noctalia + all configs)
+### 4. Deploy Dotfiles (Hyprland + Noctalia + all configs)
 
 ```bash
 cd ~/Dotfiles
@@ -83,7 +74,7 @@ make install
 # or manually: stow -d arch --target=$HOME hyprland noctalia fish nvim starship ...
 ```
 
-### 6. Restore Noctalia Config
+### 5. Restore Noctalia Config
 
 Your noctalia config (settings.json, colors.json, plugins) is pre-saved in the dotfiles.
 
@@ -94,7 +85,7 @@ mkdir -p ~/.config/noctalia
 cp -r ~/Dotfiles/arch/noctalia/.config/noctalia/* ~/.config/noctalia/
 ```
 
-### 7. Reboot
+### 6. Reboot
 
 ```bash
 sudo reboot
@@ -174,92 +165,7 @@ Included plugins (pre-installed via dotfiles):
 - **hot-corners** — trigger actions by moving cursor to corners
 - **sys-info-widget** — system resource monitor
 
-Color scheme: **One Dark Two** (set via Noctalia Settings GUI).
-
-### ly Config — Nord Theme
-
-ly config lives at `/etc/ly/config.ini` (system-level, cannot be stowed directly).
-
-A **pre-made Nord-themed config** is included in the dotfiles:
-
-```bash
-# Copy Nord config + TTY color startup script
-sudo cp ~/Dotfiles/arch/ly/etc/ly/config.ini  /etc/ly/config.ini
-sudo cp ~/Dotfiles/arch/ly/etc/ly/startup.sh  /etc/ly/startup.sh
-sudo chmod +x /etc/ly/startup.sh
-
-# Apply immediately (kicks you to login screen)
-sudo systemctl restart ly
-```
-
-**What the Nord config does:**
-
-| Setting | Value | Effect |
-|---------|-------|--------|
-| `bg` | `#2E3440` (nord0) | Deep dark blue-gray background |
-| `fg` | `#D8DEE9` (nord4) | Frosty light text |
-| `border_fg` | `#5E81AC` (nord10) | Cool blue border |
-| `error_fg` | `#BF616A` (nord11) | Red errors (bold) |
-| `animation` | `matrix` + `#88C0D0` (nord8) | Matrix rain in Nord teal |
-| `asterisk` | `•` (bullet) | Password mask |
-| `clock` | `%a %d %b  %H:%M` | Mon 04 Jun  13:37 |
-| `hide_version_string` | `true` | Clean top-left corner |
-| `text_in_center` | `true` | Centered input labels |
-| `startup.sh` | Nord TTY palette | Console colors match theme |
-
----
-
-## Touchpad Gestures (hyprgrass)
-
-Native 3-finger swipe between workspaces — Mac-style.
-
-### Build & install (Arch)
-
-```bash
-# Build dependencies
-sudo pacman -S hyprland meson ninja pixman libinput wayland libxkbcommon libdrm
-
-# Clone and build
-git clone https://github.com/horriblename/hyprgrass /tmp/hyprgrass
-cd /tmp/hyprgrass
-meson setup build --prefix=/usr
-ninja -C build
-sudo ninja -C build install
-```
-
-### Hyprland config
-
-Add to `~/.config/hypr/hyprland.conf`:
-
-```
-plugin = /usr/lib/hyprgrass.so
-
-# Gesture config (3-finger swipe workspaces)
-plugin {
-    hyprgrass {
-        sensitivity = 4
-        long_press_delay = 400
-
-        3 {
-            swipe {
-                left  = workspace, e+1
-                right = workspace, e-1
-            }
-        }
-
-        4 {
-            swipe {
-                up    = fullscreen, 1
-                down  = fullscreen, 0
-            }
-        }
-    }
-}
-```
-
-> **Note:** Plugin path on Arch is `/usr/lib/hyprgrass.so`, not `/usr/lib64/`.
-
----
+Color scheme: **Catppuccin Mocha** (set via Noctalia Settings GUI).
 
 ## Troubleshooting
 
@@ -267,7 +173,7 @@ plugin {
 
 ```bash
 # Check if noctalia-shell is available
-paru -Q noctalia-git
+paru -Q noctalia-shell
 
 # Run manually for debugging
 qs -c noctalia-shell
@@ -310,7 +216,7 @@ sudo pacman -S papirus-icon-theme
 
 ```bash
 # Clean build cache and retry
-paru -S --cleanbuild noctalia-git
+paru -S --cleanbuild noctalia-shell
 
 # Check build deps
 sudo pacman -S qt6-base qt6-declarative qt6-svg qt6-wayland cmake
@@ -321,7 +227,7 @@ sudo pacman -S qt6-base qt6-declarative qt6-svg qt6-wayland cmake
 ## References
 
 - [Noctalia Docs](https://docs.noctalia.dev/v4)
-- [noctalia-git AUR](https://aur.archlinux.org/packages/noctalia-git)
+- [noctalia-shell AUR](https://aur.archlinux.org/packages/noctalia-shell)
 - [Hyprland Wiki](https://wiki.hyprland.org)
 - [ly GitHub](https://github.com/fairyglade/ly)
 - [hyprgrass GitHub](https://github.com/horriblename/hyprgrass)
