@@ -1,0 +1,133 @@
+# =============================================================================
+# Alacritty Configuration — mirrored from Ghostty
+# =============================================================================
+# WARN: Alacritty does NOT support built-in splits. Use tmux or zellij.
+#       Ghostty split keybinds (super+ctrl+h/j/k/l) have no equivalent here.
+# =============================================================================
+
+# --- Font ----------------------------------------------------------------------
+[font]
+size = 12.0
+
+[font.normal]
+family = "JetBrains Mono"
+style = "Regular"
+
+[font.bold]
+family = "JetBrains Mono"
+style = "Bold"
+
+[font.italic]
+family = "JetBrains Mono"
+style = "Italic"
+
+[font.bold_italic]
+family = "JetBrains Mono"
+style = "Bold Italic"
+
+# --- Window --------------------------------------------------------------------
+[window]
+opacity = 0.95
+blur = true
+padding = { x = 8, y = 4 }
+decorations = "Full"
+dynamic_title = true
+
+# --- Cursor --------------------------------------------------------------------
+[cursor]
+style = "Beam"
+blinking = "On"
+vi_mode_style = "Beam"
+
+# --- Scrolling -----------------------------------------------------------------
+[scrolling]
+history = 10000
+multiplier = 3
+
+# --- Mouse ---------------------------------------------------------------------
+[mouse]
+hide_when_typing = true
+
+# --- Selection -----------------------------------------------------------------
+[selection]
+save_to_clipboard = true
+
+# --- Terminal ------------------------------------------------------------------
+[env]
+TERM = "xterm-256color"
+
+[terminal]
+shell = "/usr/bin/fish"
+
+# --- Keyboard ------------------------------------------------------------------
+[keyboard]
+bindings = [
+  # Font size
+  { key = "Plus",  mods = "Control",       action = "IncreaseFontSize" },
+  { key = "Minus", mods = "Control",       action = "DecreaseFontSize" },
+  { key = "0",     mods = "Control",       action = "ResetFontSize"    },
+  # Vi-like scroll
+  { key = "K",     mods = "Control|Shift", action = "ScrollPageUp"     },
+  { key = "J",     mods = "Control|Shift", action = "ScrollPageDown"   },
+]
+
+# =============================================================================
+# Catppuccin Mocha
+# =============================================================================
+[colors]
+# --- Palette ---
+[colors.primary]
+background = "#1e1e2e"
+foreground = "#cdd6f4"
+
+[colors.normal]
+black   = "#45475a"
+red     = "#f38ba8"
+green   = "#a6e3a1"
+yellow  = "#f9e2af"
+blue    = "#89b4fa"
+magenta = "#f5c2e7"
+cyan    = "#94e2d5"
+white   = "#bac2de"
+
+[colors.bright]
+black   = "#585b70"
+red     = "#f38ba8"
+green   = "#a6e3a1"
+yellow  = "#f9e2af"
+blue    = "#89b4fa"
+magenta = "#f5c2e7"
+cyan    = "#94e2d5"
+white   = "#a6adc8"
+
+[colors.dim]
+black   = "#313244"
+red     = "#eba0ac"
+green   = "#94e2d5"
+yellow  = "#f5e2c7"
+blue    = "#74c7ec"
+magenta = "#cba6f7"
+cyan    = "#89dceb"
+white   = "#a6adc8"
+
+# --- UI ---
+[colors.cursor]
+text   = "#1e1e2e"
+cursor = "#f5e0dc"
+
+[colors.vi_mode_cursor]
+text   = "#1e1e2e"
+cursor = "#b4befe"
+
+[colors.selection]
+text       = "#1e1e2e"
+background = "#f5e0dc"
+
+# --- Misc ---
+[colors.line_indicator]
+foreground = "#45475a"
+background = "None"
+
+[colors.footer_bar]
+foreground = "#cdd6f4"
+background = "#313244"

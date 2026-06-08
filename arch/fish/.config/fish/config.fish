@@ -25,6 +25,9 @@ set -gx PATH $HOME/.atuin/bin $PATH
 set -gx BUN_INSTALL "$HOME/.bun"
 set -gx PATH $BUN_INSTALL/bin $PATH
 
+# Disable welcome message
+set -g fish_greeting
+
 # =============================================================================
 # Interactive Shell
 # =============================================================================
@@ -310,3 +313,4 @@ function __dotfiles_check_update --on-event fish_prompt
         end
     end
 end
+

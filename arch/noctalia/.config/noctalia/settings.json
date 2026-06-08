@@ -204,6 +204,12 @@
                     "textColor": "none"
                 },
                 {
+                    "displayMode": "onhover",
+                    "iconColor": "none",
+                    "id": "Bluetooth",
+                    "textColor": "none"
+                },
+                {
                     "hideWhenZero": false,
                     "hideWhenZeroUnread": false,
                     "iconColor": "none",
@@ -758,7 +764,7 @@
     },
     "wallpaper": {
         "automationEnabled": false,
-        "directory": "/home/mat/Pobrane",
+        "directory": "/home/mat/Pictures/Wallpapers",
         "enableMultiMonitorDirectories": false,
         "enabled": true,
         "favorites": [

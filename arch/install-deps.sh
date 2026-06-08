@@ -37,7 +37,7 @@ ensure_paru() {
 }
 
 # Ensure common binary paths are in PATH for exists() checks
-export PATH="$HOME/go/bin:$HOME/.local/bin:$HOME/.local/go/bin:$HOME/.atuin/bin:$PATH"
+export PATH="$HOME/go/bin:$HOME/.cargo/bin:$HOME/.local/bin:$HOME/.local/go/bin:$HOME/.local/share/fnm:$HOME/.local/share/fnm/aliases/default/bin:$HOME/.atuin/bin:$PATH"
 
 # ─── Colors ──────────────────────────────────────────────────────────────────
 RED='\033[0;31m'
@@ -53,6 +53,11 @@ exists() {
   # Special case: fish functions (like fisher) aren't PATH binaries
   if [[ "$1" == "fisher" ]]; then
     fish -c "type -q fisher" &>/dev/null
+    return $?
+  fi
+  # docker compose is a subcommand, not a standalone binary
+  if [[ "$1" == "docker compose" ]]; then
+    docker compose version &>/dev/null 2>&1
     return $?
   fi
   command -v "$1" &>/dev/null
@@ -85,7 +90,7 @@ status_label() {
 # ─── Tool definitions ────────────────────────────────────────────────────────
 # Each entry: category | name | binary | install_func | needs | via
 #
-# `needs` = runtime required: "go", "cargo", "pip", "bun", "fnm", "" (none)
+# `needs` = runtime required: "go", "cargo", "pip", "fnm", "" (none)
 # `via`   = display label for install method
 #
 # Categories are processed IN ORDER. Runtimes MUST be first so they
@@ -117,6 +122,7 @@ sys_pkg() {
 }
 install_stow()     { sys_pkg stow; }
 install_git()      { sys_pkg git; }
+install_gh()       { sys_pkg github-cli; }
 install_curl()     { sys_pkg curl; }
 install_wget()     { sys_pkg wget; }
 install_make()     { sys_pkg make; }
@@ -131,6 +137,47 @@ install_direnv()   { sys_pkg direnv; }
 install_btop()     { sys_pkg btop; }
 install_unzip()    { sys_pkg unzip; }
 install_xclip()    { sys_pkg xclip; }
+install_ghostty()     { sys_pkg ghostty; }
+install_alacritty()  { sys_pkg alacritty; }
+install_grim()      { sys_pkg grim; }
+install_slurp()     { sys_pkg slurp; }
+install_wl_clipboard() { sys_pkg wl-clipboard; }
+install_portal_hyprland() { sys_pkg xdg-desktop-portal-hyprland; }
+
+# ── Docker / Containers ─────────────────────────────────────────────────────
+install_docker() {
+  if exists docker; then
+    echo "  $(docker --version 2>/dev/null)"
+    if ! groups "$USER" | grep -q docker; then
+      sudo usermod -aG docker "$USER"
+      echo -e "  ${YELLOW}⚠${NC} Added to docker group — re-login required"
+    fi
+    return 0
+  fi
+  sys_pkg docker docker-compose
+  sudo systemctl enable --now docker
+  sudo usermod -aG docker "$USER"
+  echo -e "  ${YELLOW}⚠${NC} Added to docker group — re-login for passwordless access"
+}
+
+install_docker_compose() {
+  if docker compose version &>/dev/null; then
+    echo "  $(docker compose version 2>/dev/null)"
+    return 0
+  fi
+  sys_pkg docker-compose
+}
+
+# ── AUR packages ────────────────────────────────────────────────────────────
+
+install_gpu_screen_recorder() {
+  if exists gpu-screen-recorder; then
+    echo "  $(gpu-screen-recorder --version 2>/dev/null || echo 'installed')"
+    return 0
+  fi
+  ensure_paru
+  paru -S --needed --noconfirm gpu-screen-recorder
+}
 
 # ── Runtimes (no sudo — user space) ────────────────────────────────────────
 
@@ -165,6 +212,7 @@ install_node() {
   # Install LTS node
   fnm install --lts 2>&1 | tail -1
   fnm use lts-latest 2>/dev/null
+  eval "$(fnm env --use-on-cd 2>/dev/null)" 2>/dev/null
   echo "  node $(node --version 2>/dev/null) installed via fnm"
 }
 
@@ -201,6 +249,8 @@ install_rust() {
     return 0
   fi
   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+  export PATH="$HOME/.cargo/bin:$PATH"
+  echo "  $(cargo --version 2>/dev/null)"
 }
 
 install_bun() {
@@ -281,12 +331,6 @@ install_nvim() {
   fi
   popd >/dev/null || return 1
   echo "  nvim installed to /usr/local/bin"
-}
-
-install_opencode() {
-  if exists opencode; then return 0; fi
-  # opencode is installed via bun
-  curl -fsSL https://opencode.ai/install | bash
 }
 
 # ── Kubernetes ─────────────────────────────────────────────────────────────
@@ -451,6 +495,7 @@ install_tldr() {
 # ─── Auto-stow: symlink config from Dotfiles after install ─────────────────────
 # Maps tool_name → stow package directory name
 STOW_PACKAGES=(
+  "alacritty:alacritty"
   "lazygit:lazygit"
   "lazydocker:lazydocker"
   "k9s:k9s"
@@ -500,6 +545,7 @@ auto_stow() {
 # ── System (pacman packages) ───────────────────────────────────────────────
 tool "System"     "stow"      "stow"      install_stow     ""    "pacman"
 tool "System"     "git"       "git"       install_git      ""    "pacman"
+tool "System"     "gh"        "gh"        install_gh       ""    "pacman"
 tool "System"     "curl"      "curl"      install_curl     ""    "pacman"
 tool "System"     "wget"      "wget"      install_wget     ""    "pacman"
 tool "System"     "make"      "make"      install_make     ""    "pacman"
@@ -514,6 +560,10 @@ tool "System"     "htop"      "htop"      install_htop     ""    "pacman"
 tool "System"     "direnv"    "direnv"    install_direnv   ""    "pacman"
 tool "System"     "btop"      "btop"      install_btop     ""    "pacman"
 tool "System"     "xclip"     "xclip"     install_xclip    ""    "pacman"
+
+# ── Containers (Docker Engine + Compose) ───────────────────────────────────
+tool "Containers" "docker"        "docker"       install_docker        ""    "pacman"
+tool "Containers" "docker-compose" "docker compose" install_docker_compose "" "pacman"
 
 # ── Runtimes (language runtimes + pkg managers, no sudo) ────────────────────
 tool "Runtimes"   "Python"    "python3"   install_python   ""    "pacman"
@@ -532,7 +582,6 @@ tool "Shell"     "fisher"    "fisher"    install_fisher   ""    "fish"
 
 # ── Editors ────────────────────────────────────────────────────────────────
 tool "Editors"   "neovim"    "nvim"      install_nvim     ""    "appimage"
-tool "Editors"   "opencode"  "opencode"  install_opencode "bun" "bun install"
 
 # ── Kubernetes ─────────────────────────────────────────────────────────────
 tool "K8s"       "kubectl"   "kubectl"   install_kubectl  ""    "binary"
@@ -556,6 +605,15 @@ tool "TUI"       "lazysql"   "lazysql"   install_lazysql  "go"  "go install"
 tool "TUI"       "dive"      "dive"      install_dive     "go"  "go install"
 tool "TUI"       "ctop"      "ctop"      install_ctop     ""    "binary"
 tool "TUI"       "glow"      "glow"      install_glow     "go"  "go install"
+
+# ── Desktop ─────────────────────────────────────────────────────────────────
+tool "Desktop"   "alacritty"   "alacritty"   install_alacritty ""    "pacman"
+tool "Desktop"   "ghostty"     "ghostty"     install_ghostty  ""    "pacman"
+tool "Desktop"   "grim"        "grim"        install_grim     ""    "pacman"
+tool "Desktop"   "slurp"       "slurp"       install_slurp    ""    "pacman"
+tool "Desktop"   "wl-clipboard" "wl-copy"   install_wl_clipboard "" "pacman"
+tool "Desktop"   "portal-hyprland" "xdg-desktop-portal-hyprland" install_portal_hyprland "" "pacman"
+tool "Desktop"   "gpu-screen-recorder" "gpu-screen-recorder" install_gpu_screen_recorder "" "AUR"
 
 # ── Security ───────────────────────────────────────────────────────────────
 tool "Security"  "trivy"     "trivy"     install_trivy    ""    "AUR"
@@ -606,7 +664,6 @@ needs_label() {
     go)    echo "needs Go" ;;
     cargo) echo "needs Rust" ;;
     pip)   echo "needs pip3" ;;
-    bun)   echo "needs Bun" ;;
     fnm)   echo "needs Node.js" ;;
     *)     echo "" ;;
   esac
@@ -677,7 +734,6 @@ install_selected() {
       go)    echo "go" ;;
       cargo) echo "cargo" ;;
       pip)   echo "pip3" ;;
-      bun)   echo "bun" ;;
       fnm)   echo "node" ;;
       *)     echo "" ;;
     esac
