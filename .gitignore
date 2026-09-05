@@ -1,61 +1,21 @@
-# OS
-.DS_Store
-Thumbs.db
+# Built installer binary
+/installer/dotfiles-install
 
-# Editors
-*.swp
-*.swo
-*~
-
-# Logs
-*.log
-*.jsonl
-
-# Secrets & credentials
-.env
-.envrc
-auth.json
-*.pem
-*.key
-**/secrets/
-
-# Session data
+# omp runtime/secrets — must stay untracked (defense in depth; these live in
+# ~/.omp/agent at runtime and are never part of the config/omp package)
+agent.db
+agent.db-shm
+agent.db-wal
+history.db
+history.db-shm
+history.db-wal
+models.db
+models.db-shm
+models.db-wal
 sessions/
+terminal-sessions/
+.env
+last-changelog-version
 
-# Pi (removed from repo — secrets)
-pi/
-
-# Build artifacts
-*.deb
-*.rpm
-*.AppImage
-*.tar.gz
-
-# Python
-__pycache__/
-*.pyc
-.venv/
-venv/
-
-# Rust
-target/
-
-# Go
-vendor/
-
-# Node
-node_modules/
-
-# Terraform
-.terraform/
-*.tfstate
-*.tfstate.backup
-crash.log
-
-# IDE
-.idea/
-.vscode/
-*.code-workspace
-
-# Fish shell — machine-specific state
-**/fish_variables
+# navi runtime log (can appear in the stowed package dir after first use)
+navi.log

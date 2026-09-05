@@ -19,16 +19,19 @@ Everything is split into two layers:
 
 | Layer | Tool | What it does |
 |-------|------|-------------|
-| **1. `./install-deps.sh`** | Interactive Bash script | Installs ALL CLI tools, runtimes, K8s, IaC, TUI, security tools |
-| **2. Manual (this file)** | One-off commands | Docker, GH CLI, Ghostty, Flatpaks, fingerprint, RPM Fusion |
+| **1. Shared core CLI** | `make install` / `installer/dotfiles-install` | Installs the shared, distro-agnostic CLI tools and applicable packages from `config/` |
+| **2. Fedora/profile (this file)** | Manual commands | Docker, desktop apps, Fedora repositories, fingerprint setup, and other profile-specific steps |
 
-**Run layer 1 first, then layer 2.**
+**Run the shared installer first, then the manual Fedora/profile steps.**
 
----
+## Layer 1 — Shared core CLI (`make install`)
 
-## Layer 1 — `./install-deps.sh` (handled automatically)
+The canonical Go installer handles the shared core CLI and configuration tree. It
+builds and starts `installer/dotfiles-install`; applicable Stow packages come
+from `config/`. Fedora desktop and profile-specific steps remain manual in
+Layer 2 below.
 
-Run this and it covers all of:
+The shared core inventory includes:
 
 ```
 System:    stow, git, curl, wget, make, unzip, fish, fzf, bat, ripgrep,
@@ -53,24 +56,25 @@ Usage:
 ```bash
 cd ~/Dotfiles
 
-# Interactive — pick categories/tools with menu
-./install-deps.sh
-
-# Non-interactive — install everything missing
-./install-deps.sh --install
-
-# Just list status
-./install-deps.sh --list
-```
-
-After running, `make install` deploys dotfiles via stow:
-```bash
+# Interactive — choose tools and config packages in the installer
 make install
+
+# Non-interactive — install all applicable shared items
+./installer/dotfiles-install --yes
+
+# Read-only status, plan, and validation
+./installer/dotfiles-install --list
+./installer/dotfiles-install --preflight
+./installer/dotfiles-install --validate
 ```
+
+## Layer 2 — Manual Fedora/Desktop/Profile Steps
+
+These Fedora-specific and desktop/profile steps are intentionally manual; the
+shared core installer does not replace them.
+
 
 ---
-
-## Layer 2 — Manual Steps (what install-deps.sh does NOT cover)
 
 ### 1. RPM Fusion (required for some packages)
 
@@ -187,8 +191,8 @@ Waiting for supplier: 0 (no missing deps)
 # 1. Enable RPM Fusion
 sudo dnf install rpmfusion-nonfree-release-44
 
-# 2. Install all CLI tools (interactive)
-cd ~/Dotfiles && ./install-deps.sh
+# 2. Install shared core CLI tools and configs (interactive)
+cd ~/Dotfiles && make install
 
 # 3. Docker
 sudo dnf install -y docker-ce docker-ce-cli containerd.io

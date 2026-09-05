@@ -1,40 +1,37 @@
-STOW_DIR := $(shell pwd)/arch
-# Auto-detect stow packages from arch/, excluding .git and pi/ (contains secrets)
-PACKAGES := $(shell ls -d arch/*/ 2>/dev/null | sed 's|arch/||g' | sed 's/\///' | grep -v '\.git' | grep -v '^pi$$' | grep -v '^scripts$$' | grep -v '^bin$$')
+# Dotfiles installer entrypoint.
+#
+#   make install    → build the Go dashboard and run it
+#   make preflight  → refresh metadata and print a read-only plan
+#   make validate   → verify binaries and config symlinks
+#   make yes        → non-interactive install of all applicable items
+#   make clean      → remove the built binary
+#
+# All install/config logic lives in installer/ (Go + Bubble Tea TUI).
 
-.PHONY: install uninstall reinstall list dry-run install-deps
+.PHONY: build install list preflight validate yes clean theme
 
-install:
-	@echo "=== Stow packages: $(PACKAGES) ==="
-	@for pkg in $(PACKAGES); do \
-		echo "  → $$pkg"; \
-		stow -v -d $(STOW_DIR) --target=$(HOME) $$pkg; \
-	done
-	@echo "Done."
+build:
+	@command -v go >/dev/null 2>&1 || { echo "Go not found. Install a Go toolchain first."; exit 1; }
+	cd installer && CGO_ENABLED=0 go build -o dotfiles-install .
 
-uninstall:
-	@echo "=== Unstow packages: $(PACKAGES) ==="
-	@for pkg in $(PACKAGES); do \
-		echo "  → $$pkg"; \
-		stow -v -D -d $(STOW_DIR) --target=$(HOME) $$pkg; \
-	done
-	@echo "Done."
+install: build
+	./installer/dotfiles-install
 
-reinstall: uninstall install
+list: build
+	./installer/dotfiles-install --list
 
-list:
-	@echo "Available packages:"
-	@for pkg in $(PACKAGES); do \
-		echo "  - $$pkg"; \
-	done
+preflight: build
+	./installer/dotfiles-install --preflight
 
-dry-run:
-	@echo "=== Dry run ==="
-	@for pkg in $(PACKAGES); do \
-		echo "  → $$pkg"; \
-		stow -n -v -d $(STOW_DIR) --target=$(HOME) $$pkg 2>&1 | grep -E "LINK|UNLINK|existing" || true; \
-	done
+validate: build
+	./installer/dotfiles-install --validate
 
-install-deps:
-	@echo "=== Interactive Dependency Installer ==="
-	@./arch/install-deps.sh
+yes: build
+	./installer/dotfiles-install --yes
+
+clean:
+	rm -f installer/dotfiles-install
+
+THEME ?= catppuccin
+theme: build
+	./installer/dotfiles-install --theme $(THEME)

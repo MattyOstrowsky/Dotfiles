@@ -1,0 +1,378 @@
+# Tool manifest for the dotfiles installer.
+#
+# source:
+#   apt    — native distro package (legacy key kept for the existing apt
+#             flow; the real package per manager comes from `packages:`)
+#   github — release tarball downloaded to ~/.local (see github.kind)
+#   script — remote installer script (--no-modify-path)
+#   none   — config-only entry; binary provided externally
+#
+# github kinds: tarball-bin (extract single binary) | tarball-dir (whole dir + symlink)
+#
+# packages: {manager: pkg}      native package per manager: apt | dnf | pacman
+# deps:     {manager: [pkg…]}   extra native packages per manager (runtime/build deps)
+# AUR/paru/yay are never used: pacman entries target official Arch repos only.
+# Unknown manager keys, duplicate tool names/packages and missing bin fields
+# fail manifest validation (loadManifest).
+
+tools:
+  - name: stow
+    bin: stow
+    desc: Symlink farm manager — applies the dotfiles packages
+    category: core
+    source: apt
+    packages: {apt: stow, dnf: stow, pacman: stow}
+    stow: ""
+    notes: Core tool. Locked selected and installed first; required by the configs phase.
+
+  - name: git
+    bin: git
+    desc: Distributed version control system
+    category: cli
+    source: apt
+    packages: {apt: git, dnf: git, pacman: git}
+    notes: Common version-control foundation for source checkouts and development workflows.
+
+  - name: gh
+    bin: gh
+    desc: GitHub command-line client
+    category: cli
+    source: apt
+    packages: {apt: gh, dnf: gh, pacman: github-cli}
+    notes: Native package names follow each distribution's repository naming.
+
+  - name: curl
+    bin: curl
+    desc: Command-line HTTP client
+    category: cli
+    source: apt
+    packages: {apt: curl, dnf: curl, pacman: curl}
+    notes: Used by local tooling that needs an HTTP client.
+
+  - name: wget
+    bin: wget
+    desc: Non-interactive network downloader
+    category: cli
+    source: apt
+    packages: {apt: wget, dnf: wget, pacman: wget}
+    notes: Common native downloader for terminal workflows.
+
+  - name: make
+    bin: make
+    desc: Build automation utility
+    category: cli
+    source: apt
+    packages: {apt: make, dnf: make, pacman: make}
+    notes: Native make implementation used by source builds.
+
+  - name: unzip
+    bin: unzip
+    desc: ZIP archive extractor
+    category: cli
+    source: apt
+    packages: {apt: unzip, dnf: unzip, pacman: unzip}
+    notes: Required by tools and common archive workflows.
+
+  - name: fzf
+    bin: fzf
+    desc: General-purpose fuzzy finder
+    category: cli
+    source: apt
+    packages: {apt: fzf, dnf: fzf, pacman: fzf}
+    notes: Shared by interactive shell and terminal workflows.
+
+  - name: ripgrep
+    bin: rg
+    desc: Fast recursive text search
+    category: cli
+    source: apt
+    packages: {apt: ripgrep, dnf: ripgrep, pacman: ripgrep}
+    notes: Binary is rg on every supported manager.
+
+  - name: fd-find
+    bin: fd
+    desc: Fast user-friendly file finder
+    category: cli
+    source: apt
+    packages: {apt: fd-find, dnf: fd-find, pacman: fd}
+    notes: Debian and Fedora use fd-find; Arch uses fd. Binary is fd.
+
+  - name: tree
+    bin: tree
+    desc: Directory tree viewer
+    category: cli
+    source: apt
+    packages: {apt: tree, dnf: tree, pacman: tree}
+    notes: Common native directory inspection utility.
+
+  - name: htop
+    bin: htop
+    desc: Interactive process viewer
+    category: cli
+    source: apt
+    packages: {apt: htop, dnf: htop, pacman: htop}
+    notes: Common native process monitor.
+
+  - name: python3
+    bin: python3
+    desc: Python 3 runtime
+    category: runtime
+    source: apt
+    packages: {apt: python3, dnf: python3, pacman: python}
+    notes: Arch's python package provides the python3 command.
+
+  - name: pip3
+    bin: pip3
+    desc: Python 3 package installer
+    category: runtime
+    source: apt
+    packages: {apt: python3-pip, dnf: python3-pip, pacman: python-pip}
+    notes: Native package names differ by distribution while the binary is pip3.
+
+  - name: go
+    bin: go
+    desc: Go programming language toolchain
+    category: runtime
+    source: apt
+    packages: {apt: golang, dnf: golang, pacman: go}
+    notes: Native package names differ by distribution while the binary is go.
+
+  - name: cargo
+    bin: cargo
+    desc: Rust package manager and build tool
+    category: runtime
+    source: apt
+    packages: {apt: cargo, dnf: cargo, pacman: rust}
+    notes: Arch's rust package provides cargo.
+
+  - name: node
+    bin: node
+    desc: Node.js JavaScript runtime
+    category: runtime
+    source: apt
+    packages: {apt: nodejs, dnf: nodejs, pacman: nodejs}
+    notes: Native distro Node.js package; no remote version manager is used here.
+
+  - name: zoxide
+    bin: zoxide
+    desc: Smarter directory jumper
+    category: shell
+    source: apt
+    packages: {apt: zoxide, pacman: zoxide}
+    notes: Fedora has no official package in the supported repositories, so no dnf mapping is declared.
+
+  - name: kubectl
+    bin: kubectl
+    desc: Kubernetes command-line client
+    category: kubernetes
+    source: apt
+    packages: {apt: kubernetes-client, pacman: kubectl}
+    notes: Debian provides kubectl as kubernetes-client; Arch provides kubectl directly. Fedora has no official kubectl package in the supported repositories.
+
+  - name: helm
+    bin: helm
+    desc: Kubernetes package manager
+    category: kubernetes
+    source: apt
+    packages: {dnf: helm, pacman: helm}
+    notes: Fedora and Arch provide Helm natively; apt has no official package in the supported repositories.
+
+  - name: kubectx
+    bin: kubectx
+    desc: Kubernetes context and namespace switcher
+    category: kubernetes
+    source: apt
+    packages: {apt: kubectx, pacman: kubectx}
+    notes: Fedora has no official kubectx package in the supported repositories; Arch and Ubuntu provide it.
+
+  - name: terraform
+    bin: terraform
+    desc: Infrastructure-as-code provisioning tool
+    category: iac
+    source: apt
+    packages: {pacman: terraform}
+    notes: Arch provides Terraform natively; apt and dnf have no official package in the supported repositories.
+
+  - name: ansible
+    bin: ansible
+    desc: Agentless automation and configuration management
+    category: iac
+    source: apt
+    packages: {apt: ansible, dnf: ansible, pacman: ansible}
+    notes: Native package includes the ansible command and its standard collections.
+
+  - name: tldr
+    bin: tldr
+    desc: Simplified community-driven command help
+    category: cli
+    source: apt
+    packages: {apt: tldr, dnf: tldr, pacman: tealdeer}
+    notes: Debian and Fedora use tldr; Arch's tealdeer package provides the tldr binary.
+
+  - name: fish
+    bin: fish
+    desc: Friendly interactive shell (default shell candidate)
+    category: shell
+    source: apt
+    packages: {apt: fish, dnf: fish, pacman: fish}
+    deps: {apt: [fzf], dnf: [fzf], pacman: [fzf]}
+    stow: fish
+    notes: fzf dep powers fzf.fish. Login-shell change (chsh) offered at end of tools phase.
+
+  - name: starship
+    bin: starship
+    desc: Cross-shell prompt
+    category: shell
+    source: github
+    github:
+      repo: starship/starship
+      asset: '^starship-x86_64-unknown-linux-gnu\.tar\.gz$'
+      kind: tarball-bin
+    stow: starship
+    notes: Nerd Font recommended — set it in Windows Terminal (manual step).
+
+  - name: atuin
+    bin: atuin
+    desc: Shell history search (Ctrl+R replacement)
+    category: shell
+    source: github
+    github:
+      repo: atuinsh/atuin
+      asset: '^atuin-x86_64-unknown-linux-gnu\.tar\.gz$'
+      kind: tarball-bin
+    stow: atuin
+    notes: Local-only until `atuin register` / `atuin login` for sync.
+
+  - name: bat
+    bin: bat
+    desc: cat with wings — syntax-highlighted pager
+    category: cli
+    source: apt
+    packages: {apt: bat, dnf: bat, pacman: bat}
+    stow: bat
+    notes: Post-steps symlink bat→batcat (Debian/Ubuntu only) and rebuild the theme cache.
+
+  - name: btop
+    bin: btop
+    desc: Resource monitor
+    category: cli
+    source: apt
+    packages: {apt: btop, dnf: btop, pacman: btop}
+    stow: btop
+    notes: ""
+
+  - name: direnv
+    bin: direnv
+    desc: Per-directory environment variables
+    category: cli
+    source: apt
+    packages: {apt: direnv, dnf: direnv, pacman: direnv}
+    stow: direnv
+    notes: ""
+
+  - name: dive
+    bin: dive
+    desc: Docker image layer explorer
+    category: containers
+    source: github
+    github:
+      repo: wagoodman/dive
+      asset: '^dive_.*_linux_amd64\.tar\.gz$'
+      kind: tarball-bin
+    stow: dive
+    notes: Needs Docker at runtime (Docker Desktop WSL integration).
+
+  - name: glow
+    bin: glow
+    desc: Markdown renderer for the terminal
+    category: cli
+    source: github
+    github:
+      repo: charmbracelet/glow
+      asset: '^glow_.*_Linux_x86_64\.tar\.gz$'
+      kind: tarball-bin
+    stow: glow
+    notes: ""
+
+  - name: k9s
+    bin: k9s
+    desc: Kubernetes cluster TUI
+    category: containers
+    source: github
+    github:
+      repo: derailed/k9s
+      asset: '^k9s_Linux_amd64\.tar\.gz$'
+      kind: tarball-bin
+    stow: k9s
+    notes: Needs ~/.kube/config at runtime.
+
+  - name: lazydocker
+    bin: lazydocker
+    desc: Docker/Compose TUI
+    category: containers
+    source: github
+    github:
+      repo: jesseduffield/lazydocker
+      asset: '^lazydocker_.*_Linux_x86_64\.tar\.gz$'
+      kind: tarball-bin
+    stow: lazydocker
+    notes: Needs Docker at runtime (Docker Desktop WSL integration).
+
+  - name: lazygit
+    bin: lazygit
+    desc: Git TUI
+    category: cli
+    source: github
+    github:
+      repo: jesseduffield/lazygit
+      asset: '^lazygit_.*_linux_x86_64\.tar\.gz$'
+      kind: tarball-bin
+    stow: lazygit
+    notes: ""
+
+  - name: navi
+    bin: navi
+    desc: Interactive cheatsheet tool
+    category: cli
+    source: github
+    github:
+      repo: denisidoro/navi
+      asset: '^navi-.*-x86_64-unknown-linux-musl\.tar\.gz$'
+      kind: tarball-bin
+    deps: {apt: [fzf], dnf: [fzf], pacman: [fzf]}
+    stow: navi
+    notes: Cheatsheets come from the stowed navi package.
+
+  - name: nvim
+    bin: nvim
+    desc: Neovim editor (NvChad config)
+    category: editor
+    source: github
+    github:
+      repo: neovim/neovim
+      asset: '^nvim-linux-x86_64\.tar\.gz$'
+      kind: tarball-dir
+    deps:
+      apt: [git, ripgrep, fd-find, jq, build-essential, unzip, curl]
+      dnf: [git, ripgrep, fd-find, jq, gcc-c++, make, unzip, curl]
+      pacman: [git, ripgrep, fd, jq, base-devel, unzip, curl]
+    stow: nvim
+    notes: NvChad requires nvim ≥ 0.10. Nerd Font recommended. First launch clones plugins.
+
+  - name: opencode
+    bin: opencode
+    desc: AI coding agent (terminal)
+    category: editor
+    source: script
+    script: https://opencode.ai/install
+    deps: {apt: [curl], dnf: [curl], pacman: [curl]}
+    stow: opencode
+    notes: Official installer with --no-modify-path; symlinked into ~/.local/bin afterwards.
+
+  - name: omp
+    bin: omp
+    desc: oh-my-pi coding agent — config-only entry
+    category: editor
+    source: none
+    stow: omp
+    notes: Binary is external (already at ~/.local/bin/omp, managed outside this installer). Select to stow the agent config package.

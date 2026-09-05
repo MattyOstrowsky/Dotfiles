@@ -7,115 +7,160 @@ Includes an interactive dependency installer and 40+ navi cheatsheets.
 
 | Package | Contents | Target |
 |---------|----------|--------|
-| `opencode/` | OpenCode AI agent config — 13 agents, 11 commands, 10 skills | `~/.config/opencode/` |
-| `fish/` | Fish shell config — aliases, functions, plugins for DevOps | `~/.config/fish/` |
-| `starship/` | Starship prompt — K8s, Terraform, Docker context | `~/.config/starship.toml` |
-| `nvim/` | Neovim + NvChad config | `~/.config/nvim/` |
-| `navi/` | Interactive cheatsheets (40+ tools) | `~/.config/navi/` |
-| `lazygit/` | Git TUI — config with Nord theme | `~/.config/lazygit/` |
-| `lazydocker/` | Docker TUI — config with Nord palette | `~/.config/lazydocker/` |
-| `k9s/` | Kubernetes TUI — config, hotkeys, Nord skin | `~/.config/k9s/` |
-| `btop/` | System monitor — config + Nord theme | `~/.config/btop/` |
-| `bat/` | Better cat — Nord syntax theme | `~/.config/bat/` |
-| `glow/` | Markdown renderer | `~/.config/glow/` |
-| `atuin/` | Shell history with sync | `~/.config/atuin/` |
-| `direnv/` | Per-directory environment | `~/.config/direnv/` |
-| `dive/` | Docker image layer explorer | `~/.config/dive/` |
+| `config/opencode/` | OpenCode AI agent config — 13 agents, 11 commands, 10 skills | `~/.config/opencode/` |
+| `config/fish/` | Fish shell config — aliases, functions, plugins for DevOps | `~/.config/fish/` |
+| `config/starship/` | Starship prompt — K8s, Terraform, Docker context | `~/.config/starship.toml` |
+| `config/nvim/` | Neovim + NvChad config | `~/.config/nvim/` |
+| `config/navi/` | Interactive cheatsheets (40+ tools) | `~/.config/navi/` |
+| `config/lazygit/` | Git TUI — config with Nord theme | `~/.config/lazygit/` |
+| `config/lazydocker/` | Docker TUI — config with Nord palette | `~/.config/lazydocker/` |
+| `config/k9s/` | Kubernetes TUI — config, hotkeys, Nord skin | `~/.config/k9s/` |
+| `config/btop/` | System monitor — config + Nord theme | `~/.config/btop/` |
+| `config/bat/` | Better cat — Nord syntax theme | `~/.config/bat/` |
+| `config/glow/` | Markdown renderer | `~/.config/glow/` |
+| `config/atuin/` | Shell history with sync | `~/.config/atuin/` |
+| `config/direnv/` | Per-directory environment | `~/.config/direnv/` |
+| `config/dive/` | Docker image layer explorer | `~/.config/dive/` |
 
 ## Quick Start
 
-### 1. Install prerequisites
+### 1. Install the build prerequisites
+
+The canonical installer is a Go program, so install Git, Make, and Go with
+your distribution's package manager if they are not already available:
 
 ```bash
-# Debian/Ubuntu
-sudo apt install stow git curl
+# Ubuntu/Debian
+sudo apt install git make golang-go
 
 # Fedora
-sudo dnf install stow git curl
+sudo dnf install git make golang
+
+# Arch
+sudo pacman -S git make go
 ```
 
-### 2. Clone and symlink dotfiles
+### 2. Clone the repository
 
 ```bash
 git clone https://github.com/MattyOstrowsky/Dotfiles.git ~/Dotfiles
 cd ~/Dotfiles
+```
+
+### 3. Install tools and shared configs
+
+```bash
 make install
 ```
 
-### 3. Install dependencies (interactive)
+`make install` builds `installer/dotfiles-install` and starts its interactive
+installer. It detects Ubuntu/Debian, Fedora, or Arch and uses `apt`, `dnf`, or
+`pacman` respectively. The installer presents a preflight plan, lets you
+choose tools and applicable shared config packages, applies the selected
+configs with GNU Stow, and validates the result.
+
+The built binary can also be invoked directly from the repository root. The
+following read-only and non-interactive modes are available (run `make
+install` first, or build the binary from `installer/`):
 
 ```bash
-./install-deps.sh
+./installer/dotfiles-install --list
+./installer/dotfiles-install --preflight
+./installer/dotfiles-install --validate
+./installer/dotfiles-install --yes
+./installer/dotfiles-install --yes --theme nord
 ```
 
-Select categories you want to install. Already-installed tools are auto-skipped.
-After each installation, matching configs are symlinked via stow automatically.
+- `--list` prints detected system, tool status, and config status without
+  changing anything.
+- `--preflight` refreshes package metadata and prints the installation plan;
+  it does not install tools or modify config links.
+- `--validate` checks installed tools and expected Stow links without changing
+  anything; it exits non-zero when validation fails.
+- `--yes` installs all manifest tools and applicable config packages without
+  the interactive UI, then applies the default Catppuccin theme and validates.
+- `--theme catppuccin|nord` applies a theme. Combined with `--yes`, it applies
+  that theme as part of the installation; without `--yes`, it only updates
+  the theme files.
 
-### Install specific package
+### Install or remove one config package manually
+
+Shared Stow packages live below `config/`, not at the repository root:
 
 ```bash
 cd ~/Dotfiles
-stow lazygit    # Symlinks lazygit config → ~/.config/lazygit/
+stow --dir config --target "$HOME" lazygit
+stow --dir config --target "$HOME" --delete lazygit
 ```
 
-### Uninstall
-
-```bash
-cd ~/Dotfiles
-stow -D lazygit   # Removes symlinks
-make uninstall     # Uninstall all
-```
-
-### Dry run
-
-```bash
-make dry-run
-```
+Use `installer/dotfiles-install --preflight` to inspect the planned changes
+before installation.
 
 ## How GNU Stow works
 
-Stow mirrors directory structure. Each top-level directory is a "package":
+Stow mirrors each package's directory structure into the target home. The
+shared packages are under `config/`:
 
 ```
 ~/Dotfiles/
-├── opencode    →  ~/.config/opencode/
-├── fish        →  ~/.config/fish/
-├── starship    →  ~/.config/starship.toml
-├── nvim        →  ~/.config/nvim/
-├── navi        →  ~/.config/navi/
-├── lazygit     →  ~/.config/lazygit/
-├── lazydocker  →  ~/.config/lazydocker/
-├── k9s         →  ~/.config/k9s/
-├── btop        →  ~/.config/btop/
-├── bat         →  ~/.config/bat/
-├── glow        →  ~/.config/glow/
-├── atuin       →  ~/.config/atuin/
-├── direnv      →  ~/.config/direnv/
-└── dive        →  ~/.config/dive/
+├── config/
+│   ├── opencode/         → ~/.config/opencode/
+│   ├── fish/             → ~/.config/fish/
+│   ├── starship/         → ~/.config/starship.toml
+│   ├── nvim/             → ~/.config/nvim/
+│   ├── navi/             → ~/.config/navi/
+│   ├── lazygit/          → ~/.config/lazygit/
+│   ├── lazydocker/       → ~/.config/lazydocker/
+│   ├── k9s/              → ~/.config/k9s/
+│   ├── btop/             → ~/.config/btop/
+│   ├── bat/              → ~/.config/bat/
+│   ├── glow/             → ~/.config/glow/
+│   ├── atuin/            → ~/.config/atuin/
+│   ├── direnv/           → ~/.config/direnv/
+│   ├── dive/             → ~/.config/dive/
+│   └── omp/              → ~/.omp/
+└── installer/            → canonical Go installer
 ```
+
+`config/` is the shared, distro-agnostic configuration tree. The
+`windows-terminal/` package is host-scoped for the Windows side of a WSL
+setup and is not stowed into the Linux home by the installer. Desktop-specific
+material is intentionally separate: `arch/` and `fedora/` are profile and
+migration areas, not part of the shared config install. The legacy
+`arch/install-deps.sh` is deprecated while this migration is completed; use
+`make install` and `installer/dotfiles-install` instead.
 
 ## Interactive Dependency Installer
 
-`install-deps.sh` installs 50+ DevOps tools grouped by category:
+`installer/dotfiles-install` is the canonical Go installer. Its tool manifest
+is `installer/tools.yaml`; its Stow packages are scanned from `config/`.
+Tools are grouped as follows:
 
 | Category | Tools |
 |----------|-------|
-| **System** | stow, git, curl, wget, make, fish, fzf, bat, ripgrep, fd-find, tree, htop, direnv, btop, xclip |
-| **Runtimes** | Python, Go, Rust, Node.js (via fnm), Bun |
-| **Shell** | starship, zoxide, atuin, navi, fisher |
-| **Editors** | neovim, opencode |
-| **K8s** | kubectl, helm, k9s, kubectx, stern, kustomize, kubeconform |
-| **IaC** | terraform, terragrunt, ansible, infracost |
-| **TUI** | lazygit, lazydocker, lazysql, dive, ctop, glow |
-| **Security** | trivy, grype, checkov, tldr |
+| **Core** | stow, git, gh, curl, wget, make, unzip, fzf, tree, htop |
+| **Runtime** | python3, pip3, go, cargo, node |
+| **Shell** | fish, starship, atuin, zoxide |
+| **CLI** | ripgrep, fd-find, bat, btop, direnv, glow, navi, tldr, lazygit |
+| **Kubernetes** | kubectl, helm, kubectx, k9s |
+| **IaC** | terraform, ansible |
+| **Containers** | dive, lazydocker |
+| **Editors** | nvim, opencode, omp (config-only) |
 
 Features:
-- Supports both Debian/Ubuntu (apt) and Fedora (dnf) — auto-detects
-- Numbered menu (default) or `--fzf` for fuzzy picker
-- Auto-skips already-installed tools
-- `--install` for non-interactive full install
-- Auto-stows config after installation if a stow package exists
-- All `go install` binaries land in `~/.local/bin/`
+- Auto-detects Ubuntu/Debian (`apt`), Fedora/RHEL-family (`dnf`), and Arch
+  (`pacman`); Arch installs use official repositories only.
+- Interactive TUI by default, or `--yes` for a complete non-interactive run.
+- `--list`, `--preflight`, and `--validate` provide status, planning, and
+  post-install checks without silently changing config links.
+- Automatically skips tools that are already installed where possible and
+  stows applicable packages from `config/`.
+- `--theme catppuccin|nord` updates the supported tool themes.
+- Downloaded and script-installed binaries are placed in `~/.local/bin/`.
+
+The old Arch-only `arch/install-deps.sh` is retained only as a deprecated
+reference for legacy/profile-specific tools outside the core manifest; it is
+not the supported installer entrypoint.
 
 ## Navi Cheatsheets
 
@@ -126,7 +171,7 @@ navi --query "helm install"
 navi --query "lazygit keybindings"
 ```
 
-See `navi/.config/navi/cheats/` for the full list.
+See `config/navi/.config/navi/cheats/` for the full list.
 
 ## OpenCode Agents
 
