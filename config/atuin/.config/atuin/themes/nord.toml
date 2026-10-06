@@ -1,0 +1,9 @@
+[colors]
+Base = "#d8dee9"
+Title = "#88c0d0"
+Important = "#81a1c1"
+Guidance = "#4c566a"
+Annotation = "#81a1c1"
+AlertInfo = "#88c0d0"
+AlertWarn = "#ebcb8b"
+AlertError = "#bf616a"

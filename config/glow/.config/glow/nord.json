@@ -1,0 +1,15 @@
+{
+  "document": {"color": "#d8dee9", "margin": 2},
+  "heading": {"color": "#88c0d0", "bold": true},
+  "h1": {"color": "#88c0d0", "bold": true},
+  "emph": {"color": "#b48ead", "italic": true},
+  "strong": {"color": "#eceff4", "bold": true},
+  "link": {"color": "#81a1c1", "underline": true},
+  "link_text": {"color": "#88c0d0"},
+  "code": {"color": "#a3be8c", "background_color": "#3b4252"},
+  "code_block": {"theme": "nord", "margin": 2},
+  "list": {"level_indent": 2},
+  "item": {"block_prefix": "• "},
+  "enumeration": {"block_prefix": ". "},
+  "block_quote": {"color": "#81a1c1", "indent": 1}
+}

@@ -1,0 +1,8 @@
+version: 1
+tools: [fish, git, curl, jq, ripgrep, fzf, bat, btop, tmux, docker, glow, dive, lazygit, lazydocker, navi, nvim, atuin]
+# Extra packages use names from the target distribution.
+packages: [ca-certificates, less]
+install: true
+configs: true
+config_mode: copy
+conflict: backup

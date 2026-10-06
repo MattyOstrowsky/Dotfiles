@@ -1,62 +1,13 @@
-# lazygit config
-# Docs: https://github.com/jesseduffield/lazygit/blob/master/docs/Config.md
-
 gui:
+  showFileIcons: false
   theme:
-    lightTheme: false
-    activeBorderColor:
-      - "#cba6f7"
-      - bold
-    inactiveBorderColor:
-      - "#6c7086"
-    optionsTextColor:
-      - "#89b4fa"
-    selectedLineBgColor:
-      - "#313244"
-    selectedRangeBgColor:
-      - "#313244"
-    cherryPickedCommitBgColor:
-      - "#313244"
-      - bold
-    cherryPickedCommitFgColor:
-      - "#cba6f7"
-    unstagedChangesColor:
-      - "#f38ba8"
-    defaultFgColor:
-      - "#cdd6f4"
-  # Show file icons
-  showFileIcons: true
-  # Show branch graphics in log
-  showBranchGraphInCommitGraph: true
-git:
-  pagers:
-    - # External diff / pager
-      colorArg: always
-      # Use delta if available, otherwise use default
-      # pager: delta
-  commit:
-    # Automatically stage all unstaged tracked files on commit
-    autoStage: true
-    # Override git commands
-    # customCommands:
-    #   - key: '<ctrl-p>'
-    #     command: 'git push'
-    #     context: 'global'
-    #     description: 'Push to origin'
-os:
-  # Default editor for commit messages, rebase, etc.
-  editPreset: 'nvim'
-  # edit: 'nvim -- {{filename}}'
-  # open: 'xdg-open {{filename}}'
-  # openLink: 'xdg-open {{link}}'
+    activeBorderColor: ["#88c0d0", bold]
+    inactiveBorderColor: ["#4c566a"]
+    optionsTextColor: ["#81a1c1"]
+    selectedLineBgColor: ["#434c5e"]
+    cherryPickedCommitBgColor: ["#434c5e"]
+    cherryPickedCommitFgColor: ["#b48ead"]
+    unstagedChangesColor: ["#bf616a"]
+    defaultFgColor: ["#d8dee9"]
 update:
-  # Auto-upcheck
   method: never
-
-# Custom keybindings overrides
-# keybinding:
-#   universal:
-#     quit: 'q'
-#     quitAlt1: '<c-q>'
-#     return: '<esc>'
-#     confirm: '<enter>'

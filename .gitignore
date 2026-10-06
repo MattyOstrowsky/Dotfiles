@@ -19,3 +19,9 @@ last-changelog-version
 
 # navi runtime log (can appear in the stowed package dir after first use)
 navi.log
+
+# Host state and selections are not shared configuration.
+fish_variables
+.dotfiles-*
+/dotfiles-selection.yaml
+/installer/examples/ansible/inventory.local.yml

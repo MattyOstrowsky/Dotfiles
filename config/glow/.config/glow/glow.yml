@@ -1,21 +1,4 @@
-# glow config
-# Path: ~/.config/glow/glow.yml
-# See `glow --help`
-
-# Default width (0 = terminal width)
-width: 80
-
-# Style file (embedded style by default)
-# style: "~/.config/glow/style.json"
-
-# Show line numbers
-line-numbers: true
-
-# Default pager mode
-pager: true
-
-# Pager path
-# pager-path: "less"
-
-# Mouse support
+style: ~/.config/glow/nord.json
+width: 100
 mouse: false
+pager: true

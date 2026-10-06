@@ -1,0 +1,8 @@
+{
+  "version": 1,
+  "tools": ["fish", "starship", "git", "bat", "btop", "tmux"],
+  "install": false,
+  "configs": true,
+  "config_mode": "copy",
+  "conflict": "backup"
+}

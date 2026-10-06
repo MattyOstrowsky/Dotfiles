@@ -2,19 +2,12 @@
 
 add_newline = true
 
-# Active palette; flip to "nord" for the Nord scheme.
-# `make theme THEME=catppuccin|nord` toggles this line via the installer.
-palette = "catppuccin"
+palette = "nord"
+command_timeout = 800
 
-[palettes.catppuccin]
-green = "#a6e3a1"
-red = "#f38ba8"
-blue = "#89b4fa"
-yellow = "#f9e2af"
-mauve = "#cba6f7"
-teal = "#94e2d5"
-subtext = "#bac2de"
-text = "#cdd6f4"
+format = '''
+[┌─>](bold green) $time$aws$gcloud$azure$kubernetes $git_branch$git_status$python$nodejs$golang$helm
+[└─>](bold green) $cmd_duration$directory$character'''
 
 [palettes.nord]
 green = "#a3be8c"
@@ -26,12 +19,11 @@ teal = "#88c0d0"
 subtext = "#d8dee9"
 text = "#e5e9f0"
 
-format = '''
-[┌─>](bold green) $aws$gcloud$azure
-[│](bold green)   $time$kubernetes $git_branch$git_status $python $nodejs $golang $helm
-[└─>](bold green) $cmd_duration$directory $character'''
 
 # Changes the default prompt symbol to '>'
+[hostname]
+disabled = true
+
 [character]
 success_symbol = "[❯](bold green)"
 error_symbol = "[❯](bold red)"
@@ -43,7 +35,7 @@ error_symbol = "[❯](bold red)"
 symbol = "AWS ☁️  "
 style = "bold yellow"
 format = "[$symbol($profile \\($region\\))]($style) "
-force_display = true
+force_display = false
 
 # GCP module - shows current project and region
 [gcloud]
@@ -65,13 +57,8 @@ style = "bold mauve"
 [kubernetes]
 symbol = "⚓"
 style = "bold teal"
-format = '[$symbol$context \[$namespace\]]($style) '
+format = '[$symbol$context( \[$namespace\])]($style) '
 disabled = false
-
-# Shorten long EKS context names
-[[kubernetes.contexts]]
-context_pattern = "arn:aws:eks:us-east-1:418274023911:cluster/internal"
-context_alias = "internal"
 
 # Helm module - shows active chart version
 [helm]
@@ -99,7 +86,7 @@ disabled = false
 symbol = "🐍 "
 style = "bold yellow"
 pyenv_version_name = false
-format = 'via [$symbol${pyenv_prefix}(${version} )(\\($virtualenv\\))]($style)'
+format = 'via [$symbol${pyenv_prefix}(${version} )(\($virtualenv\))]($style)'
 
 # --- Core & High-Utility Modules ---
 

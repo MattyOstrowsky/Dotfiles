@@ -1,0 +1,18 @@
+# Identity and host-specific credentials belong in ~/.gitconfig.
+[init]
+    defaultBranch = main
+[fetch]
+    prune = true
+[pull]
+    ff = only
+[push]
+    default = simple
+[diff]
+    colorMoved = default
+[color]
+    ui = auto
+[color "diff"]
+    old = "#bf616a"
+    new = "#a3be8c"
+    meta = "#81a1c1"
+    frag = "#88c0d0"

@@ -1,316 +1,105 @@
-# =============================================================================
-# Fish Shell Config — DevOps Workstation
-# =============================================================================
+# Shared fish config: no downloads, package installs or universal PATH writes.
+# Keep inherited environment paths (venvs, SSH, WSL); remove exact duplicates.
+set -l clean_path
+for entry in $PATH
+    if test -n "$entry"; and not contains -- "$entry" $clean_path
+        set -a clean_path "$entry"
+    end
+end
+set -gx PATH $clean_path
 
-# Editor
-set -gx EDITOR nvim
+# Add optional tool directories once, in a predictable order. Respect custom
+# GOPATH/CARGO_HOME/BUN_INSTALL; do not export machine-specific defaults.
+set -l go_home "$HOME/go"
+set -q GOPATH; and set go_home (string split : -- "$GOPATH")
+set -l cargo_home "$HOME/.cargo"
+set -q CARGO_HOME; and set cargo_home "$CARGO_HOME"
+set -l bun_home "$HOME/.bun"
+set -q BUN_INSTALL; and set bun_home "$BUN_INSTALL"
+set -l optional_paths "$HOME/.local/bin" "$cargo_home/bin" "$bun_home/bin" "$HOME/.local/share/fnm" "$HOME/.atuin/bin" /usr/local/go/bin
+for dir in $go_home
+    set -a optional_paths "$dir/bin"
+end
+# --path avoids persistent fish_user_paths; --append preserves activated venvs.
+for dir in $optional_paths
+    if test -d "$dir"
+        fish_add_path --global --path --append "$dir"
+    end
+end
 
-# PATH
-set -gx PATH $HOME/.local/bin $PATH
-
-# Go
-set -gx GOPATH $HOME/go
-set -gx PATH $GOPATH/bin /usr/local/go/bin $PATH
-
-# Cargo (Rust tools: navi, etc.)
-set -gx PATH $HOME/.cargo/bin $PATH
-
-# fnm (Fast Node Manager)
-set -gx PATH $HOME/.local/share/fnm $PATH
-
-# atuin (shell history — installed to ~/.atuin/bin)
-set -gx PATH $HOME/.atuin/bin $PATH
-
-# Bun
-set -gx BUN_INSTALL "$HOME/.bun"
-set -gx PATH $BUN_INSTALL/bin $PATH
-
-# Disable welcome message
-set -g fish_greeting
-
-# =============================================================================
-# Interactive Shell
-# =============================================================================
+if not set -q EDITOR
+    if command -q nvim
+        set -gx EDITOR nvim
+    else if command -q nano
+        set -gx EDITOR nano
+    else
+        set -gx EDITOR vi
+    end
+end
+set -q VISUAL; or set -gx VISUAL "$EDITOR"
 
 if status is-interactive
+    set -g fish_greeting
 
-    # Starship prompt
-    starship init fish | source
+    # Nord syntax and completion colors, without machine-specific fish_variables.
+    set -g fish_color_normal d8dee9
+    set -g fish_color_command 88c0d0
+    set -g fish_color_param e5e9f0
+    set -g fish_color_keyword 81a1c1
+    set -g fish_color_quote a3be8c
+    set -g fish_color_redirection b48ead
+    set -g fish_color_end 81a1c1
+    set -g fish_color_error bf616a
+    set -g fish_color_comment 616e88
+    set -g fish_color_autosuggestion 616e88
+    set -g fish_color_operator 81a1c1
+    set -g fish_color_escape ebcb8b
+    set -g fish_color_search_match --background=434c5e
+    set -g fish_color_selection --background=434c5e
+    set -g fish_pager_color_prefix 88c0d0
+    set -g fish_pager_color_completion d8dee9
+    set -g fish_pager_color_description 81a1c1
+    set -g fish_pager_color_selected_background --background=434c5e
 
-    # -------------------------------------------------------------------------
-    # Tool completions (lazy-loaded)
-    # -------------------------------------------------------------------------
-    if type -q kubectl
-        kubectl completion fish | source
-    end
-
-    if type -q helm
-        helm completion fish | source
-    end
-
-    if type -q terraform
-        complete -c terraform -f -a "(terraform -install-autocomplete 2>/dev/null)"
-    end
-
-    if type -q docker
-        # Docker completions are usually installed with docker
-    end
-
-    if type -q aws
-        complete -C aws_completer aws
-    end
-
-    # direnv (auto-load .envrc)
-    if type -q direnv
-        direnv hook fish | source
-    end
-
-    # zoxide (better cd)
-    if type -q zoxide
-        zoxide init fish | source
-    end
-
-    # atuin (better shell history with sync)
-    if type -q atuin
-        atuin init fish | source
-    end
-
-    # navi (interactive cheatsheet — Ctrl+G)
-    if type -q navi
-        navi widget fish | source
-    end
-
-    # fnm (Node.js version manager)
-    if type -q fnm
-        fnm env --use-on-cd | source
-    end
-
-end
-
-# =============================================================================
-# Aliases — General
-# =============================================================================
-# bat is 'batcat' on Debian, just 'bat' on Fedora
-if type -q batcat
-    alias bat='batcat'
-    alias cat='batcat --paging=never'
-else if type -q bat
-    alias cat='bat --paging=never'
-end
-alias n='nvim'
-alias ll='ls -lah'
-alias ..='cd ..'
-alias ...='cd ../..'
-alias grep='grep --color=auto'
-
-# =============================================================================
-# Aliases — Git
-# =============================================================================
-alias g='git'
-alias gs='git status'
-alias ga='git add'
-alias gc='git commit'
-alias gp='git push'
-alias gl='git log --oneline -20'
-alias gd='git diff'
-alias gco='git checkout'
-alias gb='git branch'
-alias gpl='git pull'
-
-# =============================================================================
-# Aliases — Kubernetes
-# =============================================================================
-alias k='kubectl'
-alias kgp='kubectl get pods'
-alias kgpa='kubectl get pods -A'
-alias kgs='kubectl get svc'
-alias kgd='kubectl get deployments'
-alias kgn='kubectl get nodes'
-alias kgi='kubectl get ingress'
-alias kgcm='kubectl get configmaps'
-alias kgsec='kubectl get secrets'
-alias klog='kubectl logs -f'
-alias kex='kubectl exec -it'
-alias kdesc='kubectl describe'
-alias kaf='kubectl apply -f'
-alias kdf='kubectl delete -f'
-alias kroll='kubectl rollout restart deployment'
-alias kevents='kubectl get events --sort-by=.lastTimestamp'
-
-# kubectx / kubens — fast context & namespace switching
-alias kctx='kubectx'
-alias kns='kubens'
-
-# k9s — terminal K8s dashboard
-alias k9='k9s'
-
-# stern — multi-pod log tailing
-alias ksl='stern'
-
-# =============================================================================
-# Aliases — Helm
-# =============================================================================
-alias h='helm'
-alias hl='helm list'
-alias hi='helm install'
-alias hu='helm upgrade'
-alias hd='helm delete'
-
-# =============================================================================
-# Aliases — Terraform
-# =============================================================================
-alias tf='terraform'
-alias tfi='terraform init'
-alias tfp='terraform plan'
-alias tfa='terraform apply'
-alias tfv='terraform validate'
-alias tff='terraform fmt -recursive'
-alias tfs='terraform state list'
-alias tfw='terraform workspace'
-
-# =============================================================================
-# Aliases — Docker
-# =============================================================================
-alias d='docker'
-alias dc='docker compose'
-alias dcu='docker compose up -d'
-alias dcd='docker compose down'
-alias dcl='docker compose logs -f'
-alias dps='docker ps'
-alias dpsa='docker ps -a'
-alias dimg='docker images'
-alias dlog='docker logs -f'
-alias dex='docker exec -it'
-alias dprune='docker system prune -af'
-
-# lazydocker / lazygit / lazysql — terminal UIs
-alias lzd='lazydocker'
-alias lzg='lazygit'
-alias lzs='lazysql'
-
-# dive — explore docker image layers
-alias ddive='dive'
-
-# btop — system monitor
-alias top='btop'
-
-# ctop — container monitor
-alias dtop='ctop'
-
-# glow — render markdown in terminal
-alias md='glow'
-
-# =============================================================================
-# Aliases — Security / Scanning
-# =============================================================================
-alias tscan='trivy image'
-alias tfs-scan='tfsec .'
-
-# =============================================================================
-# Functions — DevOps helpers
-# =============================================================================
-
-# Quick switch k8s namespace
-function kn
-    kubectl config set-context --current --namespace=$argv[1]
-    echo "Switched to namespace: $argv[1]"
-end
-
-# Port forward shortcut
-function kpf
-    kubectl port-forward $argv[1] $argv[2]
-end
-
-# Docker shell into container
-function dsh
-    docker exec -it $argv[1] /bin/sh
-end
-
-# Terraform plan + apply workflow
-function tfpa
-    terraform plan -out=plan.tfplan && echo "Plan saved. Run 'terraform apply plan.tfplan' to apply."
-end
-
-# Show pod resource usage
-function ktop
-    kubectl top pods $argv
-end
-
-# Quick git commit + push
-function gcp
-    git add -A && git commit -m "$argv[1]" && git push
-end
-
-# Create directory and cd into it
-function mkcd
-    mkdir -p $argv[1] && cd $argv[1]
-end
-
-# Watch pods in namespace
-function kwatch
-    kubectl get pods -w $argv
-end
-
-# Get all resources in namespace
-function kall
-    kubectl api-resources --verbs=list --namespaced -o name | xargs -n 1 kubectl get --show-kind --ignore-not-found $argv
-end
-
-# Decode K8s secret
-function ksecret
-    kubectl get secret $argv[1] -o jsonpath='{.data}' | jq 'to_entries[] | {key: .key, value: (.value | @base64d)}'
-end
-
-# Quick terraform workspace switch
-function tfw-switch
-    terraform workspace select $argv[1] || terraform workspace new $argv[1]
-end
-
-# Docker compose rebuild specific service
-function dcrebuild
-    docker compose up -d --build $argv[1]
-end
-
-# Show listening ports
-function ports
-    sudo ss -tlnp | grep LISTEN
-end
-
-# =============================================================================
-# Dotfiles auto-update — runs once per shell session
-# =============================================================================
-function __dotfiles_check_update --on-event fish_prompt
-    # One-shot: skip on subsequent prompts
-    set -q __dotfiles_update_done; and return
-    set -g __dotfiles_update_done 1
-
-    # Guard: Dotfiles repo must exist
-    if not test -d "$HOME/Dotfiles/.git"
-        return
-    end
-
-    # Guard: git and make must be installed
-    if not command -q git; or not command -q make
-        return
-    end
-
-    # Fetch silently, abort on failure (offline, no remote, etc.)
-    if not git -C "$HOME/Dotfiles" fetch --quiet 2>/dev/null
-        return
-    end
-
-    # Count commits behind upstream (fallback to 0 on error)
-    set -l behind (git -C "$HOME/Dotfiles" rev-list --count HEAD..@{upstream} 2>/dev/null)
-    or set behind 0
-
-    if test "$behind" -gt 0
-        echo "📦 Dotfiles: $behind update(s) available"
-        if git -C "$HOME/Dotfiles" pull --ff-only --quiet 2>/dev/null
-            and make -C "$HOME/Dotfiles" install --quiet 2>/dev/null
-            echo "✅ Dotfiles updated"
-        else
-            echo "⚠️  Dotfiles update failed — check manually"
+    if command -q fzf
+        set -gx FZF_DEFAULT_OPTS '--color=bg:#2e3440,fg:#d8dee9,hl:#81a1c1,bg+:#434c5e,fg+:#eceff4,hl+:#88c0d0,info:#ebcb8b,prompt:#88c0d0,pointer:#b48ead,marker:#a3be8c,spinner:#b48ead,header:#81a1c1'
+        # Native bindings when provided by the distribution's fish integration.
+        if functions -q fzf_key_bindings
+            fzf_key_bindings
         end
     end
-end
+    if command -q starship
+        starship init fish | source
+    end
+    if command -q zoxide
+        zoxide init fish | source
+    end
+    if command -q direnv
+        direnv hook fish | source
+    end
+    if command -q atuin
+        atuin init fish | source
+    end
+    if command -q fnm
+        fnm env --use-on-cd --shell fish | source
+    end
 
+    # Explicit shortcuts only: cat, bat, grep, top, cd and ls stay separate.
+    abbr -a ll 'ls -lah'
+    abbr -a gs 'git status'
+    abbr -a ga 'git add'
+    abbr -a gc 'git commit'
+    abbr -a gd 'git diff'
+    abbr -a gl 'git log --oneline -20'
+    if command -q docker
+        abbr -a d 'docker'
+        abbr -a dc 'docker compose'
+        abbr -a dps 'docker ps'
+    end
+    if command -q lazygit
+        abbr -a lzg 'lazygit'
+    end
+    if command -q lazydocker
+        abbr -a lzd 'lazydocker'
+    end
+end

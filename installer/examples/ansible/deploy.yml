@@ -1,0 +1,115 @@
+---
+# Build the binary on the controller first (same target CPU architecture).
+# ansible-playbook -i inventory.local.yml deploy.yml --ask-become-pass
+- name: Deploy selected tools and dotfiles
+  hosts: vps
+  gather_facts: true
+  vars:
+    dotfiles_source: "{{ playbook_dir }}/../../.."
+    dotfiles_profile: "{{ playbook_dir }}/../vps.yaml"
+    dotfiles_selection: "{{ lookup('ansible.builtin.file', dotfiles_profile) | from_yaml }}"
+    dotfiles_user: "{{ ansible_user }}"
+    dotfiles_remote: /opt/dotfiles
+  tasks:
+    - name: Look up the existing target user
+      ansible.builtin.getent:
+        database: passwd
+        key: "{{ dotfiles_user }}"
+
+    - name: Set the target home
+      ansible.builtin.set_fact:
+        dotfiles_home: "{{ ansible_facts.getent_passwd[dotfiles_user][4] }}"
+
+    - name: Create deployment directory
+      become: true
+      ansible.builtin.file:
+        path: "{{ dotfiles_remote }}"
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Copy compiled installer
+      become: true
+      ansible.builtin.copy:
+        src: "{{ dotfiles_source }}/installer/dotfiles-install"
+        dest: "{{ dotfiles_remote }}/dotfiles-install"
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Copy configuration files
+      become: true
+      ansible.builtin.copy:
+        src: "{{ dotfiles_source }}/config/"
+        dest: "{{ dotfiles_remote }}/config/"
+        owner: root
+        group: root
+        mode: preserve
+        directory_mode: '0755'
+
+    - name: Copy the selected profile
+      become: true
+      ansible.builtin.copy:
+        src: "{{ dotfiles_profile }}"
+        dest: "{{ dotfiles_remote }}/profile.yaml"
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Check whether the installer is already deployed
+      ansible.builtin.stat:
+        path: "{{ dotfiles_remote }}/dotfiles-install"
+      register: dotfiles_binary
+
+    - name: Explain first-deployment check mode
+      ansible.builtin.debug:
+        msg: First deploy the files normally; installer planning in --check needs an existing remote binary and profile.
+      when: ansible_check_mode and not dotfiles_binary.stat.exists
+
+    - name: Install tools as root with shared binaries in /usr/local/bin
+      become: true
+      ansible.builtin.command:
+        argv:
+          - "{{ dotfiles_remote }}/dotfiles-install"
+          - --profile
+          - "{{ dotfiles_remote }}/profile.yaml"
+          - --repo
+          - "{{ dotfiles_remote }}"
+          - --no-configs
+          - --bin-dir
+          - /usr/local/bin
+          - --json
+          - "{{ '--dry-run' if ansible_check_mode else '--yes' }}"
+      register: dotfiles_packages
+      changed_when: (dotfiles_packages.stdout | from_json).changed
+      check_mode: false
+      when:
+        - not ansible_check_mode or dotfiles_binary.stat.exists
+        - dotfiles_selection.install | default(true) | bool
+
+    - name: Deploy configs as their owner
+      become: true
+      become_user: "{{ dotfiles_user }}"
+      environment:
+        HOME: "{{ dotfiles_home }}"
+      ansible.builtin.command:
+        argv:
+          - "{{ dotfiles_remote }}/dotfiles-install"
+          - --profile
+          - "{{ dotfiles_remote }}/profile.yaml"
+          - --repo
+          - "{{ dotfiles_remote }}"
+          - --target
+          - "{{ dotfiles_home }}"
+          - --configs-only
+          - --config-mode
+          - copy
+          - --json
+          - "{{ '--dry-run' if ansible_check_mode else '--yes' }}"
+      register: dotfiles_configs
+      changed_when: (dotfiles_configs.stdout | from_json).changed
+      check_mode: false
+      when:
+        - not ansible_check_mode or dotfiles_binary.stat.exists
+        - dotfiles_selection.configs | default(true) | bool

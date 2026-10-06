@@ -1,0 +1,39 @@
+# Local workstation snapshot: use existing binaries, including Docker Desktop
+# and ~/.local/bin/nvim. Apply configs without installing replacement packages.
+version: 1
+tools:
+- curl
+- wget
+- make
+- unzip
+- fzf
+- ripgrep
+- fd-find
+- bat
+- direnv
+- glow
+- navi
+- jq
+- fish
+- starship
+- atuin
+- tmux
+- git
+- gh
+- lazygit
+- dive
+- lazydocker
+- docker
+- btop
+- kubectl
+- helm
+- k9s
+- python3
+- go
+- nvim
+- opencode
+- omp
+install: false
+configs: true
+config_mode: link
+conflict: backup

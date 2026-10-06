@@ -1,215 +1,211 @@
-# Dotfiles — DevOps Workstation
+# Dotfiles
 
-Personal dotfiles managed with [GNU Stow](https://www.gnu.org/software/stow/).
-Includes an interactive dependency installer and 40+ navi cheatsheets.
+Konfiguracje + jeden instalator w Go/Bubble Tea. TUI i CLI korzystają z tego
+samego mechanizmu. Domyślny motyw: **Nord Dark**. Bez GNU Stow, instalowania
+pluginów przy starcie shella i automatycznego aktualizowania repozytorium.
 
-## What's inside
+```text
+config/               konfiguracje aplikacji w układzie katalogu domowego
+installer/            kod, katalog narzędzi, testy i przykłady wdrożeń
+  tools.yaml          dostępne narzędzia i źródła instalacji
+  examples/           profile YAML/JSON i playbook Ansible
+Makefile
+```
 
-| Package | Contents | Target |
-|---------|----------|--------|
-| `config/opencode/` | OpenCode AI agent config — 13 agents, 11 commands, 10 skills | `~/.config/opencode/` |
-| `config/fish/` | Fish shell config — aliases, functions, plugins for DevOps | `~/.config/fish/` |
-| `config/starship/` | Starship prompt — K8s, Terraform, Docker context | `~/.config/starship.toml` |
-| `config/nvim/` | Neovim + NvChad config | `~/.config/nvim/` |
-| `config/navi/` | Interactive cheatsheets (40+ tools) | `~/.config/navi/` |
-| `config/lazygit/` | Git TUI — config with Nord theme | `~/.config/lazygit/` |
-| `config/lazydocker/` | Docker TUI — config with Nord palette | `~/.config/lazydocker/` |
-| `config/k9s/` | Kubernetes TUI — config, hotkeys, Nord skin | `~/.config/k9s/` |
-| `config/btop/` | System monitor — config + Nord theme | `~/.config/btop/` |
-| `config/bat/` | Better cat — Nord syntax theme | `~/.config/bat/` |
-| `config/glow/` | Markdown renderer | `~/.config/glow/` |
-| `config/atuin/` | Shell history with sync | `~/.config/atuin/` |
-| `config/direnv/` | Per-directory environment | `~/.config/direnv/` |
-| `config/dive/` | Docker image layer explorer | `~/.config/dive/` |
+## Uruchomienie
 
-## Quick Start
-
-### 1. Install the build prerequisites
-
-The canonical installer is a Go program, so install Git, Make, and Go with
-your distribution's package manager if they are not already available:
+Do kompilacji potrzebny jest Go 1.26+. Na Ubuntu: `sudo apt install golang-go make`.
+Na docelowej VM wystarczy skompilowany plik, `config/` i wybrany profil.
 
 ```bash
-# Ubuntu/Debian
-sudo apt install git make golang-go
-
-# Fedora
-sudo dnf install git make golang
-
-# Arch
-sudo pacman -S git make go
+make install                      # kompilacja i TUI
+make list                         # katalog narzędzi
+make test                         # testy Go i fish/Starship, jeśli dostępne
 ```
 
-### 2. Clone the repository
+W TUI nic nie jest domyślnie zaznaczone. Spacja na nagłówku zaznacza/odznacza
+kategorię; spacja na narzędziu zmienia jeden wybór. `↑/↓` lub `j/k` przewijają listę.
+
+| Klawisz | Działanie |
+|---|---|
+| `a` | wszystkie / żadne |
+| `i` | instalacja pakietów i binarek |
+| `c` | wdrożenie konfiguracji wybranych aplikacji |
+| `m` | kopiowanie plików / dowiązania |
+| `b` | kopia zapasowa przy konflikcie / błąd |
+| `s` | zapis wyboru do `dotfiles-selection.yaml` w bieżącym katalogu |
+| `Enter` | podsumowanie, potem wykonanie |
+| `q` | wyjście bez instalacji |
+
+Zapis nie nadpisuje istniejącego profilu. Można wczytać profil do TUI:
 
 ```bash
-git clone https://github.com/MattyOstrowsky/Dotfiles.git ~/Dotfiles
-cd ~/Dotfiles
+./installer/dotfiles-install --profile installer/examples/vps.yaml --tui
 ```
 
-### 3. Install tools and shared configs
+Kategorie: `general`, `shell`, `git`, `containers`, `monitoring`, `cloud`,
+`kubernetes`, `automation`, `development`, `editors`, `ai`.
+Cloud i Kubernetes są opcjonalne; profil VPS ich nie zawiera.
+
+## Profil i CLI
+
+`workstation.yaml` odwzorowuje narzędzia obecne na lokalnym hoście. Ma
+`install: false`, `configs: true` i `config_mode: link`: wyrównuje konfiguracje
+z repo, korzystając z istniejących binarek, także Docker Desktop i lokalnego
+Neovima. Zastosowanie: `./installer/dotfiles-install --profile
+installer/examples/workstation.yaml --yes` (polecenie w jednym wierszu).
+
+```yaml
+version: 1
+tools: [fish, starship, git, docker, bat, btop]
+# categories: [general, git]
+# exclude: [wget]
+# packages: [ca-certificates, less]
+install: true
+configs: true
+config_mode: copy
+conflict: backup
+```
+
+`tools` i `categories` sumują się; `exclude` usuwa pozycje z wyniku.
+`packages` to dodatkowe **natywne nazwy pakietów** danej dystrybucji, bez
+argumentów powłoki. Nie otrzymują automatycznie konfiguracji. YAML i JSON mają
+ten sam schemat. Nieznane pola/narzędzia/kategorie kończą się błędem.
 
 ```bash
-make install
+# Tylko podgląd: bez sudo, sieci, odświeżania APT ani zapisów.
+./installer/dotfiles-install --profile installer/examples/vps.yaml --dry-run
+
+# Wdrożenie bez interakcji; logi na stderr, wynik JSON na stdout.
+./installer/dotfiles-install --profile installer/examples/vps.yaml --yes --json
+
+# Wybór bez pliku.
+./installer/dotfiles-install --tools fish,starship,git --configs-only --yes
+./installer/dotfiles-install --categories general,git --no-configs --dry-run
+./installer/dotfiles-install --tools git --packages jq,less --no-configs --yes
+
+# Tylko konfiguracje, z JSON.
+./installer/dotfiles-install --profile installer/examples/config-only.json --yes
 ```
 
-`make install` builds `installer/dotfiles-install` and starts its interactive
-installer. It detects Ubuntu/Debian, Fedora, or Arch and uses `apt`, `dnf`, or
-`pacman` respectively. The installer presents a preflight plan, lets you
-choose tools and applicable shared config packages, applies the selected
-configs with GNU Stow, and validates the result.
+Flagi wyboru `--tools`, `--categories`, `--exclude`, `--packages` zastępują
+odpowiadające im listy z pliku. `--no-configs` wyłącza konfiguracje;
+`--configs-only` wyłącza instalację i włącza konfiguracje.
+`--config-mode copy|link` i `--conflict backup|error` nadpisują profil.
+`--yes` wymaga jawnego wyboru — samo `--yes` nie instaluje wszystkiego.
 
-The built binary can also be invoked directly from the repository root. The
-following read-only and non-interactive modes are available (run `make
-install` first, or build the binary from `installer/`):
+Przykładowy wynik:
+
+```json
+{"changed":false,"dry_run":false,"actions":[{"kind":"config","name":"/home/ubuntu/.config/fish/config.fish","status":"ok"}]}
+```
+
+Kod wyjścia: `0` sukces, niezerowy błąd. Przy błędzie JSON zawiera `error`.
+Przy `--dry-run` pole `changed` oznacza przewidywane zmiany; dostępność paczek
+na serwerze repozytorium i pobieranie wydań są sprawdzane podczas wykonania.
+Ponowne wykonanie pomija zgodne pliki i zainstalowane pakiety/binarki.
+Instalator zapewnia obecność narzędzi, **nie aktualizuje ich do najnowszych wersji**.
+
+## Pliki, uprawnienia i kopie zapasowe
+
+`--repo` wskazuje katalog zawierający `config/`; domyślnie szukamy obok binarki
+i w bieżącym katalogu. `--target` wskazuje katalog domowy (domyślnie `$HOME`).
+Konfiguracje wdrażaj jako ich właściciel. Pakiety systemowe wymagają roota lub
+sudo; CLI używa `sudo -n`, więc nie zatrzyma Ansible na pytaniu o hasło.
+W TUI sudo może poprosić o hasło po opuszczeniu ekranu wyboru.
+
+Binarki upstream trafiają do `TARGET/.local/bin`; `--bin-dir /usr/local/bin`
+umieszcza je wspólnie dla wszystkich użytkowników. Ubuntu otrzymuje również
+brakujące skróty binarek `bat → /usr/bin/batcat` i `fd → /usr/bin/fdfind`.
+To osobne pliki wykonywalne; `cat` pozostaje zwykłym `cat`.
+
+Domyślne `copy` jest odpowiednie dla Ansible: docelowy config nie zależy od
+obecności checkoutu. `link` pozwala edytować konfigurację bezpośrednio w repo.
+Zmieniane pliki/dowiązania są najpierw przenoszone obok, do unikalnych
+`.dotfiles-backup-NAZWA-*`. Ich ścieżki są w wyniku. Aby przywrócić konfigurację,
+przenieś wybraną kopię pod pierwotną nazwę po usunięciu wdrożonego pliku.
+
+Stare katalogowe dowiązania Stow do tego repo są przy `copy` zamieniane na
+zwykłe katalogi, z zachowaniem plików lokalnych. Dowiązania katalogów prowadzące
+poza wybrany pakiet konfiguracji powodują błąd. `conflict: error` przerywa
+przed instalacją pakietów, jeżeli konfiguracje kolidują.
+Instalator nie usuwa niezarządzanych plików z katalogu docelowego.
+
+APT, DNF i pacman korzystają z repozytoriów skonfigurowanych na hoście.
+APT używa `--no-install-recommends`, DNF wyłącza słabe zależności.
+Pacman nie wykonuje osobnego `-Sy` ani automatycznej aktualizacji całego systemu;
+wcześniej utrzymuj system przez normalne `pacman -Syu`.
+Brak mapowania pakietu dla danej dystrybucji powoduje jawny błąd.
+Wydania upstream dla amd64/arm64 są weryfikowane przez SHA-256; brak sumy lub
+niezgodność przerywa instalację. Nie ma `curl | bash`.
+`terraform`, `opencode`, `omp` są jawnie oznaczone jako zewnętrzne:
+instalator obsługuje ich dostępne konfiguracje, a nie instalację programów.
+
+## Fish, prompt i Nord
+
+Fish zachowuje odziedziczony PATH, usuwa dokładne duplikaty i dodaje istniejące
+katalogi `~/.local/bin`, Cargo, Bun, fnm, Atuin i Go tylko raz. Nie zapisuje
+`fish_user_paths`; respektuje `GOPATH`, `CARGO_HOME`, `BUN_INSTALL` i `EDITOR`.
+Ścieżki z aktywnego venv oraz WSL pozostają. Dodatki startują tylko, gdy są
+zainstalowane. `fish_variables` jest lokalnym stanem, nie częścią wdrożenia.
+
+Skróty są jawnymi abbreviations (`gs`, `gd`, `dc`, `ll`). Konfiguracja nie
+podmienia `cat`, `bat`, `grep`, `top`, `ls` ani `cd`. Starship używa dwuwierszowego układu
+`┌─>` / `└─>` z czasem, Gitem i kontekstowymi modułami środowiska. Po zmianach uruchom nowy terminal
+lub `exec fish`, aby pozbyć się funkcji utworzonych przez stary config.
+
+Nord obejmuje fish/fzf, Starship, Git diff, bat, btop, lazygit, lazydocker,
+k9s, glow, Atuin, tmux, Neovim, OpenCode i OMP. Neovim ma mały config bez pluginów,
+klonowania repozytoriów czy zależności od Nerd Fonts. Git nie ustawia nazwiska,
+maila ani credential helpera — lokalna tożsamość pozostaje w `~/.gitconfig`.
+Docker i zwykłe CLI bez obsługi motywów używają kolorów terminala.
+
+## Ansible / małe VPS-y Ubuntu 26.04
+
+Gotowy przykład: `installer/examples/ansible/deploy.yml`. Utwórz własne inventory
+na podstawie `inventory.example.yml`. Użytkownik docelowy musi już istnieć.
+Na kontrolerze zbuduj binarkę dla architektury VM:
 
 ```bash
-./installer/dotfiles-install --list
-./installer/dotfiles-install --preflight
-./installer/dotfiles-install --validate
-./installer/dotfiles-install --yes
-./installer/dotfiles-install --yes --theme nord
+make build
+# Dla ARM: cd installer && GOOS=linux GOARCH=arm64 CGO_ENABLED=0 go build -o dotfiles-install .
+ansible-playbook -i installer/examples/ansible/inventory.local.yml \
+  installer/examples/ansible/deploy.yml --ask-become-pass
 ```
 
-- `--list` prints detected system, tool status, and config status without
-  changing anything.
-- `--preflight` refreshes package metadata and prints the installation plan;
-  it does not install tools or modify config links.
-- `--validate` checks installed tools and expected Stow links without changing
-  anything; it exits non-zero when validation fails.
-- `--yes` installs all manifest tools and applicable config packages without
-  the interactive UI, then applies the default Catppuccin theme and validates.
-- `--theme catppuccin|nord` applies a theme. Combined with `--yes`, it applies
-  that theme as part of the installation; without `--yes`, it only updates
-  the theme files.
+Playbook kopiuje binarkę, konfiguracje i profil. Pakiety instaluje jako root,
+wydania upstream umieszcza w `/usr/local/bin`, a konfiguracje kopiuje jako
+użytkownik docelowy. `changed_when` czyta `changed` z JSON. Profile z
+`install: false` lub `configs: false` wyłączają odpowiedni etap.
+Można nadpisać `dotfiles_profile`, `dotfiles_source`, `dotfiles_remote` i `dotfiles_user`.
 
-### Install or remove one config package manually
+`--check` uruchamia instalator z `--dry-run` na już wdrożonych plikach.
+Na zupełnie nowym hoście pokazuje plan kopiowania, a wykonanie binarki pomija.
+Zmiany lokalnego profilu/configów trzeba najpierw wdrożyć, aby plan instalatora
+odpowiadał ich nowej wersji. Go i Ansible nie są potrzebne na VM;
+Ansible wymaga tam Python 3 i dostępu przez SSH.
 
-Shared Stow packages live below `config/`, not at the repository root:
+Profil `vps.yaml` jest mały: fish, Git, Docker/Compose/Buildx,
+wyszukiwanie, jq, bat, btop i tmux. Nie instaluje Starshipa: na świeżym VPS
+fish używa swojego zwykłego promptu. Wspólny config fish uruchamia Starshipa
+tylko tam, gdzie jego binarka jest zainstalowana. Docker pochodzi z repozytorium Ubuntu
+(`docker.io`, `docker-compose-v2`, `docker-buildx`), nie z mieszaniny pakietów
+Ubuntu i Docker CE. Na hoście z Docker CE/Desktop wybierz `exclude: [docker]`.
 
-```bash
-cd ~/Dotfiles
-stow --dir config --target "$HOME" lazygit
-stow --dir config --target "$HOME" --delete lazygit
-```
+Dla serwera ustaw niezależnie od dotfiles:
 
-Use `installer/dotfiles-install --preflight` to inspect the planned changes
-before installation.
+- Dostęp SSH kluczem dla zwykłego użytkownika z sudo; zmiany uwierzytelniania
+  wdrażaj po sprawdzeniu nowej sesji SSH.
+- Włączone aktualizacje bezpieczeństwa i zaplanowane restarty. Ubuntu opisuje
+  konfigurację [unattended-upgrades](https://documentation.ubuntu.com/server/how-to/software/automatic-updates/).
+- Limit logów kontenerów, np. w Compose `logging: {driver: local}`; driver
+  [local](https://docs.docker.com/engine/logging/drivers/local/) ma rotację.
+- Wystawiaj publicznie tylko potrzebne porty; bazy i usługi wewnętrzne binduj
+  do `127.0.0.1`. Opublikowane porty Dockera mogą omijać UFW — opisuje to
+  [dokumentacja Dockera](https://docs.docker.com/engine/network/packet-filtering-firewalls/).
+- Kopie danych poza VM i test odtwarzania; btop służy do podglądu, nie zastępuje
+  monitoringu dostępności i wolnego miejsca.
 
-## How GNU Stow works
-
-Stow mirrors each package's directory structure into the target home. The
-shared packages are under `config/`:
-
-```
-~/Dotfiles/
-├── config/
-│   ├── opencode/         → ~/.config/opencode/
-│   ├── fish/             → ~/.config/fish/
-│   ├── starship/         → ~/.config/starship.toml
-│   ├── nvim/             → ~/.config/nvim/
-│   ├── navi/             → ~/.config/navi/
-│   ├── lazygit/          → ~/.config/lazygit/
-│   ├── lazydocker/       → ~/.config/lazydocker/
-│   ├── k9s/              → ~/.config/k9s/
-│   ├── btop/             → ~/.config/btop/
-│   ├── bat/              → ~/.config/bat/
-│   ├── glow/             → ~/.config/glow/
-│   ├── atuin/            → ~/.config/atuin/
-│   ├── direnv/           → ~/.config/direnv/
-│   ├── dive/             → ~/.config/dive/
-│   └── omp/              → ~/.omp/
-└── installer/            → canonical Go installer
-```
-
-`config/` is the shared, distro-agnostic configuration tree. The
-`windows-terminal/` package is host-scoped for the Windows side of a WSL
-setup and is not stowed into the Linux home by the installer. Desktop-specific
-material is intentionally separate: `arch/` and `fedora/` are profile and
-migration areas, not part of the shared config install. The legacy
-`arch/install-deps.sh` is deprecated while this migration is completed; use
-`make install` and `installer/dotfiles-install` instead.
-
-## Interactive Dependency Installer
-
-`installer/dotfiles-install` is the canonical Go installer. Its tool manifest
-is `installer/tools.yaml`; its Stow packages are scanned from `config/`.
-Tools are grouped as follows:
-
-| Category | Tools |
-|----------|-------|
-| **Core** | stow, git, gh, curl, wget, make, unzip, fzf, tree, htop |
-| **Runtime** | python3, pip3, go, cargo, node |
-| **Shell** | fish, starship, atuin, zoxide |
-| **CLI** | ripgrep, fd-find, bat, btop, direnv, glow, navi, tldr, lazygit |
-| **Kubernetes** | kubectl, helm, kubectx, k9s |
-| **IaC** | terraform, ansible |
-| **Containers** | dive, lazydocker |
-| **Editors** | nvim, opencode, omp (config-only) |
-
-Features:
-- Auto-detects Ubuntu/Debian (`apt`), Fedora/RHEL-family (`dnf`), and Arch
-  (`pacman`); Arch installs use official repositories only.
-- Interactive TUI by default, or `--yes` for a complete non-interactive run.
-- `--list`, `--preflight`, and `--validate` provide status, planning, and
-  post-install checks without silently changing config links.
-- Automatically skips tools that are already installed where possible and
-  stows applicable packages from `config/`.
-- `--theme catppuccin|nord` updates the supported tool themes.
-- Downloaded and script-installed binaries are placed in `~/.local/bin/`.
-
-The old Arch-only `arch/install-deps.sh` is retained only as a deprecated
-reference for legacy/profile-specific tools outside the core manifest; it is
-not the supported installer entrypoint.
-
-## Navi Cheatsheets
-
-40+ interactive cheatsheets for daily tools. Launch with `navi` or query directly:
-
-```bash
-navi --query "helm install"
-navi --query "lazygit keybindings"
-```
-
-See `config/navi/.config/navi/cheats/` for the full list.
-
-## OpenCode Agents
-
-### Primary Agents (switch with Tab)
-- **daily** — Personal companion, planning, delegation (po polsku)
-- **architect** — Architecture planning, ADRs, red-teaming (read-only)
-- **orchestrator** — Complex task breakdown, execution plans (read-only)
-- **devops** — Infrastructure implementation, Docker, K8s, CI/CD
-- **meta** — Agent ecosystem management
-
-### Subagents (invoke with @name)
-`@terraform` `@ansible` `@backend` `@frontend` `@data-engineer` `@security` `@cicd` `@python-dev` `@explore`
-
-### Commands
-`tf-plan` `tf-apply` `docker-build` `k8s-check` `sec-audit` `pipeline-lint` `infra-review` `cost-estimate` `self-improve` `stats` `context-check`
-
-## Fish Shell
-
-### Key Aliases
-
-| Alias | Command | Category |
-|-------|---------|----------|
-| `k` | `kubectl` | K8s |
-| `kgp` | `kubectl get pods` | K8s |
-| `k9` | `k9s` | K8s |
-| `ksl` | `stern` | K8s |
-| `kctx` | `kubectx` | K8s |
-| `kns` | `kubens` | K8s |
-| `tf` | `terraform` | Terraform |
-| `tfp` | `terraform plan` | Terraform |
-| `d` | `docker` | Docker |
-| `dc` | `docker compose` | Docker |
-| `lzg` | `lazygit` | TUI |
-| `lzd` | `lazydocker` | TUI |
-| `lzs` | `lazysql` | TUI |
-| `top` | `btop` | TUI |
-| `md` | `glow` | TUI |
-| `ddive` | `dive` | TUI |
-| `dtop` | `ctop` | TUI |
-| `gs` | `git status` | Git |
-| `gcp` | `git add -A && commit && push` | Git |
+Konfiguracja systemowego SSH, firewalla, domyślnego shella i grupy `docker`
+pozostaje w playbooku zarządzającym hostem, aby profil narzędzi nie zmieniał
+przypadkiem dostępu administracyjnego.
