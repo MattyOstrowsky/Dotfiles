@@ -1,0 +1,4 @@
+# Not useful in the code graph; navi cheats would cost LLM tokens
+*.cheat
+config/windows-terminal/
+installer/dotfiles-install
